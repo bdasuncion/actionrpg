@@ -4,6 +4,7 @@
 #include "GBAObject.h"
 #include "GBAMap.h"
 #include "GBATransparency.h"
+#include "GBACharacterActionEvent.h"
 
 #include "ManagerScrDisplay.h"
 #include "ManagerBG.h"
@@ -29,19 +30,21 @@ void mapCommon_defaultEffect(void *screenAttribute, void *characterCollection, M
 void map_nofunction(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo) {
 }
 
-void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection 
-    *characterCollection, MapInfo *mapInfo, ControlTypePool* controlPool) {
+void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+        MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection) {
 
     CharacterAttr *alisa;
 	EventTransfer *eventTransfer = mapInfo->transferTo;
 	sprite_vram_init();
 	sprite_palette_init();
 	mchar_reinit(characterCollection, &alisa);
-	//alisa_init(alisa);
-	nameless_init(alisa);
+	
+	//TODO change this
+	alisa_init(alisa);
+	//nameless_init(alisa);
     commonCharacterSetPosition(alisa, 
 	   eventTransfer->transferToX, eventTransfer->transferToY, 0, eventTransfer->directionOnTransfer);
-	alisa->doAction(alisa, mapInfo, characterCollection);
+	alisa->doAction(alisa, mapInfo, /*characterCollection,*/ charActionCollection);
 	mscr_initCharMoveRef(screenAttribute, mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 		
