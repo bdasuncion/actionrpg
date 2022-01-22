@@ -6,12 +6,12 @@
 #include "ManagerScrDisplay.h"
 #include "ManagerGame.h"
 #include "ManagerVram.h"
+#include "ManagerCharacterActionEvents.h"
 #include "UpdategameStatus.h"
 #include "MapCommon.h"
 
 #include "GBATransparency.h"
 
-#include "GBACharacterActionEvent.h"
 //TODO move this somewhere else
 //#include "CharacterAlisa.h"
 //#include "CharacterWerewolf.h"
@@ -21,6 +21,7 @@
 
 #define MAX_CHARCOUNT 15
 #define MAX_CHARACTIONEVENT 20
+
 //extern const char always[1888512];
 //extern const unsigned char sampleSound[6850];
 //extern const unsigned char slash[2359];
@@ -33,39 +34,20 @@ extern const MapInfo mapTest;
 extern const MapInfo map_nobinobi_cabin;
 extern const MapInfo map_night_street;
 extern const MapInfo mapforest;
+extern const Sound music_minamohana;
+extern const MapInfo mapsnowfield;
 
 inline void waitForVBlank() {
 	asm("swi 0x05");
 }
 
 void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
- OAMCollection *oamCollection, ControlTypePool *controlPool, CharacterAttr *alisa, 
- CharacterActionCollection *charActionCollection) {
-	ScreenAttr screenAttribute;
-	sprite_vram_init();
-	sprite_palette_init();
-	
-	mchar_getPlayerCharacter(characterCollection, &alisa);
-	//commonCharacterSetPosition(alisa, 430, 185, 0, EDown);
-	commonCharacterSetPosition(alisa, 24, 96, 0, EDown);
-	
-	mscr_initCharMoveRef(&screenAttribute, mapInfo,
-		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
-		
-	mbg_init(&screenAttribute, mapInfo, characterCollection, controlPool, charActionCollection);
-	
-	mgame_setUpdater(&updateGameStatus);
-	//Initalize display for 2 backgrounds and 1-d sprites
-	initDisplay2BG();
-	
-	msound_init();
-	msound_setUp();
-	//test only should be called somewhere else
-	//msound_setChannel(&music_minamohana, true);
-	
+ OAMCollection *oamCollection, ControlTypePool *controlPool, ScreenAttr *screenAttribute, 
+    CharacterActionCollection *charActionCollection) {
 	while(1) {	
 		mprinter_clear();
 
+        mchar_actione_reinit(charActionCollection);
 		//quicksort_oam();
 		
 		if (!mapInfo->transferTo) {
@@ -78,25 +60,29 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		
 		//screenAttribute.controller(&screenAttribute, 
 		//	&mapInfo);
-		screenAttribute.controller(&screenAttribute, mapInfo);
+		screenAttribute->controller(screenAttribute, mapInfo);
 		
 		mchar_setPosition(characterCollection, 
 			oamCollection,
-			&screenAttribute.position,
-			&screenAttribute.dimension);
+			&screenAttribute->position,
+			&screenAttribute->dimension);
 		
 		mchar_setDraw(characterCollection);
 		
 		moam_setUpdate(oamCollection);
 		
-		mscr_setDraw(&screenAttribute);
+		mscr_setDraw(screenAttribute);
 		
 		if (mapInfo->mapFunction) {
-		    mapInfo->mapFunction(&screenAttribute, characterCollection, mapInfo, controlPool);
+		    mapInfo->mapFunction(screenAttribute, characterCollection, mapInfo, 
+			    controlPool, charActionCollection);
 		}
 		
-		mapInfo->screenEffect.processScreenEffect(&screenAttribute, characterCollection, mapInfo, controlPool);
-		msound_mix();
+		mapInfo->screenEffect.processScreenEffect(screenAttribute, characterCollection, 
+		    mapInfo, controlPool, charActionCollection);
+		//msound_mix();
+		//msound_mixStereoASMR();
+		//msound_mixMono();
 		
 		waitForVBlank();
 	}
@@ -106,11 +92,17 @@ int main() {
 	CharacterCollection characterCollection;
 	OAMCollection oamCollection;
 	ControlTypePool controlPool;
-	MapInfo mapInfo = mapforest;
+	//MapInfo mapInfo = mapforest;
+	MapInfo mapInfo = mapsnowfield;
+	ScreenAttr screenAttribute;
+	CharacterActionCollection charActionCollection;
 	//MapInfo mapInfo = map_night_street;
 	//MapInfo mapInfo = mapTest;
 	CharacterAttr *alisa;
-	CharacterActionCollection charActionCollection;
+	
+	sprite_vram_init();
+	sprite_palette_init();
+	
 	mapInfo.screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 	
 	oamCollection.size = 128;
@@ -126,8 +118,28 @@ int main() {
 	
 	mchar_actione_init(&charActionCollection, MAX_CHARACTIONEVENT);
 	
-	mprinter_init();	
-	gameloop(&mapInfo, &characterCollection, &oamCollection, &controlPool, alisa, &charActionCollection);
+	mchar_getPlayerCharacter(&characterCollection, &alisa);
+	//commonCharacterSetPosition(alisa, 430, 185, 0, EDown);
+	commonCharacterSetPosition(alisa, 24, 96, 0, EDown);
+	
+	mscr_initCharMoveRef(&screenAttribute, &mapInfo,
+		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
+	
+	mbg_init(&screenAttribute, &mapInfo, &characterCollection, &controlPool, &charActionCollection);
+	
+	mgame_setUpdater(&updateGameStatus);
+	//Initalize display for 2 backgrounds and 1-d sprites
+	initDisplay2BG();
+	
+	msound_init();
+	//msound_setUpStereo();
+//	msound_setUpMono();
+	//test only should be called somewhere else
+	msound_setChannel(&music_minamohana, true);
+	
+	mprinter_init();
+	gameloop(&mapInfo, &characterCollection, &oamCollection, &controlPool, 
+	   &screenAttribute, &charActionCollection);
 	
 	return 0;
 }

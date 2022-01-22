@@ -42,7 +42,7 @@ typedef struct EventTransfer {
 	u16 directionOnTransfer:3;
 } ALIGN4 EventTransfer;
 
-typedef void (*FuncMap)(void *screenAttribute, void *characterCollection, void *mapInfo, void *controlPool);
+typedef void (*FuncMap)(void *screenAttribute, void *characterCollection, void *mapInfo, void *controlPool, void *charActionCollection);
 
 typedef struct CharacterInit {
     u16 x;

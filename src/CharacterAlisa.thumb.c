@@ -114,22 +114,14 @@ const CharFuncAction alisa_actions[] = {
 };
 
 const CharFuncCollisionReaction alisa_collisionReactions[][8] = {
-    /*{	&common_noMovement,
+    {	&common_noMovement,
 		&common_noMovement,
 		&common_noMovement,
 		&common_noMovement,
 		&common_noMovement,
 		&common_noMovement,
 		&common_noMovement,
-		&common_noMovement },*/
-	{	&common_movingDown,
-		&common_movingRightDownOffset,
-		&common_movingRight,
-		&common_movingRightUpOffset,
-		&common_movingUp,
-		&common_movingLeftUpOffset,
-		&common_movingLeft,
-		&common_movingLeftDownOffset},
+		&common_noMovement },
 	{	&common_movingDown,
 		&common_movingRightDownOffset,
 		&common_movingRight,
