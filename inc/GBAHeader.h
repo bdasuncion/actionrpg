@@ -1,0 +1,6 @@
+#include "GBABG.h"
+#include "GBADMA.h"
+#include "GBAKey.h"
+#include "GBATypes.h"
+#include "GBAVideo.h"
+#include "GBAObject.h"
