@@ -3,13 +3,14 @@
 
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacterActionEvent.h"
 
 void mchar_setDraw(CharacterCollection *reference);
 void mchar_draw();
 void mchar_init(CharacterCollection *charCollection, int size);
 void mchar_action(CharacterCollection *charCollection);
 void mchar_resolveAction(CharacterCollection *charCollection,
-	const MapInfo *mapInfo);
+	const MapInfo *mapInfo, CharacterActionCollection *charActionCollection);
 void mchar_setPosition(CharacterCollection *charCollection,
 	 OAMCollection *oamCollection, const Position *scr_pos,
 	const ScreenDimension *scr_dim);

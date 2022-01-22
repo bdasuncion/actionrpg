@@ -6,6 +6,7 @@
 #include "ManagerPrinter.h"
 #include "CharacterCommon.h"
 #include "GBATimer.h"
+#include "GBACharacterActionEvent.h"
 
 CharacterCollection *mchar_vreference = NULL;
 extern const CharacterAttr openSlot;
@@ -91,7 +92,7 @@ void mchar_action(CharacterCollection *charCollection, const MapInfo *mapInfo)
 }
 
 void mchar_resolveAction(CharacterCollection *charCollection,
-	const MapInfo *mapInfo) {
+	const MapInfo *mapInfo, CharacterActionCollection *charActionCollection) {
 
 	//TODO put priority on actions
 	if (charCollection) {
@@ -109,12 +110,14 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 		
 		if (charCollection->characterEventCurrentSize < 1) {
 			for (i = 0; i < charCollection->currentSize; ++i) {
-				charCollection->characters[i]->doAction(charCollection->characters[i], mapInfo, charCollection);
+				charCollection->characters[i]->doAction(charCollection->characters[i], mapInfo, 
+				    charCollection, charActionCollection);
 				//mapInfo->collisionCheck(mapInfo, charCollection->characters[i]);
 			}
 		} else{
 			for (i = 0; i < charCollection->characterEventCurrentSize; ++i) {
-				charCollection->charactersDoEvent[i]->doAction(charCollection->charactersDoEvent[i], mapInfo, charCollection);
+				charCollection->charactersDoEvent[i]->doAction(charCollection->charactersDoEvent[i], mapInfo, 
+				    charCollection, charActionCollection);
 			}
 		}
 		

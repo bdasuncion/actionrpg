@@ -4,6 +4,7 @@
 #include "GBAObject.h"
 #include "GBAVideo.h"
 #include "GBADMA.h"
+#include "GBACharacterActionEvent.h"
 #include "UtilCommonValues.h"
 #include "CharacterNameless.h"
 #include "ManagerVram.h"
@@ -45,7 +46,7 @@ void ghostlyHand_checkCollision(CharacterAttr* nameless, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 void ghostlyHand_checkMapCollision(CharacterAttr* nameless, const MapInfo* mapInfo);
 void ghostlyHand_doAction(CharacterAttr* ghostlyHand, const MapInfo *mapInfo,
-    const CharacterCollection *characterCollection);
+    const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 
 void ghostlyHand_doHide(CharacterAttr* ghostlyHand, const MapInfo *mapInfo, 
     const CharacterCollection *characterCollection);
@@ -82,9 +83,10 @@ void ghostlyHand_init(CharacterAttr* ghostlyHand, ControlTypePool* controlPool)
 }
 
 void ghostlyHand_doAction(CharacterAttr* ghostlyHand, const MapInfo *mapInfo, 
-    const CharacterCollection *characterCollection) {
+    const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
     if (ghostlyHand->nextAction < EGhosthandActionCount) {
-        ghostlyHand_actions[ghostlyHand->nextAction](ghostlyHand, mapInfo, characterCollection);
+        ghostlyHand_actions[ghostlyHand->nextAction](ghostlyHand, mapInfo, characterCollection, 
+		charActionCollection);
 	}
 }
 
@@ -120,7 +122,7 @@ void ghostlyHand_doHide(CharacterAttr* ghostlyHand, const MapInfo *mapInfo,
     bool isLastFrame = false;
 	ghostlyHand->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	ghostlyHand->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (initializeAction(ghostlyHand) == EUpdate) {
+	if (commonInitializeAction(ghostlyHand) == EUpdate) {
 		ghostlyHand->spriteDisplay.currentAnimationFrame = 0;
 		ghostlyHand->spriteDisplay.imageUpdateStatus = EUpdate;
 		ghostlyHand->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -143,7 +145,7 @@ void ghostlyHand_doAppear(CharacterAttr* ghostlyHand, const MapInfo *mapInfo,
     bool isLastFrame = false;
 	ghostlyHand->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	ghostlyHand->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (updateAnimation(ghostlyHand) == EUpdate) {
+	if (commonUpdateAnimation(ghostlyHand) == EUpdate) {
 		ghostlyHand->spriteDisplay.imageUpdateStatus = EUpdate;
 		ghostlyHand->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}

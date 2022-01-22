@@ -4,6 +4,7 @@
 #include "GBAObject.h"
 #include "GBAVideo.h"
 #include "GBADMA.h"
+#include "GBACharacterActionEvent.h"
 #include "UtilCommonValues.h"
 #include "CharacterNameless.h"
 #include "ManagerVram.h"
@@ -50,7 +51,7 @@ const u8 ghostMan_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
 };
 
 void ghostMan_doAction(CharacterAttr* ghostMan, const MapInfo *mapInfo, 
-    const CharacterCollection *characterCollection);
+    const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void ghostMan_doSit(CharacterAttr* ghostMan, const MapInfo *mapInfo, 
     const CharacterCollection *characterCollection);
 void ghostMan_doTransitionToFollow(CharacterAttr* ghostMan, const MapInfo *mapInfo, 
@@ -95,9 +96,9 @@ void ghostMan_init(CharacterAttr* ghostMan, ControlTypePool* controlPool) {
 }
 
 void ghostMan_doAction(CharacterAttr* ghostMan, const MapInfo *mapInfo, 
-    const CharacterCollection *characterCollection) {
+    const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
     if (ghostMan->nextAction < EGhostmanActionCount) {
-        ghostMan_actions[ghostMan->nextAction](ghostMan, mapInfo, characterCollection);
+        ghostMan_actions[ghostMan->nextAction](ghostMan, mapInfo, characterCollection, charActionCollection);
 	}
 }
 
@@ -108,7 +109,7 @@ void ghostMan_doSit(CharacterAttr* ghostMan, const MapInfo *mapInfo,
 	
 	ghostMan->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	ghostMan->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (initializeAction(ghostMan) == EUpdate) {
+	if (commonInitializeAction(ghostMan) == EUpdate) {
 		ghostMan->spriteDisplay.imageUpdateStatus = EUpdate;
 		ghostMan->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -142,7 +143,7 @@ void ghostMan_doTransitionToFollow(CharacterAttr* ghostMan, const MapInfo *mapIn
 	
 	ghostMan->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	ghostMan->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (updateAnimation(ghostMan) == EUpdate) {
+	if (commonUpdateAnimation(ghostMan) == EUpdate) {
 		ghostMan->spriteDisplay.imageUpdateStatus = EUpdate;
 		ghostMan->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -171,7 +172,7 @@ void ghostMan_doFollow(CharacterAttr* ghostMan, const MapInfo *mapInfo,
 	
 	ghostMan->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	ghostMan->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (updateAnimation(ghostMan) == EUpdate) {
+	if (commonUpdateAnimation(ghostMan) == EUpdate) {
 		ghostMan->spriteDisplay.imageUpdateStatus = EUpdate;
 		ghostMan->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}

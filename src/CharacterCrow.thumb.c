@@ -4,6 +4,7 @@
 #include "GBAObject.h"
 #include "GBAVideo.h"
 #include "GBADMA.h"
+#include "GBACharacterActionEvent.h"
 #include "UtilCommonValues.h"
 #include "SpriteSetAlisa.h"
 #include "ManagerVram.h"
@@ -69,12 +70,13 @@ void crow_init(CharacterAttr* crow, ControlTypePool* controlPool) {
 }
 
 void crow_doAction(CharacterAttr* crow,
-	const MapInfo *mapInfo, const void *dummy) {
+	const MapInfo *mapInfo, const void *dummy, 
+	CharacterActionCollection *charActionCollection) {
 	int boundBoxCount = 0;
 	CharBoundingBox boundingBox;
 	
 	if (crow->nextAction < ECrowActionCount) {
-		crow_actions[crow->nextAction](crow, mapInfo, dummy);
+		crow_actions[crow->nextAction](crow, mapInfo, dummy, charActionCollection);
 	}
 	
 	//TODO Check BG collision here
@@ -88,7 +90,7 @@ void crow_actionStand(CharacterAttr* crow,
 	CharacterAIControl *charControl = (CharacterAIControl*)crow->free;
 	crow->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	crow->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (updateAnimation(crow) == EUpdate) {
+	if (commonUpdateAnimation(crow) == EUpdate) {
 		crow->spriteDisplay.imageUpdateStatus = EUpdate;
 		crow->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}

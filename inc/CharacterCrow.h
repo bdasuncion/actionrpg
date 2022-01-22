@@ -4,6 +4,7 @@
 #include "GBAObject.h"
 #include "GBASound.h"
 #include "ImageCrow.h"
+#include "GBACharacterActionEvent.h"
 
 typedef enum CrowAction
 {
@@ -17,7 +18,8 @@ void crow_controller(CharacterAttr* character, const MapInfo *mapInfo, Character
 void crow_actionStand(CharacterAttr* alisa,
 	const MapInfo *mapInfo, const void *dummy);
 void crow_doAction(CharacterAttr* crow,
-	const MapInfo *mapInfo, const void *dummy);
+	const MapInfo *mapInfo, const void *dummy, 
+	CharacterActionCollection *charActionCollection);
 int crow_setPosition(CharacterAttr* crow,
 	OBJ_ATTR *oamBuf, 
 	const Position *scr_pos,

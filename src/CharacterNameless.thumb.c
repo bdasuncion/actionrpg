@@ -4,6 +4,7 @@
 #include "GBAObject.h"
 #include "GBAVideo.h"
 #include "GBADMA.h"
+#include "GBACharacterActionEvent.h"
 #include "UtilCommonValues.h"
 #include "CharacterNameless.h"
 #include "ManagerVram.h"
@@ -38,7 +39,8 @@ extern const SpriteSet ghosthand_appear;
 extern const SpriteSet ghosltyman;
 const unsigned short maincharacterlower_walk_pal[16];
 
-void nameless_doAction(CharacterAttr* nameless, const MapInfo *mapInfo, const void *dummy);
+void nameless_doAction(CharacterAttr* nameless, const MapInfo *mapInfo, 
+    const void *dummy, CharacterActionCollection *charActionCollection);
 int nameless_setPosition(CharacterAttr* nameless,
 	OBJ_ATTR *oamBuf, 
 	const Position *scr_pos,
@@ -80,11 +82,12 @@ void nameless_init(CharacterAttr* nameless) {
 	nameless->checkMapCollision = &nameless_checkMapCollision;
 }
 
-void nameless_doAction(CharacterAttr* nameless, const MapInfo *mapInfo, const void *dummy) {
+void nameless_doAction(CharacterAttr* nameless, const MapInfo *mapInfo, 
+    const void *dummy, CharacterActionCollection *charActionCollection) {
 	
 	
 	if (nameless->nextAction < ENamelessActionCount) {
-	    nameless_actions[nameless->nextAction](nameless, mapInfo, dummy);
+	    nameless_actions[nameless->nextAction](nameless, mapInfo, dummy, charActionCollection);
 	}
 	
 	commonCheckForEvents(nameless, mapInfo);
@@ -133,7 +136,7 @@ void nameless_actionStand(CharacterAttr* nameless, const MapInfo *mapInfo,
     bool isLastFrame = false;
 	nameless->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	nameless->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (initializeAction(nameless) == EUpdate) {
+	if (commonInitializeAction(nameless) == EUpdate) {
 		nameless->spriteDisplay.currentAnimationFrame = 0;
 		nameless->spriteDisplay.imageUpdateStatus = EUpdate;
 		nameless->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -153,7 +156,7 @@ void nameless_actionWalk(CharacterAttr* nameless, const MapInfo *mapInfo,
     bool isLastFrame = false;
 	nameless->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	nameless->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (updateAnimation(nameless) == EUpdate) {
+	if (commonUpdateAnimation(nameless) == EUpdate) {
 		nameless->spriteDisplay.imageUpdateStatus = EUpdate;
 		nameless->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}

@@ -13,15 +13,18 @@ void alisa_controller(CharacterAttr* character) {
 	if (isBPressed()) {
 	    character->nextAction = EAlisaNormalSwordSlash;
 		character->controller = &alisa_slashController; 
+		character->getBounds = &alisa_getBoundingBoxStanding;
 		return;
 	}
 	
 	if (direction != EUnknown) {
 		character->nextAction = EAlisaRun;
 		character->nextDirection = direction;
+		character->getBounds = &alisa_getBoundingBoxMoving;
 		return;
 	}
 	
+	character->getBounds = &alisa_getBoundingBoxStanding;
 	character->nextAction = EAlisaStand;
 }
 
@@ -29,7 +32,6 @@ void alisa_slashController(CharacterAttr* character) {
    int nextScreenFrame, nextAnimationFrame;
    bool isLastFrame = false;
    
-   //TODO: This should check for action difference for the first frame
    commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
    if (isLastFrame) {

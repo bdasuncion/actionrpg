@@ -1,6 +1,7 @@
 #include "GBAObject.h"
 #include "GBABG.h"
 #include "GBADMA.h"
+#include "GBACharacterActionEvent.h"
 #include "ManagerOAM.h"
 #include "ManagerPrinter.h"
 #include "UtilCommonValues.h"
@@ -38,7 +39,7 @@ void mbg_checkCollision(
 	const EDirections direction);
 
 void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollection *characterCollection,
-    ControlTypePool *controlPool) {
+    ControlTypePool *controlPool, CharacterActionCollection *charActionCollection) {
 	int i, j, currentvramIdx = 1;
 	
 	for (i = 0; i < mapInfo->palletteCnt; ++i) {
@@ -54,7 +55,7 @@ void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollect
 	mbg_initializeMapOnScreen(scrAtt, mapInfo, 
 	    &SCR_ENTRY->entry[ETileMap0], &SCR_ENTRY->entry[ETileMap1]);
 
-    mbg_initializeCharacters(mapInfo, characterCollection, controlPool);
+    mbg_initializeCharacters(mapInfo, characterCollection, controlPool, charActionCollection);
 
 	*REG_BG_CNT0 = BG_PRIO(2)|BG_CBB(0)|BG_SBB(ETileMap0)|BG_SIZE(0);
 	*REG_BG_CNT1 = BG_PRIO(3)|BG_CBB(0)|BG_SBB(ETileMap1)|BG_SIZE(0);
@@ -80,14 +81,14 @@ void mbg_initializeMapOnScreen(const ScreenAttr *scrAtt, const MapInfo *mapInfo,
 }
 
 void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *characterCollection, 
-    ControlTypePool* controlPool) {
+    ControlTypePool* controlPool, CharacterActionCollection *charActionCollection) {
     int i;
 	
 	for ( i = 0; i < mapInfo->characterCount; ++characterCollection->currentSize, ++i) {
 		CharacterAttr *character = characterCollection->characters[characterCollection->currentSize];
 	    chacterInit[mapInfo->characterInit[i].type](character, controlPool);
 		commonCharacterSetPosition(character, mapInfo->characterInit[i].x, mapInfo->characterInit[i].y, 0, EDown);
-		character->doAction(character, mapInfo, characterCollection);
+		character->doAction(character, mapInfo, characterCollection, charActionCollection);
 		if (mapInfo->characterInit[i].eventControl) {
 		    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);
 			character->controller = &commonTriggerCharacterEvent;

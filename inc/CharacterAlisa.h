@@ -16,4 +16,8 @@ void alisa_init(CharacterAttr* character);
 void alisa_setCharacter(CharacterAttr* character);
 void alisa_controller(CharacterAttr* character);
 void alisa_slashController(CharacterAttr* character);
+void alisa_getBoundingBoxStanding(const CharacterAttr* alisa, 
+	int *count, BoundingBox *boundingBox);
+void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 
+	int *count, BoundingBox *boundingBox);
 #endif

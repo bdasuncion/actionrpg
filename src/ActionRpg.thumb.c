@@ -11,6 +11,7 @@
 
 #include "GBATransparency.h"
 
+#include "GBACharacterActionEvent.h"
 //TODO move this somewhere else
 //#include "CharacterAlisa.h"
 //#include "CharacterWerewolf.h"
@@ -19,6 +20,7 @@
 #define DEFAULT_SCREEN_BOUNDING_BOX 0
 
 #define MAX_CHARCOUNT 15
+#define MAX_CHARACTIONEVENT 20
 //extern const char always[1888512];
 //extern const unsigned char sampleSound[6850];
 //extern const unsigned char slash[2359];
@@ -37,7 +39,8 @@ inline void waitForVBlank() {
 }
 
 void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
- OAMCollection *oamCollection, ControlTypePool *controlPool, CharacterAttr *alisa) {
+ OAMCollection *oamCollection, ControlTypePool *controlPool, CharacterAttr *alisa, 
+ CharacterActionCollection *charActionCollection) {
 	ScreenAttr screenAttribute;
 	sprite_vram_init();
 	sprite_palette_init();
@@ -49,7 +52,7 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 	mscr_initCharMoveRef(&screenAttribute, mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 		
-	mbg_init(&screenAttribute, mapInfo, characterCollection, controlPool);
+	mbg_init(&screenAttribute, mapInfo, characterCollection, controlPool, charActionCollection);
 	
 	mgame_setUpdater(&updateGameStatus);
 	//Initalize display for 2 backgrounds and 1-d sprites
@@ -67,7 +70,7 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		
 		if (!mapInfo->transferTo) {
 		    mchar_action(characterCollection);
-		    mchar_resolveAction(characterCollection, mapInfo);
+		    mchar_resolveAction(characterCollection, mapInfo, charActionCollection);
 		}
 		/*mprinter_printf("%d,%d\n", screenAttribute.position.x,
 			screenAttribute.position.y);
@@ -107,6 +110,7 @@ int main() {
 	//MapInfo mapInfo = map_night_street;
 	//MapInfo mapInfo = mapTest;
 	CharacterAttr *alisa;
+	CharacterActionCollection charActionCollection;
 	mapInfo.screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 	
 	oamCollection.size = 128;
@@ -120,8 +124,10 @@ int main() {
 	
 	mchar_init(&characterCollection, MAX_CHARCOUNT);
 	
+	mchar_actione_init(&charActionCollection, MAX_CHARACTIONEVENT);
+	
 	mprinter_init();	
-	gameloop(&mapInfo, &characterCollection, &oamCollection, &controlPool, alisa);
+	gameloop(&mapInfo, &characterCollection, &oamCollection, &controlPool, alisa, &charActionCollection);
 	
 	return 0;
 }

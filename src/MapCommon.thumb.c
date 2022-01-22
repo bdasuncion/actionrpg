@@ -44,7 +44,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	//nameless_init(alisa);
     commonCharacterSetPosition(alisa, 
 	   eventTransfer->transferToX, eventTransfer->transferToY, 0, eventTransfer->directionOnTransfer);
-	alisa->doAction(alisa, mapInfo, /*characterCollection,*/ charActionCollection);
+	alisa->doAction(alisa, mapInfo, characterCollection, charActionCollection);
 	mscr_initCharMoveRef(screenAttribute, mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 		

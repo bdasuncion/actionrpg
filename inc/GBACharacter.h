@@ -3,6 +3,9 @@
 #define GBACharacter
 
 #include "GBAObject.h"
+#define MAXACTIONS 8
+#define DOACTIONUNTILEND 0
+
 typedef enum UpdateStatus {
 	ENoUpdate,
 	EUpdate
@@ -76,7 +79,7 @@ typedef struct CollisionControl {
 
 typedef void (*CharFuncController)(void* charAtt, const void *mapInfo, const void *characterCollection);
 typedef void (*CharFuncAction)(void* charAtt, 
-	const void *mapInfo, const void *characterCollection);
+	const void *mapInfo, const void *characterCollection, void *charActionCollection);
 typedef int (*CharFuncSetPos)(void* charAtt, void *oamBuf,
 	const void *scr_pos, //TODO: Put screen dimension in its own header
 	const void *scr_dim); //TODO: Put screen position it its own header
@@ -89,6 +92,8 @@ typedef void (*CharFuncCollisionCheck)(void* charAtt, bool isOtherCharBelow,
 	
 typedef void (*CharFuncMapCollisionCheck)(void* charAtt, void* mapInfo);
 
+typedef void (*CharFuncActionCollision)(void *charAtt, void *actionEvents);
+
 typedef struct CharacterAttr {
 	CharFuncController controller;
 	CharFuncAction doAction;
@@ -97,16 +102,18 @@ typedef struct CharacterAttr {
 	CharFuncGetBounds getBounds; //Do we still need this here?
 	CharFuncCollisionCheck checkCollision;
 	CharFuncMapCollisionCheck checkMapCollision;
+	CharFuncActionCollision checkActionCollision;
 	SpriteDisplay spriteDisplay;
 	u8 id;
-	u8 type;
-	u16 updateCountdown;
+	s8 type;
+	u16 dummy;
 	u8 action;
 	u8 direction;
 	u8 nextAction;
 	u8 nextDirection;
 	MovementControl movementCtrl;
 	Position position;//3HW
+	Position delta;//3HW
 	CollisionControl collisionCtrl;
 	void *free;//Can be any object, for use in the controller
 } ALIGN4 CharacterAttr;
@@ -117,7 +124,8 @@ typedef void (*CharFuncCollisionReaction)(CharacterAttr* character,
 typedef void (*CommonMapCollision)(CharacterAttr *character, const void* mapInfo, CharFuncCollisionReaction *reaction);
 
 typedef struct ActionControl {
-	u16 doForNumFrames;
+	u8 doForNumFrames;
+	u8 currentFrame;
 	u8 direction;
 	u8 action;
 }ALIGN4 ActionControl;
@@ -137,7 +145,7 @@ typedef struct CharacterAIControl {
 	u32 currentAction:4;
 	u32 dummy:8;
     Position *target;
-    ActionControl actions[8];
+    ActionControl actions[MAXACTIONS];
 } ALIGN4 CharacterAIControl;
 
 typedef struct CharacterEventControl {

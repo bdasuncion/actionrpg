@@ -221,7 +221,10 @@ typedef struct BoundingBox {
 	s16 endY;
 	s16 startZ;
 	s16 endZ;
-	u8 direction;
+	u8 direction:3;
+	u8 dummy:3;
+	bool isMoving:1;
+	bool isMovable:1;
 }ALIGN4 BoundingBox;
 
 typedef struct Control {
