@@ -50,8 +50,8 @@ const s32 alisa_runOffsetY[EDirectionsCount][alisa_RUN_MVMNT_CTRL_MAX] = {
 #define ALISA_SCRCNVRTWIDTH 16
 #define ALISA_SCRCNVRTHEIGHT 26
 
-#define ALISA_LENGTH 12
-#define ALISA_WIDTH 12
+#define ALISA_LENGTH 14
+#define ALISA_WIDTH 14
 #define ALISA_HEIGHT 18
 
 #define ALISA_PAL_CNT 2
@@ -130,6 +130,17 @@ const CharFuncCollisionReaction alisa_collisionReactions[][8] = {
 		&common_movingLeftUpOffset,
 		&common_movingLeft,
 		&common_movingLeftDownOffset}
+};
+
+const CharFuncCollisionReaction alisa_mapCollisionReactions[8] = {
+    	&common_mapMovingDown,
+		&common_mapMovingRightDownOffset,
+		&common_mapMovingRight,
+		&common_mapMovingRightUpOffset,
+		&common_mapMovingUp,
+		&common_mapMovingLeftUpOffset,
+		&common_mapMovingLeft,
+		&common_mapMovingLeftDownOffset
 };
 
 const CommonMapCollision alisa_mapCollision[] = {
@@ -409,7 +420,7 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	commonGetBoundsFromMap(alisa->position.x, alisa->position.y, mapInfo, &mapBoundingBox);	
 	alisa_mapCollision[alisa->direction](alisa, mapInfo, 
-	    alisa_collisionReactions[alisaBoundingBox.isMoving][alisa->direction]);
+	    alisa_mapCollisionReactions[alisa->direction]);
 }
 
 void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,

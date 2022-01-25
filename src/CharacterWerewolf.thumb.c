@@ -84,6 +84,17 @@ const CharFuncCollisionReaction werewolf_collisionReactions[][8] = {
 		&common_movingLeftDownOffset}
 };
 
+const CharFuncCollisionReaction werewolf_mapCollisionReactions[8] = {
+	&common_mapMovingDown,
+	&common_mapMovingRightDownOffset,
+	&common_mapMovingRight,
+	&common_mapMovingRightUpOffset,
+	&common_mapMovingUp,
+	&common_mapMovingLeftUpOffset,
+	&common_mapMovingLeft,
+	&common_mapMovingLeftDownOffset
+};
+
 
 const CommonMapCollision werewolf_mapCollision[] = {
     &commonMovingDownMapCollision,
@@ -329,7 +340,7 @@ void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo
 	character->getBounds(character, &count, &characterBoundingBox);
 	commonGetBoundsFromMap(character->position.x, character->position.y, mapInfo, &mapBoundingBox);	
 	werewolf_mapCollision[character->direction](character, mapInfo, 
-	    werewolf_collisionReactions[characterBoundingBox.isMoving][character->direction]);
+	    werewolf_mapCollisionReactions[character->direction]);
 }
 
 void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
@@ -352,7 +363,7 @@ void werewolf_checkActionEventCollision(CharacterAttr *character, CharacterActio
     int i, j, count;
 	bool isHit;
 	BoundingBox charBoundingBox;
-	
+	mprinter_printf("CHECK WEREWOLF COLLISION\n");
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 

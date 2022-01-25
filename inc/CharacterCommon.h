@@ -40,6 +40,22 @@ void common_movingRightDownOffset(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingRight(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeft(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingUp(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingRightUpOffset(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftUpOffset(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingRightDownOffset(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftDownOffset(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void commonGetBoundsFromMap(s16 x, s16 y, const MapInfo* mapInfo, BoundingBox *charBoundingBox);
 void commonMovingUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonMovingDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
