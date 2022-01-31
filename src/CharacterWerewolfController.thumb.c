@@ -6,6 +6,11 @@ void werewolf_scanSurroundingsController(CharacterAttr* character,
     const MapInfo *mapInfo, CharacterCollection *charCollection);
 void werewolf_findTargetController(CharacterAttr* character);
 
+const EDirections werewolf_patrolDirections[] = {
+    EDown, EDown, ERight, ERight,
+	EUp, EUp, ELeft, ELeft
+};
+
 void werewolf_setCharacter(CharacterAttr* character) {
     character->controller = &werewolf_scanSurroundingsController; 
 }
@@ -16,9 +21,9 @@ void werewolf_scanSurroundingsController(CharacterAttr* character,
 	int i;
    
 	if (charControl->currentAction >= MAXACTIONS || charControl->currentAction >= charControl->countAction) { 
-		//EDirections direction = GET_REMAINDER_8(rand());
-		EDirections direction = character->nextDirection == ELeft ? ERight : ELeft;
-		charControl->countAction = 6;//temporary
+		EDirections direction = werewolf_patrolDirections[GET_REMAINDER_8(rand())];
+		//EDirections direction = character->nextDirection == EUpleft ? EDownright : EUpleft;
+		charControl->countAction = 4;//temporary
 		charControl->currentAction = 0;
 		charControl->actions[0] = ((ActionControl){DOACTIONUNTILEND, 0, direction, EWerewolfFindTarget});
 		//charControl->doAction = false;
