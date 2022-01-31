@@ -227,6 +227,10 @@ typedef struct BoundingBox {
 	bool isMovable:1;
 }ALIGN4 BoundingBox;
 
+typedef struct OffsetPoints {
+    s16 x;
+	s16 y;
+}ALIGN4  OffsetPoints;
 typedef struct Control {
     CONTROLTYPE type:1;
 } Control;
@@ -297,9 +301,6 @@ typedef struct EventBase {
 	u16 x;
 	u16 y;
 } EventBase;
-
-typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection);
-typedef void (*FuncCharacterSet)(CharacterAttr *character);
 
 typedef void (*ScreenFunc)(void* scrAtt, void *mapInfo);
 

@@ -6,6 +6,7 @@
 #include "GBADMA.h"
 #include "GBATimer.h"
 #include "GBACharacter.h"
+#include "GBACharacterType.h"
 #include "MapCommon.h"
 #include "UtilCommonValues.h"
 
@@ -19,22 +20,10 @@
 #define IMG16X32W  64
 #define IMG32X64W  256
 
+extern const FuncCharacterInit chacterInit[];
+extern const FuncCharacterSet characterSet[];
+
 //u32 time[3];
-
-//TODO Temporary, move this somewhere else
-void werewolf_init(CharacterAttr *character, ControlTypePool* controlPool);
-void werewolf_setCharacter(CharacterAttr *character);
-void ghostlyHand_init(CharacterAttr *character, ControlTypePool* controlPool);
-void ghostMan_init(CharacterAttr *character, ControlTypePool* controlPool);
-void ghostlyHand_setCharacter(CharacterAttr *character);
-void ghostMan_setCharacter(CharacterAttr *character);
-void crow_init(CharacterAttr *character, ControlTypePool* controlPool);
-void crow_setCharacter(CharacterAttr *character);
-
-//TODO transfer to a different file and header file
-const FuncCharacterInit chacterInit[] = { NULL, NULL, &ghostlyHand_init, &ghostMan_init, NULL, &werewolf_init, &crow_init };
-const FuncCharacterSet characterSet[] = { NULL, NULL, &ghostlyHand_setCharacter, &ghostMan_setCharacter, NULL, &werewolf_setCharacter,  &crow_setCharacter};
-
 int commonDummy() {
 	mprinter_print("COMMON\n");
     return 0;
@@ -731,4 +720,17 @@ bool commonDoNextAction(CharacterAttr* character) {
 		((charControl->actions[charControl->currentAction].doForNumFrames != DOACTIONUNTILEND) && 
 		    (charControl->actions[charControl->currentAction].currentFrame >= 
 			charControl->actions[charControl->currentAction].doForNumFrames)));
+}
+
+void commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
+    const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType) {
+	int i;
+	for (i = 0; i < characterCollection->currentSize; ++i) {
+		if (characterCollection->characters[i]->type >= fromType && 
+			characterCollection->characters[i]->type <= toType) {
+			if (commonPositionInBounds(&characterCollection->characters[i]->position, boundingBox)) {
+				mprinter_printf("FOUND TARGET");
+			}
+		}
+	}
 }

@@ -2,14 +2,13 @@
 #include <stdlib.h>
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacterActionEvent.h"
 #include "ManagerOAM.h"
 #include "ManagerPrinter.h"
 #include "CharacterCommon.h"
 #include "GBATimer.h"
-#include "GBACharacterActionEvent.h"
 
 CharacterCollection *mchar_vreference = NULL;
-extern const CharacterAttr openSlot;
 
 void mchar_setDraw(CharacterCollection *reference) {
 	mchar_vreference = reference;
@@ -44,7 +43,8 @@ void mchar_init(CharacterCollection *charCollection, int size) {
 		for (i = 0; i < size; ++i) {
 			charCollection->characters[i] = 
 				malloc(sizeof(CharacterAttr));
-			*charCollection->characters[i] = openSlot;
+			//*charCollection->characters[i] = openSlot;
+			commonRemoveCharacter(charCollection->characters[i]);
 		}
 	}
 }
@@ -60,14 +60,15 @@ void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1) 
     int i;
 	CharacterAttr *playable;
     for (i = 0; i < charCollection->currentSize; ++i) {
-	    if (charCollection->characters[i]->type <= PLAYABLECHARACTERS) {
+	    if (charCollection->characters[i]->type <= ENDPLAYABLECHARACTERTYPE) {
 		    playable = charCollection->characters[i];
 			charCollection->characters[i] = charCollection->characters[0];
 			charCollection->characters[0] = playable;
 		} 
 		
 		if (i != 0) {
-		    *charCollection->characters[i] = openSlot;
+		    //*charCollection->characters[i] = openSlot;
+			commonRemoveCharacter(charCollection->characters[i]);
 		}
 	}
 	
@@ -108,6 +109,10 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 			}
 		}
 		
+		if (charCollection->characters[charCollection->currentSize - 1]->type == NONE) {
+		    --charCollection->currentSize;
+		}
+		
 		if (charCollection->characterEventCurrentSize < 1) {
 			for (i = 0; i < charCollection->currentSize; ++i) {
 				charCollection->characters[i]->doAction(charCollection->characters[i], mapInfo, 
@@ -146,6 +151,11 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 		for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
 		    charCollection->characters[checkCollisionIdx]->
 			    checkMapCollision(charCollection->characters[checkCollisionIdx], mapInfo);
+		}
+		
+		
+		for (i = 0; i < charCollection->currentSize; ++i) {
+			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], charActionCollection);
 		}
 	}
 }

@@ -1,15 +1,19 @@
 #ifndef GBACharacterType
 #define  GBACharacterType
-//TODO: transfer to somewhere else
+
 typedef enum CHARACTERTYPE {
     NONE = -1,
-    ALISA,
+	STARTPLAYABLECHARTYPE,
+    ALISA = STARTPLAYABLECHARTYPE,
 	NAMELESS,
-	PLAYABLECHARACTERS = NAMELESS,
+	ENDPLAYABLECHARACTERTYPE = NAMELESS,
 	GHOSTHAND,
 	GHOSTMAN,
 	KNIGHTMARE,
 	WEREWOLF,
 	CROW
 } CHARACTERTYPE;
+
+typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection);
+typedef void (*FuncCharacterSet)(CharacterAttr *character);
 #endif
