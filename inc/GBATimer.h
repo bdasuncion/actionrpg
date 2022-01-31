@@ -9,10 +9,10 @@
 #define	REG_TM3D		(*(vu16*) 0x400010B)
 
 
-#define	REG_TM0CNT		(*(vu16*) 0x4000102)
-#define	REG_TM1CNT		(*(vu16*) 0x4000106)
-#define	REG_TM2CNT		(*(vu16*) 0x400010A)
-#define	REG_TM3CNT		(*(vu16*) 0x400010D)
+#define REG_TM0CNT		(*(vu16*) 0x4000102)
+#define REG_TM1CNT		(*(vu16*) 0x4000106)
+#define REG_TM2CNT		(*(vu16*) 0x400010A)
+#define REG_TM3CNT		(*(vu16*) 0x400010D)
 
 #define	TM_ON			BIT7
 #define	TM_CASCADE		BIT2

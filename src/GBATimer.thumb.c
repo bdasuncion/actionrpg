@@ -18,8 +18,7 @@ inline u32 gbatimer_profileStop()
 }
 
 //for modification
-inline void gbatimer_set(u32 time)
-{
+void gbatimer_set(u32 time) {
 	REG_TM0D = TIME_MAX - time;
 	REG_TM0CNT = TM_ON;
 }
