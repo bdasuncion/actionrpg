@@ -69,4 +69,6 @@ void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventContr
 void commonTriggerCharacterEvent(CharacterAttr *character, const void *mapInfo, const void *charCollection);
 void commonCheckForEvents(CharacterAttr* character, MapInfo *mapInfo);
 bool commonDoNextAction(CharacterAttr* character);
+void commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
+const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
 #endif
