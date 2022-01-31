@@ -294,9 +294,9 @@ const TileSet *tileset_mapsnowfield[] = { &tileset_snow_ground, &tileset_snow_tr
 const u16 *pallette_mapsnowfield[] = {  pallette_snow_ground, pallette_snow_tree, pallette_snow_densetrees, pallette_snow_densetreetops, };
 const u16 *mapentryset_mapsnowfield[] = { mapentry_mapsnowfield[0], mapentry_mapsnowfield[1], };
 const CharacterInit actors_mapsnowfield[] = {
-  //  { 312, 232, WEREWOLF }, 	{ 104, 312, WEREWOLF }, 	{ 264, 88, WEREWOLF }, 
+    { 312, 232, WEREWOLF }, 	{ 104, 312, WEREWOLF }, 	{ 264, 88, WEREWOLF }, 
 };
 const EventTransfer transfer_mapsnowfield[] = {
 	{ 496, 416, 24, 96, &mapforest, 16, 48, ERight},
 };
-const MapInfo mapsnowfield = { 512, 512, 2, 10, 4, 1, 0, NULL , mapentryset_mapsnowfield, tileset_mapsnowfield, pallette_mapsnowfield, transfer_mapsnowfield, collision_mapsnowfield, actors_mapsnowfield, NULL };
+const MapInfo mapsnowfield = { 512, 512, 2, 10, 4, 1, 3, NULL , mapentryset_mapsnowfield, tileset_mapsnowfield, pallette_mapsnowfield, transfer_mapsnowfield, collision_mapsnowfield, actors_mapsnowfield, NULL };
