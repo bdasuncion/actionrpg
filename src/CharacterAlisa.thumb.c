@@ -26,25 +26,41 @@ extern const EDirections directions[EDirectionsCount];
 extern const Sound soundeffect_slash;
 
 const s32 alisa_runOffsetX[EDirectionsCount][alisa_RUN_MVMNT_CTRL_MAX] = {
-    {0,0,0,0,0},
+    /*{0,0,0,0,0},
 	{1,2,1,2,1},
 	{2,2,2,2,2},
 	{1,2,1,2,1},
 	{0,0,0,0,0},
 	{-1,-2,-1,-2,-1},
 	{-2,-2,-2,-2,-2},
-	{-1,-2,-1,-2,-1}
+	{-1,-2,-1,-2,-1}*/
+	{0,0,0,0,0,0,0,0,0,0},
+	{1,1,2,1,1,1,1,1,1,1},
+	{2,1,2,1,2,2,1,2,1,2},
+	{1,1,2,1,1,1,1,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{-1,-1,-2,-1,-1,-1,-1,-1,-1,-1},
+	{-2,-1,-2,-1,-2,-2,-1,-2,-1,-2},
+	{-1,-1,-2,-1,-1,-1,-1,-1,-1,-1}
 };
 
 const s32 alisa_runOffsetY[EDirectionsCount][alisa_RUN_MVMNT_CTRL_MAX] = {
-    {2,2,2,2,2},
+    /*{2,2,2,2,2},
 	{1,2,1,2,1},
 	{0,0,0,0,0},
 	{-1,-2,-1,-2,-1},
 	{-2,-2,-2,-2,-2},
 	{-1,-2,-1,-2,-1},
 	{0,0,0,0,0},
-	{1,2,1,2,1}
+	{1,2,1,2,1}*/
+	{2,1,2,1,2,2,1,2,1,2},
+	{1,1,2,1,1,1,1,1,1,1},
+	{0,0,0,0,0,0,0,0,0,0},
+	{-2,-1,-2,-1,-2,-2,-1,-2,-1,-2},
+	{-1,-1,-2,-1,-1,-1,-1,-1,-1,-1},
+	{-1,-1,-2,-1,-1,-1,-1,-1,-1,-1},
+	{0,0,0,0,0},
+	{1,1,2,1,1,1,1,1,1,1}
 };
 
 #define ALISA_SCRCNVRTWIDTH 16
@@ -152,6 +168,17 @@ const CommonMapCollision alisa_mapCollision[] = {
 	&commonMovingLeftUpMapCollision,
 	&commonMovingLeftMapCollision,
 	&commonMovingLeftDownMapCollision
+};
+
+const OffsetPoints slash_offsetValues[8][2] = {
+    {{0, 16}, {0, 32}},
+	{{0, 16}, {0, 32}},
+	{{16, -6}, {32, -6}},
+	{{0, -16}, {0, -16}},
+	{{0, -16}, {0, -16}},
+	{{0, -16}, {0, -16}},
+	{{-16, 6}, {-32, 6}},
+	{{0, 16}, {0, 32}},
 };
 
 void alisa_init(CharacterAttr* alisa)
@@ -312,61 +339,16 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
-	if (alisa->direction == ERight) {
-		collisionPoints[0].x = alisa->position.x + 16;
-		collisionPoints[0].y = alisa->position.y - 6;
-		collisionPoints[1].x = collisionPoints[0].x + 16;
-		collisionPoints[1].y = alisa->position.y - 6;
-		
-		/*position.startX = alisa->position.x + 7;
-		position.startY = alisa->position.y - 6;
-		position.endX = position.startX + 16;
-		position.endY = position.startY + 10;*/
-	} else if (alisa->direction == EUpleft || alisa->direction == EUpright || alisa->direction == EUp) {
-		collisionPoints[0].x = alisa->position.x;
-		collisionPoints[0].y = alisa->position.y - 16;
-		collisionPoints[1].x = alisa->position.x;
-		collisionPoints[1].y = collisionPoints[0].y - 16;	
-		/*position.startX = alisa->position.x - 6;
-		position.startY = alisa->position.y - 22;
-		position.endX = position.startX + 12;
-		position.endY = position.startY + 16;*/
-	} else if (alisa->direction == ELeft) {
-		collisionPoints[0].x = alisa->position.x - 16;
-		collisionPoints[0].y = alisa->position.y - 6;
-		collisionPoints[1].x = collisionPoints[0].x - 16;
-		collisionPoints[1].y = alisa->position.y - 6;
-		
-		/*position.startX = alisa->position.x - 23;
-		position.startY = alisa->position.y - 6;
-		position.endX = position.startX + 16;
-		position.endY = position.startY + 10;*/
-	} else if (alisa->direction == EDownleft || alisa->direction == EDownright || alisa->direction == EDown) {
-		collisionPoints[0].x = alisa->position.x;
-		collisionPoints[0].y = alisa->position.y + 16;
-		collisionPoints[1].x = alisa->position.x;
-		collisionPoints[1].y = collisionPoints[0].y + 16;	
-		/*position.startX = alisa->position.x - 6;
-		position.startY = alisa->position.y + 6;
-		position.endX = position.startX + 16;
-		position.endY = position.startY + 10;*/
-	}
+	collisionPoints[0].x = alisa->position.x + slash_offsetValues[alisa->direction][0].x;
+	collisionPoints[0].y = alisa->position.y + slash_offsetValues[alisa->direction][0].y;
+	collisionPoints[1].x = alisa->position.x + slash_offsetValues[alisa->direction][1].x;
+	collisionPoints[1].y = collisionPoints[0].y + slash_offsetValues[alisa->direction][1].y;	
 	
-	//mchar_actione_add(charActionCollection, EActionAttack, 1, &position);
 	mchar_actione_add(charActionCollection, EActionAttack, 1, 2, &collisionPoints);
 	if (alisa->spriteDisplay.currentAnimationFrame == SLASH_STARTSOUND_FRAME && alisa->spriteDisplay.numberOfFramesPassed == 0) {
-	    if (alisa->direction == ELeft) {
-	        msound_setChannel3d(&soundeffect_slash, false, 0, 6, 0);
-		} else if (alisa->direction == EUpleft || alisa->direction == EDownleft) {
-		    msound_setChannel3d(&soundeffect_slash, false, 0, 6, 0);
-		} else if (alisa->direction == ERight) {
-		    msound_setChannel3d(&soundeffect_slash, false, 6, 0, 0);
-		} else if (alisa->direction == EUpright || alisa->direction == EDownright) {
-		    msound_setChannel3d(&soundeffect_slash, false, 6, 0, 0);
-		} else {
-		    msound_setChannel3d(&soundeffect_slash, false, 0, 0, 0);
-		}
+		msound_setChannel(&soundeffect_slash, false);
 	}
+	
 	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->direction];
 }
 
