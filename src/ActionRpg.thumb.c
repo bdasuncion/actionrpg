@@ -82,7 +82,7 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		    mapInfo, controlPool, charActionCollection);
 		//msound_mix();
 		//msound_mixStereoASMR();
-		//msound_mixMono();
+		msound_mixMono();
 		
 		waitForVBlank();
 	}
@@ -133,9 +133,9 @@ int main() {
 	
 	msound_init();
 	//msound_setUpStereo();
-//	msound_setUpMono();
+	msound_setUpMono();
 	//test only should be called somewhere else
-	msound_setChannel(&music_minamohana, true);
+	//msound_setChannel(&music_minamohana, true);
 	
 	mprinter_init();
 	gameloop(&mapInfo, &characterCollection, &oamCollection, &controlPool, 
