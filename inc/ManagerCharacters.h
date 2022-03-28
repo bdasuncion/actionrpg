@@ -14,7 +14,8 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 void mchar_setPosition(CharacterCollection *charCollection,
 	 OAMCollection *oamCollection, const Position *scr_pos,
 	const ScreenDimension *scr_dim);
-void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1);
+void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1,
+	ControlTypePool *controlPool);
 void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1);
 CharacterAttr* mchar_findCharacterType(CharacterCollection *charCollection, int type);
 void mchar_resetControlPool(ControlTypePool *freeType);

@@ -118,7 +118,7 @@ int main() {
 	
 	mchar_actione_init(&charActionCollection, MAX_CHARACTIONEVENT);
 	
-	mchar_getPlayerCharacter(&characterCollection, &alisa);
+	mchar_getPlayerCharacter(&characterCollection, &alisa, &controlPool);
 	//commonCharacterSetPosition(alisa, 430, 185, 0, EDown);
 	commonCharacterSetPosition(alisa, 24, 96, 0, EDown);
 	

@@ -34,7 +34,7 @@ void ghostMan_controller(CharacterAttr* ghostMan, const MapInfo *mapInfo, Charac
 	triggerBox.endY = ghostMan->position.y + GHOSTMAN_ACTION_FOLLOW_TRIGGER_HEIGHT;
    
     if (targetCharacter) {
-       charControl->target = &targetCharacter->position;
+       charControl->target = targetCharacter->position;
     }
    
 	targetCharacter->getBounds(targetCharacter, &count, &targetBox);

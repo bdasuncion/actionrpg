@@ -157,7 +157,7 @@ void ghostlyHand_doAppear(CharacterAttr* ghostlyHand, const MapInfo *mapInfo,
 	
 	baseControl = ghostlyHand->free;
 	if (ghostlyHand->spriteDisplay.numberOfFramesPassed == 0 && ghostlyHand->spriteDisplay.currentAnimationFrame > 0) {
-	    int distance = baseControl->target->x - ghostlyHand->position.x, rightPhaseDelay, leftPhaseDelay;
+	    int distance = baseControl->target.x - ghostlyHand->position.x, rightPhaseDelay, leftPhaseDelay;
 		msound_process3dSound(&distance, &rightPhaseDelay, &leftPhaseDelay);
 	    msound_setChannel3d(&soundeffect_window_hit, false, rightPhaseDelay, leftPhaseDelay, distance);
 	}
