@@ -5,7 +5,7 @@
 #include "GBAObject.h"
 #define MAXACTIONS 8
 #define DOACTIONUNTILEND 0
-
+ 
 typedef enum UpdateStatus {
 	ENoUpdate,
 	EUpdate
@@ -94,6 +94,55 @@ typedef void (*CharFuncMapCollisionCheck)(void* charAtt, void* mapInfo);
 
 typedef void (*CharFuncActionCollision)(void *charAtt, void *actionEvents);
 
+typedef struct ActionControl {
+	u8 doForNumFrames;
+	u8 currentFrame;
+	u8 direction;
+	u8 action;
+}ALIGN4 ActionControl;
+
+typedef struct CharacterBaseControl {
+    ControlType type:3;
+	u32 poolId:5;
+	u32 dumy:24;
+	Position target;
+} ALIGN4 CharacterBaseControl;
+
+typedef struct CharacterAIControl {
+    ControlType type:3;
+	u32 poolId:5;
+	u32 targetId:8;
+	u32 countAction:4;
+	u32 currentAction:4;
+	u32 currentStatus:4;
+	bool leftBlocked:1;
+	bool rightBlocked:1;
+	bool upBlocked:1;
+	bool downBlocked:1;
+    Position target;
+    ActionControl actions[MAXACTIONS];
+} ALIGN4 CharacterAIControl;
+
+typedef struct CharacterEventControl {
+    ControlType type:3;
+	u32 poolId:5;
+	u32 width:6;
+	u32 height:6;
+	u32 countAction:6;
+	u32 currentAction:6;
+	Position *target;
+	CharFuncController returnControl;
+	bool isRunning;
+	const ActionControl *actions;
+} ALIGN4 CharacterEventControl;
+
+typedef union ControlTypeUnion {
+    ControlType type:3;
+    CharacterBaseControl baseControl;
+    CharacterAIControl aiControl;
+    CharacterEventControl eventControl;
+} ALIGN4 ControlTypeUnion;
+
 typedef struct CharacterAttr {
 	CharFuncController controller;
 	CharFuncAction doAction;
@@ -115,58 +164,15 @@ typedef struct CharacterAttr {
 	Position position;//3HW
 	Position delta;//3HW
 	CollisionControl collisionCtrl;
-	void *free;//Can be any object, for use in the controller
+	ControlTypeUnion *free;//Can be any object, for use in the controller
 } ALIGN4 CharacterAttr;
 
 typedef void (*CharFuncCollisionReaction)(CharacterAttr* character, 
       const void* charBoundingBox, const void* otherCharBoundingBox);
 	  
-typedef void (*CommonMapCollision)(CharacterAttr *character, const void* mapInfo, CharFuncCollisionReaction *reaction);
-
-typedef struct ActionControl {
-	u8 doForNumFrames;
-	u8 currentFrame;
-	u8 direction;
-	u8 action;
-}ALIGN4 ActionControl;
-
-typedef struct CharacterBaseControl {
-    ControlType type:3;
-	u32 poolId:5;
-	u32 dumy:24;
-	Position *target;
-} ALIGN4 CharacterBaseControl;
-
-typedef struct CharacterAIControl {
-    ControlType type:3;
-	u32 poolId:5;
-	u32 targetId:8;
-	u32 countAction:4;
-	u32 currentAction:4;
-	u32 dummy:8;
-    Position *target;
-    ActionControl actions[MAXACTIONS];
-} ALIGN4 CharacterAIControl;
-
-typedef struct CharacterEventControl {
-    ControlType type:3;
-	u32 poolId:5;
-	u32 width:6;
-	u32 height:6;
-	u32 countAction:6;
-	u32 currentAction:6;
-	Position *target;
-	CharFuncController returnControl;
-	bool isRunning;
-	const ActionControl *actions;
-} ALIGN4 CharacterEventControl;
-
-typedef union ControlTypeUnion {
-  CharacterBaseControl baseControl;
-  CharacterAIControl aiControl;
-  CharacterEventControl eventControl;
-} ALIGN4 ControlTypeUnion;
-
+typedef void (*CommonMapCollision)(CharacterAttr *character, const void* mapInfo, 
+    CharFuncCollisionReaction *reaction);
+	
 typedef struct ControlTypePool {
   u32 count:6;
   u32 currentCount:6;
