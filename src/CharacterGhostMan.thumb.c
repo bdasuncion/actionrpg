@@ -152,7 +152,7 @@ void ghostMan_doTransitionToFollow(CharacterAttr* ghostMan, const MapInfo *mapIn
 	ghostMan->direction = ghostMan->nextDirection;
 	
 	if (ghostMan->spriteDisplay.numberOfFramesPassed == GHOSTMAN_FRAMEPASSED_GROWL) {
-		int distance = charControl->target->x - ghostMan->position.x, rightPhaseDelay, leftPhaseDelay;
+		int distance = charControl->target.x - ghostMan->position.x, rightPhaseDelay, leftPhaseDelay;
 		msound_process3dSound(&distance, &rightPhaseDelay, &leftPhaseDelay);
 	    msound_setChannel3d(&soundeffect_ghost_moan3, false, rightPhaseDelay, leftPhaseDelay, distance);
 	}
@@ -181,11 +181,11 @@ void ghostMan_doFollow(CharacterAttr* ghostMan, const MapInfo *mapInfo,
 	ghostMan->action = ghostMan->nextAction;
 	ghostMan->direction = ghostMan->nextDirection;
 	
-	ghostMan->position.x = charControl->target->x + GHOSTMAN_FOLLOWDISTANCE;
+	ghostMan->position.x = charControl->target.x + GHOSTMAN_FOLLOWDISTANCE;
 	
 	++ghostMan->movementCtrl.currentFrame;
 	if (ghostMan->movementCtrl.currentFrame >= ghostMan->movementCtrl.maxFrames) {
-		int distance = charControl->target->x - ghostMan->position.x, rightPhaseDelay, leftPhaseDelay;
+		int distance = charControl->target.x - ghostMan->position.x, rightPhaseDelay, leftPhaseDelay;
 		ghostMan->movementCtrl.currentFrame = 0;
 		distance = distance >> 4;
 		rightPhaseDelay = 6*(distance < 0);

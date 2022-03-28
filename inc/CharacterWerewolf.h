@@ -4,8 +4,7 @@
 
 #include "GBAObject.h"
 
-typedef enum WerewolfAction
-{
+typedef enum WerewolfAction {
 	EWerewolfInitialize = -1,
 	EWerewolfStand,
 	EWerewolfWalk,
@@ -13,6 +12,11 @@ typedef enum WerewolfAction
 	EWerewolfIsHit,
 	EWerewolfActionCount
 } WerewolfAction;
+
+typedef enum WerewolfStatus {
+	EWerewolfStatusPatrol,
+	EWerewolfStatusHuntTarget,
+} WerewolfStatus;
 
 void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool);
 void werewolf_setCharacter(CharacterAttr* character);

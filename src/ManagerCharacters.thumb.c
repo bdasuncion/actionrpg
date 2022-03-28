@@ -49,8 +49,9 @@ void mchar_init(CharacterCollection *charCollection, int size) {
 	}
 }
 
-void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1) {
-	alisa_init(charCollection->characters[charCollection->currentSize]);
+void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1, 
+	ControlTypePool *controlPool) {
+	alisa_init(charCollection->characters[charCollection->currentSize], controlPool);
 	//nameless_init(charCollection->characters[charCollection->currentSize]);
 	*player1 = charCollection->characters[charCollection->currentSize];
 	++charCollection->currentSize;

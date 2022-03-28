@@ -12,7 +12,7 @@ typedef enum AlisaAction
 	EAlisaActionCount
 } AlisaAction;
 
-void alisa_init(CharacterAttr* character);
+void alisa_init(CharacterAttr* character, ControlTypePool* controlPool);
 void alisa_setCharacter(CharacterAttr* character);
 void alisa_controller(CharacterAttr* character);
 void alisa_slashController(CharacterAttr* character);

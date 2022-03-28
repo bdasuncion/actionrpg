@@ -100,7 +100,7 @@ void crow_actionStand(CharacterAttr* crow,
 	
 	++crow->movementCtrl.currentFrame;
 	if (crow->movementCtrl.currentFrame >= crow->movementCtrl.maxFrames) {
-		int distance = charControl->target->x - crow->position.x, rightPhaseDelay, leftPhaseDelay;
+		int distance = charControl->target.x - crow->position.x, rightPhaseDelay, leftPhaseDelay;
 		crow->movementCtrl.currentFrame = 0;
 		distance = distance >> 4;
 		rightPhaseDelay = 6*(distance < 0);

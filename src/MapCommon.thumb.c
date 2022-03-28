@@ -40,7 +40,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	mchar_reinit(characterCollection, &alisa);
 	
 	//TODO change this
-	alisa_init(alisa);
+	alisa_init(alisa, controlPool);
 	//nameless_init(alisa);
     commonCharacterSetPosition(alisa, 
 	   eventTransfer->transferToX, eventTransfer->transferToY, 0, eventTransfer->directionOnTransfer);

@@ -181,7 +181,7 @@ const OffsetPoints slash_offsetValues[8][2] = {
 	{{0, 16}, {0, 32}},
 };
 
-void alisa_init(CharacterAttr* alisa)
+void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 {	
 	//use library to get id
 	alisa->id = 0;
@@ -207,6 +207,10 @@ void alisa_init(CharacterAttr* alisa)
 	alisa->checkCollision = &alisa_checkCollision;
 	alisa->checkMapCollision = &alisa_checkMapCollision;
 	alisa->checkActionCollision = &alisa_checkActionEventCollision;
+	//alisa->free = NULL;
+	CharacterBaseControl *charControl = mchar_getControlType(controlPool);
+	charControl->type = EControlControlType;
+	alisa->free = charControl;
 }
 
 void alisa_doAction(CharacterAttr* alisa,
@@ -273,6 +277,8 @@ void alisa_actionStand(CharacterAttr* alisa,
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
 	
+	alisa->delta.x = 0;
+	alisa->delta.y = 0;
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
@@ -396,11 +402,7 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 }
 
 void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
-    int count;
-    BoundingBox alisaBoundingBox, mapBoundingBox;
     commonCharacterMapEdgeCheck(alisa, mapInfo);
-	alisa->getBounds(alisa, &count, &alisaBoundingBox);
-	commonGetBoundsFromMap(alisa->position.x, alisa->position.y, mapInfo, &mapBoundingBox);	
 	alisa_mapCollision[alisa->direction](alisa, mapInfo, 
 	    alisa_mapCollisionReactions[alisa->direction]);
 }

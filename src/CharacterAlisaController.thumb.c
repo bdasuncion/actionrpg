@@ -32,9 +32,9 @@ void alisa_slashController(CharacterAttr* character) {
    int nextScreenFrame, nextAnimationFrame;
    bool isLastFrame = false;
    
-   commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
-	
-   if (isLastFrame) {
-	    character->controller = &alisa_controller;
+	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+
+	if (isLastFrame) {
+		character->controller = &alisa_controller;
 	}
 }

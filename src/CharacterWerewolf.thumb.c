@@ -118,8 +118,7 @@ const OffsetPoints werewolf_scanSurroundingOffset[8][2] = {
 	{{-24,0},{24,64}}
 };
 
-void werewolf_scanSurroundingsController(CharacterAttr* character, 
-    const MapInfo *mapInfo, CharacterCollection *charCollection);
+void werewolf_scanSurroundingsController(CharacterAttr* character);
 void werewolf_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
     const CharacterCollection *characterCollection);
 void werewolf_actionFindTarget(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -177,6 +176,10 @@ void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->type = EControlAiType;
 	charControl->countAction = 0;
 	charControl->currentAction = MAXACTIONS;
+	charControl->rightBlocked = false;
+	charControl->leftBlocked = false;
+	charControl->upBlocked = false;
+	charControl->downBlocked = false;
 	character->free = charControl;
 	
 }
@@ -194,7 +197,7 @@ void werewolf_doAction(CharacterAttr* character,
 	}
 	
 	//TODO Check BG collision here
-	character->getBounds(character, &boundBoxCount, &boundingBox);
+	//character->getBounds(character, &boundBoxCount, &boundingBox);
 	//mapInfo->collisionCheck(mapInfo, &boundingBox, character->direction);
 }
 
@@ -202,6 +205,7 @@ void werewolf_actionWalk(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
 	bool isLastFrame = false;
 	Position *position = &character->position;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	BoundingBox boundingBox;
 	
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
@@ -237,8 +241,12 @@ void werewolf_actionWalk(CharacterAttr* character,
 	boundingBox.endX = position->x + werewolf_scanSurroundingOffset[character->direction][1].x;
 	boundingBox.endY = position->y + werewolf_scanSurroundingOffset[character->direction][1].y;
 	
-	commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
+	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
+		
+	if (commonIsFoundPosition(&charControl->target)) {
+		charControl->currentStatus = EWerewolfStatusHuntTarget;
+	}
 }
 
 void werewolf_actionFindTarget(CharacterAttr* character,
@@ -254,21 +262,19 @@ void werewolf_actionFindTarget(CharacterAttr* character,
 	boundingBox.endX = position->x + werewolf_scanSurroundingOffset[character->direction][1].x;
 	boundingBox.endY = position->y + werewolf_scanSurroundingOffset[character->direction][1].y;
 	
-	//mprinter_printf("TARGETS FROM %d To %d\n", STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
-	commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
+	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
-	//mprinter_printf("LOOKING FOR TARGET");
-	/*for (i = 0; i < characterCollection->currentSize; ++i) {
-	    if (characterCollection->characters[i]->type <= PLAYABLECHARACTERS) {
-		    if (commonPositionInBounds(&characterCollection->characters[i]->position, &boundingBox)) {
-			    mprinter_printf("FOUND TARGET");
-			}
-		}
-	}*/
-	charControl->target = NULL;
+	
+	if (commonIsFoundPosition(&charControl->target)) {
+		charControl->currentStatus = EWerewolfStatusHuntTarget;
+	}
+	
+	//charControl->target = NULL;
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
+	character->delta.x = 0;
+	character->delta.y = 0;
 	if (commonUpdateAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -277,13 +283,6 @@ void werewolf_actionFindTarget(CharacterAttr* character,
 	character->action = character->nextAction;
 	character->direction = character->nextDirection;
 		
-	//character->position.x +=
-	//	alisa_runOffsetX[0][character->direction];
-		
-	//character->position.y +=
-	//	alisa_runOffsetY[0][character->direction];
-	
-	//mprinter_printf("POSITION IN ACTION:%d\n", character->direction);
 	character->spriteDisplay.spriteSet = werewolfStand[character->direction];
 }
 
@@ -361,11 +360,7 @@ void werewolf_getBoundingBoxStanding(const CharacterAttr* character,
 }
 
 void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
-	int count;
-    BoundingBox characterBoundingBox, mapBoundingBox;
     commonCharacterMapEdgeCheck(character, mapInfo);
-	character->getBounds(character, &count, &characterBoundingBox);
-	commonGetBoundsFromMap(character->position.x, character->position.y, mapInfo, &mapBoundingBox);	
 	werewolf_mapCollision[character->direction](character, mapInfo, 
 	    werewolf_mapCollisionReactions[character->direction]);
 }

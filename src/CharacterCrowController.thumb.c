@@ -15,6 +15,6 @@ void crow_controller(CharacterAttr* crow, const MapInfo *mapInfo, CharacterColle
 	crow->nextDirection = EDown;
 	
 	if (targetCharacter) {
-       charControl->target = &targetCharacter->position;
+       charControl->target = targetCharacter->position;
     }
 }

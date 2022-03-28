@@ -66,9 +66,18 @@ void commonMovingLeftDownMapCollision(CharacterAttr *character, const MapInfo* m
 void commonMovingRightUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonMovingRightDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventControl *eventControl);
-void commonTriggerCharacterEvent(CharacterAttr *character, const void *mapInfo, const void *charCollection);
+void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection);
 void commonCheckForEvents(CharacterAttr* character, MapInfo *mapInfo);
 bool commonDoNextAction(CharacterAttr* character);
-void commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
+const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
 const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
+const Position* commonFindCharTypePositionByDistance(const CharacterCollection *characterCollection, 
+    const Position *refPos, int dist, CHARACTERTYPE fromType, CHARACTERTYPE toType);
+const CharFuncCollisionReaction common_collisionReactions[2][8];
+const CharFuncCollisionReaction common_mapCollisionReactions[8];
+const CommonMapCollision common_mapCollision[8];
+inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);
+inline int commonGetCurrentScreenFrame(const CharacterAttr* character);
+inline bool commonDoIntializeActions(CharacterAttr* character);
+inline bool commonIsFoundPosition(const Position* position);
 #endif
