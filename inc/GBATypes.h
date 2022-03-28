@@ -69,6 +69,7 @@ typedef void (*fnptr)(void);
 #define DIVIDE_BY_4(x) (x >> 2)
 #define DIVIDE_BY_8(x) (x >> 3)
 #define DIVIDE_BY_16(x) (x >> 4)
+#define DIVIDE_BY_32(x) (x >> 5)
 
 #define GET_REMAINDER_8(x) (x&0x7)
 #define GET_REMAINDER_16(x) (x&0xF)

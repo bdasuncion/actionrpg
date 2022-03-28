@@ -11,7 +11,8 @@ typedef enum CHARACTERTYPE {
 	GHOSTMAN,
 	KNIGHTMARE,
 	WEREWOLF,
-	CROW
+	CROW,
+	ZOMBIE
 } CHARACTERTYPE;
 
 typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection);

@@ -1,0 +1,156 @@
+#include "GBAObject.h"
+#include "CharacterZombie.h"
+#include  <stdbool.h>
+
+#define DIST_OFFSET 80
+
+const EDirections zombie_walkDirections[] = {
+    EDown, EDownright, ERight, EUpright,
+	EUp, EUpleft, ELeft, EDownleft
+};
+
+void zombie_walkAroundController(CharacterAttr* character);
+void zombie_huntController(CharacterAttr* character);
+
+void zombie_setCharacter(CharacterAttr* character) {
+    character->controller = &zombie_walkAroundController; 
+}
+
+void zombie_getBoundingBoxMoving(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
+void zombie_getBoundingBoxStanding(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
+
+void zombie_walkAroundController(CharacterAttr* character) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int i;
+   
+	if (charControl->currentStatus == EZombieStatusHuntTarget) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &zombie_huntController;
+		zombie_huntController(character);
+		return;
+	}
+	
+	if (commonDoIntializeActions(character)) { 
+		EDirections direction = zombie_walkDirections[GET_REMAINDER_8(rand())];
+		direction -= direction&1;
+		charControl->countAction = 4;
+		charControl->currentAction = 0;
+		character->getBounds = &zombie_getBoundingBoxMoving;
+		for (i = 0; i < charControl->countAction; ++i) {
+			charControl->actions[i] = ((ActionControl){20, 0, direction, EZombieWalk});
+		}
+		character->nextAction = charControl->actions[charControl->currentAction].action;
+		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+	}
+	
+	if (commonDoNextAction(character) &&
+	    charControl->currentAction < charControl->countAction - 1) {
+		++charControl->currentAction;
+		character->getBounds = &zombie_getBoundingBoxMoving;
+		character->nextAction = charControl->actions[charControl->currentAction].action;
+		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+		charControl->actions[charControl->currentAction].currentFrame = 0;
+	}
+	++charControl->actions[charControl->currentAction].currentFrame;
+}
+
+const EDirections FAR_TARGET[5][5] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
+const EDirections NEAR_TARGET[5][5] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
+void findAttackDirection(const Position *charPosition, const Position *target, EDirections *direction) {
+	int xDist = charPosition->x - target->x;
+	int yDist = charPosition->y - target->y;
+	EDirections xDirection, yDirection;
+	xDirection = (xDist > 0)*(ELeft) + (!(xDist > 0))*(ERight);
+	yDirection = (yDist > 0)*(EUp) + (!(yDist > 0))*(EDown);
+	
+	xDist *= (xDist > 0) + (!(xDist > 0))*(-1);
+	yDist *= (yDist > 0) + (!(yDist > 0))*(-1);
+	
+	*direction = (xDist > yDist)*xDirection + (!(xDist > yDist))*yDirection; 
+}
+
+void zombie_huntController(CharacterAttr* character) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int distanceX, distanceY, i;
+	
+	if (charControl->currentStatus == EZombieStatusWalkAround) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &zombie_walkAroundController;
+		zombie_walkAroundController(character);
+		return;
+	}
+	
+	if (commonDoIntializeActions(character)) {
+		charControl->countAction = 4;
+		charControl->currentAction = 0;
+		
+		for (i = 0; i < charControl->countAction; ++i) {
+			charControl->actions[i] = ((ActionControl){25, 0, EUp, EZombieChaseTarget});
+		}
+	}
+		
+	distanceX = charControl->target.x - character->position.x + DIST_OFFSET;
+	distanceY = charControl->target.y - character->position.y + DIST_OFFSET;
+	
+	if (charControl->actions[charControl->currentAction].action != EZombieAttack && (distanceX < DIST_OFFSET*2 && distanceX >= 0) && (distanceY < DIST_OFFSET*2 && distanceY >= 0)) {
+		distanceX = DIVIDE_BY_32(distanceX);
+		distanceY = DIVIDE_BY_32(distanceY);
+		
+		EDirections goDirection = FAR_TARGET[distanceY][distanceX];
+		
+		if (goDirection == EUnknown) {
+			findAttackDirection(&character->position, &charControl->target, &goDirection);
+			character->nextAction = EZombieAttack;
+			charControl->actions[charControl->currentAction] = ((ActionControl){DOACTIONUNTILEND, 
+				0, goDirection, EZombieAttack});
+		} else {
+			if(goDirection != EUnknown && charControl->leftBlocked) {
+				goDirection = EUp;
+			}
+			if(goDirection != EUnknown && charControl->rightBlocked) {
+				goDirection = EDown;
+			}
+			if(goDirection != EUnknown && charControl->upBlocked) {
+				goDirection = ERight;
+			}
+			if(goDirection != EUnknown && charControl->downBlocked) {
+				goDirection = ELeft;
+			}
+		
+			charControl->actions[charControl->currentAction].direction = goDirection;
+		}
+		
+		character->getBounds = &zombie_getBoundingBoxMoving;
+		character->nextAction = charControl->actions[charControl->currentAction].action;
+		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+		//charControl->actions[charControl->currentAction].currentFrame = 0;*/
+	}
+	
+	if (commonDoNextAction(character) &&
+	    charControl->currentAction < charControl->countAction - 1) {
+		charControl->leftBlocked = false;
+		charControl->rightBlocked = false;
+		charControl->upBlocked = false;
+		charControl->downBlocked = false;
+		++charControl->currentAction;
+		character->getBounds = &zombie_getBoundingBoxMoving;
+		character->nextAction = charControl->actions[charControl->currentAction].action;
+		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+		charControl->actions[charControl->currentAction].currentFrame = 0;
+	}
+	++charControl->actions[charControl->currentAction].currentFrame;
+}
