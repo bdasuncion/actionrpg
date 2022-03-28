@@ -22,12 +22,12 @@ const SpriteLayer alisa_runwithsword_down_layerSet5[] = {
     {sword_side_image0,-8,14,WIDE,SMALL_A,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,8,1}};
 
 const SpriteLayerSet alisa_runwithsword_down_layerSet[] = {
-    {alisa_runwithsword_down_layerSet0,4,2},
-    {alisa_runwithsword_down_layerSet1,4,2},
-    {alisa_runwithsword_down_layerSet2,4,2},
-    {alisa_runwithsword_down_layerSet3,4,2},
-    {alisa_runwithsword_down_layerSet4,4,2},
-    {alisa_runwithsword_down_layerSet5,4,2},
+    {alisa_runwithsword_down_layerSet0,6,2},
+    {alisa_runwithsword_down_layerSet1,6,2},
+    {alisa_runwithsword_down_layerSet2,6,2},
+    {alisa_runwithsword_down_layerSet3,6,2},
+    {alisa_runwithsword_down_layerSet4,6,2},
+    {alisa_runwithsword_down_layerSet5,6,2},
 };
 
 const SpriteSet alisa_runwithsword_down = {alisa_runwithsword_down_layerSet,6};
