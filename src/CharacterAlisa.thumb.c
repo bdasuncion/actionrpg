@@ -211,6 +211,8 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	CharacterBaseControl *charControl = mchar_getControlType(controlPool);
 	charControl->type = EControlControlType;
 	alisa->free = charControl;
+	alisa->stats.maxLife = 10;
+	alisa->stats.currentLife = 10;
 }
 
 void alisa_doAction(CharacterAttr* alisa,
@@ -330,7 +332,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const void *dummy, CharacterActionCollection *charActionCollection) {
 	BoundingBox position;
 	Position collisionPoints[2];
-	
+	int attackVal = 1, countPoints = 2;
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
@@ -350,7 +352,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	collisionPoints[1].x = alisa->position.x + slash_offsetValues[alisa->direction][1].x;
 	collisionPoints[1].y = collisionPoints[0].y + slash_offsetValues[alisa->direction][1].y;	
 	
-	mchar_actione_add(charActionCollection, EActionAttack, 1, 2, &collisionPoints);
+	mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
 	if (alisa->spriteDisplay.currentAnimationFrame == SLASH_STARTSOUND_FRAME && alisa->spriteDisplay.numberOfFramesPassed == 0) {
 		msound_setChannel(&soundeffect_slash, false);
 	}
@@ -425,16 +427,23 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 }
 
 void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents) {
-    int i, count;
+    int i, j, count;
 	BoundingBox charBoundingBox;
-	
+	bool isHit;
+	alisa->getBounds(alisa, &count, &charBoundingBox);
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
-		alisa->getBounds(alisa, &count, &charBoundingBox);
-		if (hasCollision(&charBoundingBox, &charActionEvent->position) |
-			hasCollision(&charActionEvent->position, &charBoundingBox)) {
-			mprinter_printf("HIT!");
+		for (j = 0; j < charActionEvent->count; ++j) {
+			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
+		}
+		if (isHit) {
+		    //commonRemoveCharacter(character);
+			alisa->stats.currentLife -= 1;
+			if (alisa->stats.currentLife <= 0) {
+				//gameover
+			}
+			//break;
 		}
 	}
 }

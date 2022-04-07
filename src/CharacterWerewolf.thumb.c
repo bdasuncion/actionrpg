@@ -181,7 +181,8 @@ void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
 	character->free = charControl;
-	
+	character->stats.maxLife = 10;
+	character->stats.currentLife = 5;
 }
 
 void werewolf_doAction(CharacterAttr* character,
@@ -385,21 +386,20 @@ void werewolf_checkActionEventCollision(CharacterAttr *character, CharacterActio
     int i, j, count;
 	bool isHit;
 	BoundingBox charBoundingBox;
+	character->getBounds(character, &count, &charBoundingBox);
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
-		character->getBounds(character, &count, &charBoundingBox);
 		for (j = 0; j < charActionEvent->count; ++j) {
 			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
 		}
 		if (isHit) {
-		    commonRemoveCharacter(character);
+		    character->stats.currentLife -= 1;
+			if (character->stats.currentLife <= 0) {
+				commonRemoveCharacter(character);
+			}
 			break;
 		}
-		//if (hasCollision(&charBoundingBox, &charActionEvent->position) |
-		//	hasCollision(&charActionEvent->position, &charBoundingBox)) {
-		//	commonRemoveCharacter(character);
-		//}
 	}
 }
 
