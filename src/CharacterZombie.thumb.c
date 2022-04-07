@@ -82,11 +82,14 @@ void zombie_actionChaseTarget(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
 void zombie_actionAttack(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
+void zombie_actionStunned(CharacterAttr* character,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
 	
 CharFuncAction zombie_actions[] = {
 	&zombie_actionWalk,
 	&zombie_actionChaseTarget,
-	&zombie_actionAttack
+	&zombie_actionAttack,
+	&zombie_actionStunned
 };
 
 
@@ -135,6 +138,9 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->downBlocked = false;
 	character->free = charControl;
 	
+	character->stats.maxLife = 10;
+	character->stats.currentLife = 3;
+	character->stats.currentStatus = EStatusNormal;
 }
 
 void zombie_doAction(CharacterAttr* character,
@@ -292,6 +298,31 @@ void zombie_actionAttack(CharacterAttr* character,
 	}
 }
 
+void zombie_actionStunned(CharacterAttr* character,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
+	bool isLastFrame = false;
+	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
+	Position *position = &character->position;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	BoundingBox boundingBox;
+	
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	
+	character->delta.x = 0;
+	character->delta.y = 0;
+	
+	if (commonUpdateAnimation(character) == EUpdate) {
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	character->spriteDisplay.spriteSet = zombieStunned[character->direction];
+}
+
 void zombie_getBoundingBoxMoving(const CharacterAttr* character, 
 	int *count, BoundingBox *boundingBox) {
 	*count = 1;
@@ -378,6 +409,11 @@ void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionC
     int i, j, count;
 	bool isHit;
 	BoundingBox charBoundingBox;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	
+	if (character->stats.currentStatus == EStatusNoActionCollision) {
+		return;
+	}
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
@@ -386,12 +422,13 @@ void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionC
 			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
 		}
 		if (isHit) {
-		    commonRemoveCharacter(character);
+			character->stats.currentLife -= 1;
+			//character->stats.currentStatus = EStatusNoActionCollision;
+			charControl->currentStatus = EZombieStatusStunned;
+			if (character->stats.currentLife <= 0) {
+				commonRemoveCharacter(character);
+			}
 			break;
 		}
-		//if (hasCollision(&charBoundingBox, &charActionEvent->position) |
-		//	hasCollision(&charActionEvent->position, &charBoundingBox)) {
-		//	commonRemoveCharacter(character);
-		//}
 	}
 }

@@ -41,4 +41,12 @@ extern const unsigned int zombie_attack_up_image2[];
 extern const unsigned int zombie_attack_up_image3[];
 extern const unsigned int zombie_attack_up_image4[];
 
+extern const unsigned short zombie_stunned_down_pal[];
+extern const unsigned int zombie_stunned_down_image0[];
+
+extern const unsigned short zombie_stunned_side_pal[];
+extern const unsigned int zombie_stunned_side_image0[];
+
+extern const unsigned short zombie_stunned_up_pal[];
+extern const unsigned int zombie_stunned_up_image0[];
 #endif

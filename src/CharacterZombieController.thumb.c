@@ -11,6 +11,7 @@ const EDirections zombie_walkDirections[] = {
 
 void zombie_walkAroundController(CharacterAttr* character);
 void zombie_huntController(CharacterAttr* character);
+void zombie_isStunnedController(CharacterAttr* character);
 
 void zombie_setCharacter(CharacterAttr* character) {
     character->controller = &zombie_walkAroundController; 
@@ -19,14 +20,47 @@ void zombie_setCharacter(CharacterAttr* character) {
 void zombie_getBoundingBoxMoving(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
 void zombie_getBoundingBoxStanding(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
 
+void changeDirection(CharacterAIControl *charControl, EDirections *goDirection) {
+	if (goDirection == EUnknown) {
+		return;
+	}
+	if(charControl->leftBlocked) {
+		*goDirection = EUp;
+	}
+	if(charControl->rightBlocked) {
+		*goDirection = EDown;
+	}
+	if(charControl->upBlocked) {
+		*goDirection = ERight;
+	}
+	if(charControl->downBlocked) {
+		*goDirection = ELeft;
+	}
+}
+
+void resetBlockedDirection(CharacterAIControl *charControl) {
+	charControl->leftBlocked = false;
+	charControl->rightBlocked = false;
+	charControl->upBlocked = false;
+	charControl->downBlocked = false;
+}
+
 void zombie_walkAroundController(CharacterAttr* character) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int i;
+	EDirections goDirection;
    
 	if (charControl->currentStatus == EZombieStatusHuntTarget) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &zombie_huntController;
 		zombie_huntController(character);
+		return;
+	}
+	
+	if (charControl->currentStatus == EZombieStatusStunned) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &zombie_isStunnedController;
+		zombie_isStunnedController(character);
 		return;
 	}
 	
@@ -41,7 +75,15 @@ void zombie_walkAroundController(CharacterAttr* character) {
 		}
 		character->nextAction = charControl->actions[charControl->currentAction].action;
 		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+		resetBlockedDirection(charControl);
 	}
+	
+	goDirection = charControl->actions[charControl->currentAction].direction;
+	
+	changeDirection(charControl, &goDirection);
+		
+	charControl->actions[charControl->currentAction].direction = goDirection;
+	character->nextDirection = goDirection;
 	
 	if (commonDoNextAction(character) &&
 	    charControl->currentAction < charControl->countAction - 1) {
@@ -50,6 +92,7 @@ void zombie_walkAroundController(CharacterAttr* character) {
 		character->nextAction = charControl->actions[charControl->currentAction].action;
 		character->nextDirection = charControl->actions[charControl->currentAction].direction;
 		charControl->actions[charControl->currentAction].currentFrame = 0;
+		resetBlockedDirection(charControl);
 	}
 	++charControl->actions[charControl->currentAction].currentFrame;
 }
@@ -94,6 +137,13 @@ void zombie_huntController(CharacterAttr* character) {
 		return;
 	}
 	
+	if (charControl->currentStatus == EZombieStatusStunned) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &zombie_isStunnedController;
+		zombie_isStunnedController(character);
+		return;
+	}
+	
 	if (commonDoIntializeActions(character)) {
 		charControl->countAction = 4;
 		charControl->currentAction = 0;
@@ -107,10 +157,11 @@ void zombie_huntController(CharacterAttr* character) {
 	distanceY = charControl->target.y - character->position.y + DIST_OFFSET;
 	
 	if (charControl->actions[charControl->currentAction].action != EZombieAttack && (distanceX < DIST_OFFSET*2 && distanceX >= 0) && (distanceY < DIST_OFFSET*2 && distanceY >= 0)) {
+		EDirections goDirection;
 		distanceX = DIVIDE_BY_32(distanceX);
 		distanceY = DIVIDE_BY_32(distanceY);
 		
-		EDirections goDirection = FAR_TARGET[distanceY][distanceX];
+		goDirection = FAR_TARGET[distanceY][distanceX];
 		
 		if (goDirection == EUnknown) {
 			findAttackDirection(&character->position, &charControl->target, &goDirection);
@@ -118,19 +169,7 @@ void zombie_huntController(CharacterAttr* character) {
 			charControl->actions[charControl->currentAction] = ((ActionControl){DOACTIONUNTILEND, 
 				0, goDirection, EZombieAttack});
 		} else {
-			if(goDirection != EUnknown && charControl->leftBlocked) {
-				goDirection = EUp;
-			}
-			if(goDirection != EUnknown && charControl->rightBlocked) {
-				goDirection = EDown;
-			}
-			if(goDirection != EUnknown && charControl->upBlocked) {
-				goDirection = ERight;
-			}
-			if(goDirection != EUnknown && charControl->downBlocked) {
-				goDirection = ELeft;
-			}
-		
+			changeDirection(charControl, &goDirection);
 			charControl->actions[charControl->currentAction].direction = goDirection;
 		}
 		
@@ -142,10 +181,7 @@ void zombie_huntController(CharacterAttr* character) {
 	
 	if (commonDoNextAction(character) &&
 	    charControl->currentAction < charControl->countAction - 1) {
-		charControl->leftBlocked = false;
-		charControl->rightBlocked = false;
-		charControl->upBlocked = false;
-		charControl->downBlocked = false;
+		resetBlockedDirection(charControl);
 		++charControl->currentAction;
 		character->getBounds = &zombie_getBoundingBoxMoving;
 		character->nextAction = charControl->actions[charControl->currentAction].action;
@@ -153,4 +189,31 @@ void zombie_huntController(CharacterAttr* character) {
 		charControl->actions[charControl->currentAction].currentFrame = 0;
 	}
 	++charControl->actions[charControl->currentAction].currentFrame;
+}
+
+void zombie_isStunnedController(CharacterAttr* character) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int distanceX, distanceY, i;
+	
+	if (commonDoIntializeActions(character)) {
+		charControl->countAction = 1;
+		charControl->currentAction = 0;
+		
+		character->stats.currentStatus = EStatusNoActionCollision;
+		charControl->actions[charControl->currentAction] = ((ActionControl){30, 0, character->direction, EZombieStunned});
+		
+		character->nextAction = charControl->actions[charControl->currentAction].action;
+		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+	}
+	++charControl->actions[charControl->currentAction].currentFrame;
+	
+	if (commonDoNextAction(character)) {
+		mprinter_printf("BACK TO HUNT\n");
+	    charControl->currentAction = MAXACTIONS;
+		character->controller = &zombie_huntController;
+		character->stats.currentStatus = EStatusNormal;
+		charControl->currentStatus = EZombieStatusHuntTarget;
+		zombie_huntController(character);
+		return;
+	}
 }

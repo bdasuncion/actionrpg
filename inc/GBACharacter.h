@@ -21,6 +21,11 @@ typedef enum ControlType {
 	EControlDumyType3,
 } ControlType;
 
+typedef enum StatusType {
+    EStatusNormal,
+	EStatusNoActionCollision
+} StatusType;
+
 typedef struct SpriteLayer {
     u32 *image;
 	//u32 *palette; //TODO SHOULD REMOVE THIS
@@ -143,6 +148,12 @@ typedef union ControlTypeUnion {
     CharacterEventControl eventControl;
 } ALIGN4 ControlTypeUnion;
 
+typedef struct CharacterStats {
+	s16 maxLife;
+	s16 currentLife;
+	StatusType currentStatus;
+} ALIGN4 CharacterStats;
+
 typedef struct CharacterAttr {
 	CharFuncController controller;
 	CharFuncAction doAction;
@@ -153,6 +164,7 @@ typedef struct CharacterAttr {
 	CharFuncMapCollisionCheck checkMapCollision;
 	CharFuncActionCollision checkActionCollision;
 	SpriteDisplay spriteDisplay;
+	CharacterStats stats;
 	u8 id;
 	s8 type;
 	u16 dummy;

@@ -11,7 +11,7 @@ typedef enum CharacterActionTypes {
 typedef struct CharacterActionEvent {
     CharacterActionTypes type;
 	CharacterAttr *source;
-	BoundingBox position;
+	//BoundingBox position;
 	s16 value:8;
 	s16 dummy1:5;
 	u16 count:3;
