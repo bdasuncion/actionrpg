@@ -106,12 +106,33 @@ typedef struct ActionControl {
 	u8 action;
 }ALIGN4 ActionControl;
 
+typedef struct ControlMap {
+	CharFuncController buttonB;
+	CharFuncController buttonA;
+	CharFuncController buttonL;
+	CharFuncController buttonR;
+} ALIGN4 ControlMap;
+
 typedef struct CharacterBaseControl {
     ControlType type:3;
 	u32 poolId:5;
 	u32 dumy:24;
 	Position target;
 } ALIGN4 CharacterBaseControl;
+
+typedef struct CharacterPlayerControl {
+    ControlType type:3;
+	u32 poolId:5;
+	u32 currentStatus:4;
+	u32 dumy:8;
+	u32 buttonB_PressInterval:5;
+	u32 buttonA_PressInterval:5;
+	bool buttonL_Ready:1;
+	bool buttonR_Ready:1;
+	Position target;
+	ActionControl action;
+	ControlMap controlMap;
+} ALIGN4 CharacterPlayerControl;
 
 typedef struct CharacterAIControl {
     ControlType type:3;
@@ -146,6 +167,7 @@ typedef union ControlTypeUnion {
     CharacterBaseControl baseControl;
     CharacterAIControl aiControl;
     CharacterEventControl eventControl;
+	CharacterPlayerControl playerControl;
 } ALIGN4 ControlTypeUnion;
 
 typedef struct CharacterStats {
