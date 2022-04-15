@@ -30,6 +30,10 @@ extern const EDirections directions[EDirectionsCount];
 #define zombie_WALK_MVMNT_CTRL_MAX 5
 
 #define MAX_DIST_FOR_CHASE 80
+
+#define ZOMBIE_ATTACK_FRAME_START 3
+#define ZOMBIE_ATTACK_FRAME_END 4
+
 const u8 zombie_scrConversionMeasurements[EScrCnvrtMeasureCount] = {
 	ZOMBIE_SCRCNVRTWIDTH,
 	ZOMBIE_SCRCNVRTHEIGHT
@@ -74,14 +78,25 @@ const OffsetPoints zombie_scanSurroundingOffset[8][2] = {
 	{{-24,0},{24,64}}
 };
 
+const OffsetPoints zombie_strike_offsetValues[8][2] = {
+    {{0, 16}, {0, 32}},
+	{{0, 16}, {0, 32}},
+	{{16, -6}, {32, -6}},
+	{{0, -16}, {0, -16}},
+	{{0, -16}, {0, -16}},
+	{{0, -16}, {0, -16}},
+	{{-16, 6}, {-32, 6}},
+	{{0, 16}, {0, 32}},
+};
+
 const OffsetPoints zombie_scanLastKnownPosition = { 16, 16 };
 
 void zombie_actionWalk(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
 void zombie_actionChaseTarget(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
-void zombie_actionAttack(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
+void zombie_actionAttack(CharacterAttr* character,const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void zombie_actionStunned(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
 	
@@ -263,7 +278,8 @@ void zombie_actionChaseTarget(CharacterAttr* character,
 }
 
 void zombie_actionAttack(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection,
+	CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
 	Position *position = &character->position;
@@ -287,6 +303,19 @@ void zombie_actionAttack(CharacterAttr* character,
 	character->spriteDisplay.spriteSet = zombieAttack[character->direction];
 	
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
+	if (character->spriteDisplay.currentAnimationFrame >= ZOMBIE_ATTACK_FRAME_START && 
+		character->spriteDisplay.currentAnimationFrame >= ZOMBIE_ATTACK_FRAME_END) {
+		Position collisionPoints[2];
+		int attackVal = 1, countPoints = 2;
+		
+		collisionPoints[0].x = character->position.x + zombie_strike_offsetValues[character->direction][0].x;
+		collisionPoints[0].y = character->position.y + zombie_strike_offsetValues[character->direction][0].y;
+		collisionPoints[1].x = character->position.x + zombie_strike_offsetValues[character->direction][1].x;
+		collisionPoints[1].y = collisionPoints[0].y + zombie_strike_offsetValues[character->direction][1].y;	
+	
+		mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
+	}
 	
 	if (isLastFrame) {
 		charControl->target = *commonFindCharTypePositionByDistance(characterCollection,
@@ -414,10 +443,10 @@ void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionC
 	if (character->stats.currentStatus == EStatusNoActionCollision) {
 		return;
 	}
+	character->getBounds(character, &count, &charBoundingBox);
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
-		character->getBounds(character, &count, &charBoundingBox);
 		for (j = 0; j < charActionEvent->count; ++j) {
 			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
 		}
