@@ -9,8 +9,16 @@ typedef enum AlisaAction
 	EAlisaStand,
 	EAlisaRun,
 	EAlisaNormalSwordSlash,
+	EAlisaStunned,
 	EAlisaActionCount
 } AlisaAction;
+
+typedef enum AlisaStatus
+{
+	EAlisaStatusNormal,
+	EAlisaStatusStunned,
+} AlisaStatus;
+
 
 void alisa_init(CharacterAttr* character, ControlTypePool* controlPool);
 void alisa_setCharacter(CharacterAttr* character);

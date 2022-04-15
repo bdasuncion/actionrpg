@@ -11,3 +11,4 @@ extern const unsigned int *testRunner[6];*/
 extern const SpriteSet *alisaRunSet[];
 extern const SpriteSet *alisaStandWithSwordSet[];
 extern const SpriteSet *alisaSlashSet[];
+extern const SpriteSet *alisaStunnedSet[];

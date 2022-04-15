@@ -94,4 +94,16 @@ extern const SpriteLayer alisa_swordslash_down_layerSet2[];
 extern const SpriteLayer alisa_swordslash_down_layerSet3[];
 extern const SpriteLayer alisa_swordslash_down_layerSet4[];
 
+extern const unsigned short alisa_stunnedwithsword_down_pal[];
+extern const unsigned int alisa_stunnedwithsword_down_image0[];
+extern const unsigned int alisa_stunnedwithsword_down_image1[];
+
+extern const unsigned short alisa_stunnedwithsword_side_pal[];
+extern const unsigned int alisa_stunnedwithsword_side_image0[];
+extern const unsigned int alisa_stunnedwithsword_side_image1[];
+
+extern const unsigned short alisa_stunnedwithsword_up_pal[];
+extern const unsigned int alisa_stunnedwithsword_up_image0[];
+extern const unsigned int alisa_stunnedwithsword_up_image1[];
+
 #endif

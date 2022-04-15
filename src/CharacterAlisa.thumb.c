@@ -96,6 +96,8 @@ void alisa_actionStand(CharacterAttr* alisa, const MapInfo *mapInfo);
 void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo);
 void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection);
+void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const void *dummy, CharacterActionCollection *charActionCollection);
 	
 int alisa_setPosition(CharacterAttr* alisa, 
 	OBJ_ATTR *oamBuf, 	
@@ -126,7 +128,8 @@ void transferToBoundingBox(const EventTransfer *transfer, BoundingBox *boundingB
 const CharFuncAction alisa_actions[] = {
 	&alisa_actionStand,
 	&alisa_actionRun,
-	&alisa_actionSlash
+	&alisa_actionSlash,
+	&alisa_actionStunned
 };
 
 const CharFuncCollisionReaction alisa_collisionReactions[][8] = {
@@ -208,8 +211,17 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	alisa->checkMapCollision = &alisa_checkMapCollision;
 	alisa->checkActionCollision = &alisa_checkActionEventCollision;
 	//alisa->free = NULL;
-	CharacterBaseControl *charControl = mchar_getControlType(controlPool);
+	CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
 	charControl->type = EControlControlType;
+	charControl->currentStatus = EAlisaStatusNormal;
+	charControl->buttonB_PressInterval = 0;
+	charControl->buttonA_PressInterval = 0;
+	charControl->buttonL_Ready = true;
+	charControl->buttonR_Ready = true;
+	charControl->controlMap.buttonB = &alisa_slashController;
+	charControl->controlMap.buttonA = NULL;
+	charControl->controlMap.buttonL = NULL;
+	charControl->controlMap.buttonR = NULL;
 	alisa->free = charControl;
 	alisa->stats.maxLife = 10;
 	alisa->stats.currentLife = 10;
@@ -360,6 +372,28 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->direction];
 }
 
+void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const void *dummy, CharacterActionCollection *charActionCollection) {
+	BoundingBox position;
+	Position collisionPoints[2];
+	int attackVal = 1, countPoints = 2;
+	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	
+	if (commonUpdateAnimation(alisa) == EUpdate) {
+		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
+		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	alisa->movementCtrl.maxFrames = 0;
+	alisa->movementCtrl.currentFrame = 0;
+	
+	alisa->action = alisa->nextAction;
+	alisa->direction = alisa->nextDirection;
+	
+	alisa->spriteDisplay.spriteSet = alisaStunnedSet[alisa->direction];
+}
+
 /*void alisa_getBounds(const CharacterAttr* alisa, 
 	int *count, CharBoundingBox *boundingBox) {
 	*count = 1;
@@ -429,7 +463,12 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents) {
     int i, j, count;
 	BoundingBox charBoundingBox;
-	bool isHit;
+	bool isHit = false;
+	CharacterPlayerControl *charControl = (CharacterAIControl*)alisa->free;
+	if (alisa->stats.currentStatus == EStatusNoActionCollision) {
+		return;
+	}
+	
 	alisa->getBounds(alisa, &count, &charBoundingBox);
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
@@ -438,8 +477,8 @@ void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollec
 			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
 		}
 		if (isHit) {
-		    //commonRemoveCharacter(character);
 			alisa->stats.currentLife -= 1;
+			charControl->currentStatus = EAlisaStatusStunned;
 			if (alisa->stats.currentLife <= 0) {
 				//gameover
 			}

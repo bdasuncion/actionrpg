@@ -24,3 +24,11 @@ extern const SpriteSet alisa_swordslash_up;
 
 const SpriteSet *alisaSlashSet[] = { &alisa_swordslash_down, &alisa_swordslash_down, &alisa_swordslash_right, 
     &alisa_swordslash_up, &alisa_swordslash_up, &alisa_swordslash_up, &alisa_swordslash_left, &alisa_swordslash_down };
+	
+extern const SpriteSet alisa_stunnedwithsword_down;
+extern const SpriteSet alisa_stunnedwithsword_right;
+extern const SpriteSet alisa_stunnedwithsword_left;
+extern const SpriteSet alisa_stunnedwithsword_up;
+
+const SpriteSet *alisaStunnedSet[] = { &alisa_stunnedwithsword_down, &alisa_stunnedwithsword_down, &alisa_stunnedwithsword_right, 
+    &alisa_stunnedwithsword_up, &alisa_stunnedwithsword_up, &alisa_stunnedwithsword_up, &alisa_stunnedwithsword_left, &alisa_stunnedwithsword_down };
