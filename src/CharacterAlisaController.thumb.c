@@ -6,10 +6,11 @@
 
 #define MAX_BUTTON_INTERVAL 30
 #define MAX_STUN_ANIMATION 30
-#define ALISA_NORMALATTACK_THRESHHOLD 15
+#define ALISA_NORMALATTACK_INTERVALMAX 8
+
 void alisa_stunnedController(CharacterAttr* character);
 void alisa_slashController(CharacterAttr* character);
-
+void alisa_dashForwardController(CharacterAttr* character);
 
 ControlMap alisaControlMap = {
 	&alisa_slashController, NULL, NULL, NULL
@@ -42,11 +43,16 @@ bool controlButtonCheck(CharacterAttr* character) {
 		return isInit;
 	}
 	
-	/*if (isAPressed() && charControl->buttonA_Ready) {
-		charControl->buttonA_Ready = false;
+	if (isAPressed()) {
+		bool isInit = charControl->buttonA_PressInterval == 0;
+		if (isInit) {
+			character->controller = charControl->controlMap.buttonA;
+		}
+		charControl->buttonA_PressInterval += 1*(charControl->buttonA_PressInterval < MAX_BUTTON_INTERVAL);
+		return isInit;
 	}
 	
-	if (isLPressed() && charControl->buttonL_Ready) {
+	/*if (isLPressed() && charControl->buttonL_Ready) {
 		charControl->buttonL_Ready = false;
 	}
 	
@@ -58,8 +64,9 @@ bool controlButtonCheck(CharacterAttr* character) {
 };
 
 bool controlButtonHold(CharacterPlayerControl *control, const CharFuncController functionToFind, 
-	int *holdInterval, int threshhold) {
-	if (functionToFind == alisaControlMap.buttonB) {
+	int *holdInterval, int intervalMax) {
+	//if (functionToFind == alisaControlMap.buttonB) {
+	if (functionToFind == control->controlMap.buttonB) {
 		if (!isBPressed()) {
 			*holdInterval = control->buttonB_PressInterval;
 			control->buttonB_PressInterval = 0;
@@ -68,7 +75,8 @@ bool controlButtonHold(CharacterPlayerControl *control, const CharFuncController
 			control->buttonB_PressInterval += 1*(control->buttonB_PressInterval < MAX_BUTTON_INTERVAL);
 		}
 		
-		if (control->buttonB_PressInterval >= threshhold) {
+		*holdInterval = control->buttonB_PressInterval;
+		if (control->buttonB_PressInterval >= intervalMax) {
 			return true;
 		}
 	}
@@ -123,15 +131,21 @@ void alisa_slashController(CharacterAttr* character) {
 	character->stats.currentStatus = EStatusNormal;
 	character->getBounds = &alisa_getBoundingBoxStanding;
 	
-	if (controlButtonHold(charControl, &alisa_slashController, &hold, ALISA_NORMALATTACK_THRESHHOLD) &&
-		character->nextAction != EAlisaNormalSwordSlash) {
+	if (controlButtonHold(charControl, &alisa_slashController, &hold, ALISA_NORMALATTACK_INTERVALMAX) &&
+		(character->nextAction != EAlisaNormalSwordSlash && character->nextAction != EAlisaStrongSwordSlash)) {
 		//TODO Add strong attack for when normal attack threshhold is reached
-		character->nextAction = EAlisaNormalSwordSlash;
+		mprinter_printf("HOLD %d\n", hold);
+		if (hold >= ALISA_NORMALATTACK_INTERVALMAX) {
+			character->nextAction = EAlisaStrongSwordSlash;
+		} else {
+			character->nextAction = EAlisaNormalSwordSlash;
+		}
 	}
 	
-	if (character->nextAction == EAlisaNormalSwordSlash) {
+	if (character->nextAction == EAlisaNormalSwordSlash || character->nextAction == EAlisaStrongSwordSlash) {
 		commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
+		mprinter_printf("%s\n", character->nextAction == EAlisaNormalSwordSlash ? "NORMAL": "STRONG");
 		if (isLastFrame) {
 			character->controller = &alisa_controller;
 		}
@@ -139,6 +153,30 @@ void alisa_slashController(CharacterAttr* character) {
 	}
 	
 	character->nextAction = EAlisaStand;
+}
+
+void alisa_dashForwardController(CharacterAttr* character) {
+   int nextScreenFrame, nextAnimationFrame, hold;
+   bool isLastFrame = false;
+   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+      
+   	if (charControl->currentStatus == EAlisaStatusStunned) {
+		alisa_stunnedController(character);
+		character->controller = &alisa_stunnedController; 
+		character->getBounds = &alisa_getBoundingBoxStanding;
+		return;
+	}
+	
+	character->stats.currentStatus = EStatusNormal;
+	character->getBounds = &alisa_getBoundingBoxMoving;
+	
+	character->nextAction = EAlisaDashForward;
+	
+	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+
+	if (isLastFrame) {
+		character->controller = &alisa_controller;
+	}
 }
 
 void alisa_stunnedController(CharacterAttr* character) {

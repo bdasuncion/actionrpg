@@ -32,3 +32,11 @@ extern const SpriteSet alisa_stunnedwithsword_up;
 
 const SpriteSet *alisaStunnedSet[] = { &alisa_stunnedwithsword_down, &alisa_stunnedwithsword_down, &alisa_stunnedwithsword_right, 
     &alisa_stunnedwithsword_up, &alisa_stunnedwithsword_up, &alisa_stunnedwithsword_up, &alisa_stunnedwithsword_left, &alisa_stunnedwithsword_down };
+	
+extern const SpriteSet alisa_dashforwardwithsword_down;
+extern const SpriteSet alisa_dashforwardwithsword_right;
+extern const SpriteSet alisa_dashforwardwithsword_left;
+extern const SpriteSet alisa_dashforwardwithsword_up;
+
+const SpriteSet *alisaDashForwardSet[] = { &alisa_dashforwardwithsword_down, &alisa_dashforwardwithsword_down, &alisa_dashforwardwithsword_right, 
+    &alisa_dashforwardwithsword_up, &alisa_dashforwardwithsword_up, &alisa_dashforwardwithsword_up, &alisa_dashforwardwithsword_left, &alisa_dashforwardwithsword_down };

@@ -9,6 +9,8 @@ typedef enum AlisaAction
 	EAlisaStand,
 	EAlisaRun,
 	EAlisaNormalSwordSlash,
+	EAlisaStrongSwordSlash,
+	EAlisaDashForward,
 	EAlisaStunned,
 	EAlisaActionCount
 } AlisaAction;
@@ -24,6 +26,7 @@ void alisa_init(CharacterAttr* character, ControlTypePool* controlPool);
 void alisa_setCharacter(CharacterAttr* character);
 void alisa_controller(CharacterAttr* character);
 void alisa_slashController(CharacterAttr* character);
+void alisa_dashForwardController(CharacterAttr* character);
 void alisa_getBoundingBoxStanding(const CharacterAttr* alisa, 
 	int *count, BoundingBox *boundingBox);
 void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 
