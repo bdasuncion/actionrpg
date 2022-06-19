@@ -4,8 +4,15 @@
 #include"GBAObject.h"
 
 #define BLOCKSPERCHARACTER 32 //1KB(1024) for every character
+#define BLOCKSPERCHARACTERSMALL 16 //(512B) for every small character
+#define BLOCKSPERCHARACTERMEDIUM 24 //(768B) for every medium character
+#define BLOCKSPERCHARACTERLARGE 32 //(1024B) for every large character
 //#define BLOCKSPERCHARACTER 40 //1KB(1024) for every character
 #define MAXNCHARACTER 15
+#define MAXNCHARACTERSMALL 10
+#define MAXNCHARACTERMEDIUM 5
+#define MAXNCHARACTERLARGE 3
+
 #define MAXNPALETTE 15
 #define PALLETTEERROR -1
 
