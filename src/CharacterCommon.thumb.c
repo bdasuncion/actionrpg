@@ -181,17 +181,14 @@ void commonDrawDisplay(SpriteDisplay *spriteDisplay) {
 }
 
 UpdateStatus commonInitializeAction(CharacterAttr* character) {
-    if (character->nextDirection != character->direction || character->nextAction != character->action) {
+    if (character->nextAction != character->action) {
 		character->spriteDisplay.currentAnimationFrame = 0;
 		character->spriteDisplay.numberOfFramesPassed = 0; 
 	    return EUpdate;
+	} else if (character->nextDirection != character->direction) {
+		return EUpdate;
 	}
 	
-	/*if (character->nextAction != character->action) {
-		character->spriteDisplay.currentAnimationFrame = 0;
-		character->spriteDisplay.numberOfFramesPassed = 0;
-		return EUpdate;
-	}*/
 	return ENoUpdate;
 }
 
