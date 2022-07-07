@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "ImageAlisa.h"
 
 const SpriteLayer alisa_swordslash_up_layerSet0[] = {
