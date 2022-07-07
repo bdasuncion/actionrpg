@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "sprite_crow.h"
 
 const SpriteLayer crow_layerSet0[] = {

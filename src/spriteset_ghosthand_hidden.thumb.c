@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "sprite_ghostly_hand.h"
 
 const SpriteLayer ghosthand_hidden_layerSet0[] = {

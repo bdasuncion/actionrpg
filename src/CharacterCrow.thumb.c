@@ -142,6 +142,7 @@ void crow_getBoundingBox(const CharacterAttr* character,
 }
 
 void crow_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
+    int x = 1 + 1;
 }
 
 void crow_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,

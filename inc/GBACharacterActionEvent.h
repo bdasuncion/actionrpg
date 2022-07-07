@@ -1,6 +1,7 @@
 #ifndef GBACharacterActionEvent
 #define GBACharacterActionEvent
 #include "GBAObject.h"
+#include "GBACharacter.h"
 
 typedef enum CharacterActionTypes {
     EActionNone,

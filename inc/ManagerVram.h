@@ -2,6 +2,7 @@
 #define MANAGER_VRAM
 
 #include "GBATypes.h"
+#include "GBACharacterType.h"
 
 void sprite_vram_copy32_ID(const void* src, u32 count, u32 id);
 u32 sprite_getID(u32 width, u32 height);

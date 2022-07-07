@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "ImageWerewolf.h"
 
 const SpriteLayer werewolf_run_down_layerSet0[] = {

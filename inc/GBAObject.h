@@ -1,12 +1,8 @@
-#include "GBATypes.h"
-#include <stdbool.h>
-
 #ifndef GBAObjects
 #define GBAObjects
 
-#include "GBAMap.h"
-#include "GBACharacter.h"
-#include "GBACharacterType.h"
+#include "GBATypes.h"
+#include <stdbool.h>
 
 typedef enum SEARCH_STAT {
 	FOUND,
@@ -191,6 +187,12 @@ typedef struct OBJ_AFFINE
     s16 pd;
 }ALIGN4 OBJ_AFFINE;
 
+typedef struct Position {
+	s16 x;
+	s16 y;
+	s16 z;
+} ALIGN4 Position;
+
 typedef struct ScreenPosition {
 	u16 x;
 	u16 y;
@@ -206,13 +208,6 @@ typedef struct OAMCollection {
 	u32 previousSize:8;
 	OBJ_ATTR *data;
 }ALIGN4 OAMCollection;
-
-typedef struct CharBoundingBox {
-	Position upperLeftPt;
-	u16 width; //y
-	u16 length;//x
-	u16 height;//z
-} CharBoundingBox;
 
 typedef struct BoundingBox {
 	s16 startX;
@@ -240,24 +235,10 @@ typedef struct PlayerControl {
 	u8 currentFrame;
 }ALIGN4 PlayerControl;
 
-typedef struct CharacterCollection {
-    u32 poolSize:8;
-	u32 currentSize:8;
-	u32 characterEventCurrentSize:8;
-	CharacterAttr **characters;
-	CharacterAttr **charactersDoEvent;
-} ALIGN4 CharacterCollection;
-
 typedef struct VramIdControl {
 	u16 id;
 	VRAMIDBLOCKSTATUS status:1;
 }ALIGN4 VramIdControl;
-
-typedef struct PaletteIdControl {
-    u16 id:4;
-	PALETTESTATUS status:1;
-	CHARACTERTYPE type;
-}ALIGN4 PaletteIdControl;
 
 typedef struct ActionCharacters {
     u32 action:8;

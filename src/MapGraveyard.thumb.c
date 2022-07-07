@@ -3,6 +3,7 @@
 #include "GBABG.h"
 #include "GBAVideo.h"
 #include "GBADMA.h"
+#include "GBAMap.h"
 
 extern const unsigned short pallette_gravehead[16];
 extern const unsigned int tile_gravehead[128];

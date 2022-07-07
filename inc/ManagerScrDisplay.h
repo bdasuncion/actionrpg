@@ -4,6 +4,7 @@
 #include "GBATypes.h"
 #include "GBAVideo.h"
 #include "GBAObject.h"
+#include "GBAMap.h"
 #include "GBABG.h"
 
 void initDisplay2BG();

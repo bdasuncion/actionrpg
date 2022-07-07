@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "GBAObject.h"
+#include "GBAMap.h"
 #include "GBABG.h"
 #include "GBAVideo.h"
 #include "GBADMA.h"

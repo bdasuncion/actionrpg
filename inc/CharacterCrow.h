@@ -2,6 +2,8 @@
 #define CHARACTER_CROW
 
 #include "GBAObject.h"
+#include "GBACharacter.h"
+#include "GBAMap.h"
 #include "GBASound.h"
 #include "ImageCrow.h"
 #include "GBACharacterActionEvent.h"

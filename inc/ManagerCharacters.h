@@ -3,6 +3,7 @@
 
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBAMap.h"
 #include "GBACharacterActionEvent.h"
 
 void mchar_setDraw(CharacterCollection *reference);

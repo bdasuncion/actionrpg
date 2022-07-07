@@ -1,11 +1,13 @@
 
+
 #ifndef GBACharacter
 #define GBACharacter
 
-#include "GBAObject.h"
 #define MAXACTIONS 8
 #define DOACTIONUNTILEND 0
  
+#include "GBAObject.h"
+
 typedef enum UpdateStatus {
 	ENoUpdate,
 	EUpdate
@@ -25,6 +27,13 @@ typedef enum StatusType {
     EStatusNormal,
 	EStatusNoActionCollision
 } StatusType;
+
+typedef struct CharBoundingBox {
+	Position upperLeftPt;
+	u16 width; //y
+	u16 length;//x
+	u16 height;//z
+} CharBoundingBox;
 
 typedef struct SpriteLayer {
     u32 *image;
@@ -65,12 +74,6 @@ typedef struct SpriteDisplay {
 	u32 baseX:9;
 	bool isInScreen:1;
 }ALIGN4 SpriteDisplay;
-
-typedef struct Position {
-	s16 x;
-	s16 y;
-	s16 z;
-} ALIGN4 Position;
 
 typedef struct MovementControl {
     u8 maxFrames;
@@ -191,9 +194,10 @@ typedef struct CharacterAttr {
 	s8 type;
 	u16 dummy;
 	u8 action;
-	u8 direction;
+	EDirections direction:4;
+	EDirections faceDirection:4;
 	u8 nextAction;
-	u8 nextDirection;
+	EDirections nextDirection:8;
 	MovementControl movementCtrl;
 	Position position;//3HW
 	Position delta;//3HW
@@ -212,4 +216,12 @@ typedef struct ControlTypePool {
   u32 currentCount:6;
   ControlTypeUnion *collection;
 } ALIGN4 ControlTypePool;
+
+typedef struct CharacterCollection {
+    u32 poolSize:8;
+	u32 currentSize:8;
+	u32 characterEventCurrentSize:8;
+	CharacterAttr **characters;
+	CharacterAttr **charactersDoEvent;
+} ALIGN4 CharacterCollection;
 #endif

@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "sprite_maincharacterupper_walk.h"
 #include "sprite_maincharacterlower_walk.h"
 

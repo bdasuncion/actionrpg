@@ -3,6 +3,8 @@
 #define CHARACTER_WEREWOLF
 
 #include "GBAObject.h"
+#include "GBACharacter.h"
+#include "GBAMap.h"
 
 typedef enum WerewolfAction {
 	EWerewolfInitialize = -1,

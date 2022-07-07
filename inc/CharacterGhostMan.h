@@ -2,6 +2,8 @@
 #define CHARACTER_GHOSTMAN
 
 #include "GBAObject.h"
+#include "GBACharacter.h"
+#include "GBAMap.h"
 
 typedef enum GhostmanAction {
 	EGhostmanInitialize = -1,

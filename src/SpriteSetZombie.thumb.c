@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 
 extern const SpriteSet zombie_walk_up;
 extern const SpriteSet zombie_walk_right;

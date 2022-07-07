@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "ImageZombie.h"
 
 const SpriteLayer zombie_stunned_up_layerSet0[] = {

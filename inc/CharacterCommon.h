@@ -3,6 +3,8 @@
 
 #include "GBAObject.h"
 #include "GBACharacter.h"
+#include "GBACharacterType.h"
+#include "GBAMap.h"
 #include <stdbool.h>
 
 extern const CharacterAttr openSlot;

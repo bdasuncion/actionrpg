@@ -5,8 +5,6 @@
 #include "GBACharacter.h"
 #include "GBACharacterType.h"
 
-
-
 typedef enum MAPID {
     MapNoneID,
     MapTestID

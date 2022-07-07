@@ -1,4 +1,6 @@
 #include "GBAObject.h"
+#include "GBACharacter.h"
+#include "GBAMap.h"
 #include "GBAKey.h"
 #include "CharacterNameless.h"
 #include  <stdbool.h>

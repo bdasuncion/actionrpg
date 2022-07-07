@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 
 extern const SpriteSet werewolf_run_down;
 extern const SpriteSet werewolf_run_right;

@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "sprite_ghostlyman.h"
 
 const SpriteLayer ghosltyman_layerSet0[] = {

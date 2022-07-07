@@ -3,6 +3,8 @@
 #include "GBAVideo.h"
 #include "GBAObject.h"
 #include "GBABG.h"
+#include "GBAMap.h"
+
 #include "GBAInterrupt.h"
 #include "ManagerBG.h"
 

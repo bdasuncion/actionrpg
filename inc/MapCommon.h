@@ -1,4 +1,5 @@
 #include "GBAObject.h"
+#include "GBAMap.h"
 
 #ifndef MapCommon
 #define MapCommon

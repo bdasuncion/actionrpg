@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 #include "sprite_ghostlyman_lower_float.h"
 #include "sprite_ghostlyman_upper_float.h"
 

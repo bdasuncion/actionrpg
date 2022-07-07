@@ -2,6 +2,7 @@
 #include "GBATypes.h"
 #include"GBADMA.h"
 #include"GBAObject.h"
+#include "GBACharacterType.h"
 
 #define BLOCKSPERCHARACTER 32 //1KB(1024) for every character
 #define BLOCKSPERCHARACTERSMALL 16 //(512B) for every small character

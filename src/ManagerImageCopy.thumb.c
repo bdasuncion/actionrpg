@@ -1,5 +1,6 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
+#include "GBACharacter.h"
 
 void vramCopyVblank(CharacterAttr* imgData);
 int numOfImages = 0;

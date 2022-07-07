@@ -223,11 +223,13 @@ void commonGetNextFrame(const CharacterAttr* character, int *nextScreenFrame,
 		return;
 	}
 	
+	*isLastFrame = false;
+	*nextAnimationFrame = character->spriteDisplay.currentAnimationFrame;
 	*nextScreenFrame = character->spriteDisplay.numberOfFramesPassed + 1;
 	if (*nextScreenFrame >= 
 	    character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].displayForNumFrames) {
 		*nextScreenFrame = 0;
-		*nextAnimationFrame = character->spriteDisplay.currentAnimationFrame + 1;
+		*nextAnimationFrame += 1;
 		if (*nextAnimationFrame >= frameCount) {
 		    *isLastFrame = true;
 			*nextAnimationFrame = 0;
