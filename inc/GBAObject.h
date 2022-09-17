@@ -68,6 +68,7 @@ typedef enum EDirections {
 	EUpleft,
 	ELeft,
 	EDownleft,
+	EDirectionsMax = EDownleft,
 	EDirectionsCount
 }EDirections;
 

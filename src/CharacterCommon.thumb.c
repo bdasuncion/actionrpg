@@ -130,6 +130,7 @@ const Position NOT_FOUND_POSITION = {-1, -1, -1};
 void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
     int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
 	
+	mprinter_printf("PAL ");
     for (i = 0; i < spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].numberOflayers; ++i) {
 
         yScreen = (spriteDisplay->baseY + 
@@ -148,16 +149,19 @@ void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
 		
 		id += spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].idOffset;
 		
+		mprinter_printf("%d ", spriteDisplay->basePalleteId + spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset);
 		oamBuf[i].attr2 =  ATTR2_SET(id,
 		    spriteDisplay->basePalleteId + 
 			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset, 3);
 			
 		oamBuf[i].fill = 0;
 	}
+	mprinter_printf("\n");
 }
 
 void commonDrawDisplay(SpriteDisplay *spriteDisplay) {
 	int i, id = spriteDisplay->baseImageId;
+	//mprinter_printf("PAL %d\n", id);
 	if (spriteDisplay->imageUpdateStatus == EUpdate) {
 		for (i = 0; i < spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].numberOflayers; ++i) {
 		    

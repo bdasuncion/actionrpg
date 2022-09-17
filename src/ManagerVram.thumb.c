@@ -152,3 +152,7 @@ void memFill16(const void* src, void* dst, u32 count)
 	dma_mem[3].dest = dst;
 	dma_mem[3].cnt = count|DMA_16|DMA_ON|DMA_SRC_FIXED;
 }
+
+u16* sprite_get_palette_ID(u32 id) {
+	return &PALETTE_OBJMAP->palette[id];
+}

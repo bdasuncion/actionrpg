@@ -17,5 +17,5 @@ void sprite_vram_init();
 u32 sprite_vram_findId();
 void sprite_vram_freeId(u32 id);
 int sprite_palette_findId(CHARACTERTYPE type, int nPalette);
-
+u16* sprite_get_palette_ID(u32 id);
 #endif

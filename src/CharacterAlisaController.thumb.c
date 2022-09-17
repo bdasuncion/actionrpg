@@ -8,11 +8,17 @@
 #define MAX_STUN_ANIMATION 30
 #define ALISA_NORMALATTACK_INTERVALMAX 8
 
+#define ALISA_MIN_BACKWARD_DASH 4
+
 void alisa_stunnedController(CharacterAttr* character);
 void alisa_slashController(CharacterAttr* character);
 void alisa_prepareDashController(CharacterAttr* character);
 void alisa_dashForwardController(CharacterAttr* character);
 void alisa_dashBackwardController(CharacterAttr* character);
+
+const EDirections DEFAULT_DIRECTIONMAP[EDirectionsCount] = {
+	EDown,EDown,ERight,EUp,EUp,EUp,ELeft,EDown
+};
 
 ControlMap alisaControlMap = {
 	&alisa_slashController, NULL, NULL, NULL
@@ -111,6 +117,11 @@ void alisa_controller(CharacterAttr* character) {
 	if (direction != EUnknown) {
 		character->nextAction = EAlisaRun;
 		character->nextDirection = direction;
+		if (!(direction == EUpleft | direction == EDownleft & character->faceDirection == ELeft) && 
+			!(direction == EUpright | direction == EDownright & character->faceDirection == ERight)) {
+			character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
+		}
+		//character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
 		character->getBounds = &alisa_getBoundingBoxMoving;
 		return;
 	}
@@ -177,19 +188,24 @@ void alisa_prepareDashController(CharacterAttr* character) {
 	
 	character->nextAction = EAlisaPrepareDash;
 	
-	/*if (direction != EUnknown) {
-		character->nextAction = EAlisaRun;
+	if (direction != EUnknown) {
 		character->nextDirection = direction;
-		character->getBounds = &alisa_getBoundingBoxMoving;
-		return;
-	}*/
+		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
+		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
+		if (direction != character->faceDirection & 
+			direction != clockwise & direction != counterClockwise &
+			character->spriteDisplay.numberOfFramesPassed >= ALISA_MIN_BACKWARD_DASH) {
+			character->controller = &alisa_dashBackwardController;
+			character->controller(character, NULL, NULL);
+			return;
+		}
+	}
 	
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
 	mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
 	if (isLastFrame) {
-		//character->controller = &alisa_dashForwardController;
-		character->controller = &alisa_dashBackwardController;
+		character->controller = &alisa_dashForwardController;
 		character->controller(character, NULL, NULL);
 	}
 }
@@ -224,8 +240,9 @@ void alisa_dashBackwardController(CharacterAttr* character) {
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
       
    	if (charControl->currentStatus == EAlisaStatusStunned) {
-		alisa_stunnedController(character);
+		character->nextDirection = character->faceDirection;
 		character->controller = &alisa_stunnedController; 
+		character->controller(character, NULL, NULL);
 		character->getBounds = &alisa_getBoundingBoxStanding;
 		return;
 	}
@@ -239,6 +256,7 @@ void alisa_dashBackwardController(CharacterAttr* character) {
 
 	//mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
 	if (isLastFrame) {
+		character->nextDirection = character->faceDirection;
 		character->controller = &alisa_controller;
 		character->controller(character, NULL, NULL);
 	}

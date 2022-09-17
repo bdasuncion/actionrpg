@@ -36,6 +36,11 @@ extern const MapInfo map_night_street;
 extern const MapInfo mapforest;
 extern const Sound music_minamohana;
 extern const MapInfo mapsnowfield;
+extern const MapInfo mapforest;
+extern const EventTransfer transfer_mapforest[];
+
+void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo);
+void mapCommon_goDark(void *screenAttribute, void *characterCollection, MapInfo *mapInfo);
 
 inline void waitForVBlank() {
 	asm("swi 0x05");
@@ -44,6 +49,11 @@ inline void waitForVBlank() {
 void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
  OAMCollection *oamCollection, ControlTypePool *controlPool, ScreenAttr *screenAttribute, 
     CharacterActionCollection *charActionCollection) {
+	
+	//mapInfo->transferTo =  &mapInfo->tranfers[0];
+	//mapInfo->mapFunction = &fadeToBlack;
+	//mapInfo->screenEffect.processScreenEffect = &mapCommon_goDark;
+	
 	while(1) {	
 		mprinter_clear();
 
@@ -92,14 +102,14 @@ int main() {
 	CharacterCollection characterCollection;
 	OAMCollection oamCollection;
 	ControlTypePool controlPool;
-	//MapInfo mapInfo = mapforest;
-	MapInfo mapInfo = mapsnowfield;
+	MapInfo mapInfo = mapforest;
+	//MapInfo mapInfo = mapsnowfield;
 	ScreenAttr screenAttribute;
 	CharacterActionCollection charActionCollection;
 	//MapInfo mapInfo = map_night_street;
 	//MapInfo mapInfo = mapTest;
 	CharacterAttr *alisa;
-	
+		
 	sprite_vram_init();
 	sprite_palette_init();
 	
@@ -125,7 +135,11 @@ int main() {
 	mscr_initCharMoveRef(&screenAttribute, &mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 	
-	mbg_init(&screenAttribute, &mapInfo, &characterCollection, &controlPool, &charActionCollection);
+	//mbg_init(&screenAttribute, &mapInfo, &characterCollection, &controlPool, &charActionCollection);
+	//mapInfo.mapFunction = &fadeToBlack;
+	mapInfo.transferTo =  &mapInfo.tranfers[0];
+	//mapInfo.mapFunction(&screenAttribute, &characterCollection, &mapInfo, &controlPool, &charActionCollection);
+	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,  &charActionCollection);
 	
 	mgame_setUpdater(&updateGameStatus);
 	//Initalize display for 2 backgrounds and 1-d sprites

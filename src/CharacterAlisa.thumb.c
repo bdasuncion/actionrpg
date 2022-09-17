@@ -120,28 +120,6 @@ const s32 alisa_dashOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
 	{3,3,3,3}
 };
 
-const s32 alisa_dashBackwardOffsetX[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
-	{0,0,0},
-	{-3,-3,-3,-3},
-	{-4,-4,-4,-4},
-	{-3,-3,-3,-3},
-	{0,0,0},
-	{3,3,3,3},
-	{4,4,4,4},
-	{3,3,3,3}
-};
-
-const s32 alisa_dashBackwardOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
-	{-4,-4,-4,-4},
-	{-3,-3,-3,-3},
-	{0,0,0},
-	{4,4,4,4},
-	{3,3,3,3},
-	{3,3,3,3},
-	{0,0,0},
-	{-3,-3,-3,-3}
-};
-
 #define ALISA_SCRCNVRTWIDTH 16
 #define ALISA_SCRCNVRTHEIGHT 26
 
@@ -318,6 +296,8 @@ void alisa_doAction(CharacterAttr* alisa,
 	const MapInfo *mapInfo, const void *dummy, 
 	CharacterActionCollection *charActionCollection) {
 	
+	//u16 *pal = sprite_get_palette_ID(alisa->spriteDisplay.basePalleteId);
+	//mprinter_printf("ALISA %d %d %d\n", pal[1], pal[2], pal[3]);
 	if (alisa->nextAction < EAlisaActionCount) {
 		alisa_actions[alisa->nextAction](alisa, mapInfo, NULL, charActionCollection);
 	}
@@ -422,7 +402,8 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo) {
 		
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->direction];
+	//alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->direction];
+	alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->faceDirection];
 	//alisa->spriteDisplay.spriteSet = &maincharacter_walk;
 }
 
@@ -480,18 +461,7 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
 
-	/*if (alisa->spriteDisplay.currentAnimationFrame == DASH_STARTMOVE_FRAME) {
-		alisa->delta.x = alisa_dashOffsetX[alisa->direction][alisa->movementCtrl.currentFrame];
-		alisa->position.x += alisa->delta.x;
-		
-		alisa->delta.y = alisa_dashOffsetY[alisa->direction][alisa->movementCtrl.currentFrame];
-		alisa->position.y += alisa->delta.y;
-	}*/
-		
-	
-	//++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaPrepareDashSet[alisa->direction];
-	//alisa->spriteDisplay.spriteSet = &maincharacter_walk;
+	alisa->spriteDisplay.spriteSet = alisaPrepareDashSet[alisa->faceDirection];
 }
 
 void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo) {
@@ -524,8 +494,7 @@ void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo) {
 		
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaDashForwardSet[alisa->direction];
-	//alisa->spriteDisplay.spriteSet = &maincharacter_walk;
+	alisa->spriteDisplay.spriteSet = alisaDashForwardSet[alisa->faceDirection];
 }
 
 void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo) {
@@ -549,16 +518,15 @@ void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	    alisa->movementCtrl.currentFrame;
 
 	if (alisa->spriteDisplay.currentAnimationFrame == 0) {
-		alisa->delta.x = alisa_dashBackwardOffsetX[alisa->direction][alisa->movementCtrl.currentFrame];
+		alisa->delta.x = alisa_dashOffsetX[alisa->direction][alisa->movementCtrl.currentFrame];
 		alisa->position.x += alisa->delta.x;
 		
-		alisa->delta.y = alisa_dashBackwardOffsetY[alisa->direction][alisa->movementCtrl.currentFrame];
+		alisa->delta.y = alisa_dashOffsetY[alisa->direction][alisa->movementCtrl.currentFrame];
 		alisa->position.y += alisa->delta.y;
 	}
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaDashBackwardWithSwordSet[alisa->direction];
-	//alisa->spriteDisplay.spriteSet = &maincharacter_walk;
+	alisa->spriteDisplay.spriteSet = alisaDashBackwardWithSwordSet[alisa->faceDirection];
 }
 
 

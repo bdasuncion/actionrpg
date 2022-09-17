@@ -161,9 +161,11 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 void zombie_doAction(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection,
 	CharacterActionCollection *charActionCollection) {
-	
 	int boundBoxCount = 0;
 	CharBoundingBox boundingBox;
+	
+	//u16 *pal = sprite_get_palette_ID(character->spriteDisplay.basePalleteId);
+	//mprinter_printf("ZOMBIE %d %d %d\n", pal[1], pal[2], pal[3]);
 	
 	if (character->nextAction < EZombieActionCount) {
 		zombie_actions[character->nextAction](character, mapInfo, 
