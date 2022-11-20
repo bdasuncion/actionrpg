@@ -18,11 +18,11 @@ const SpriteLayer zombie_attack_right_layerSet5[] = {
 
 const SpriteLayerSet zombie_attack_right_layerSet[] = {
     {zombie_attack_right_layerSet0,5,1},
-    {zombie_attack_right_layerSet1,5,1},
-    {zombie_attack_right_layerSet2,12,1},
-    {zombie_attack_right_layerSet3,1,1},
-    {zombie_attack_right_layerSet4,1,1},
-    {zombie_attack_right_layerSet5,25,1},
+    {zombie_attack_right_layerSet1,15,1},
+    {zombie_attack_right_layerSet2,20,1},
+    {zombie_attack_right_layerSet3,3,1},
+    {zombie_attack_right_layerSet4,3,1},
+    {zombie_attack_right_layerSet5,3,1},
 };
 
 const SpriteSet zombie_attack_right = {zombie_attack_right_layerSet,6};

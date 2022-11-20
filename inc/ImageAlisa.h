@@ -8,12 +8,14 @@ extern const unsigned int sword_side_image0[];
 extern const unsigned int sword_side_image1[];
 extern const unsigned int sword_side_image2[];
 extern const unsigned int sword_side_image3[];
+extern const unsigned int sword_side_image4[];
 
 
 extern const unsigned short sword_vertical_pal[];
 extern const unsigned int sword_vertical_image0[];
 extern const unsigned int sword_vertical_image1[];
 extern const unsigned int sword_vertical_image2[];
+extern const unsigned int sword_vertical_image3[];
 
 
 extern const unsigned short alisa_runwithsword_down_pal[];

@@ -17,12 +17,12 @@ const SpriteLayer zombie_attack_left_layerSet5[] = {
     {zombie_attack_side_image0,0,0,TALL,MEDIUM,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,0}};
 
 const SpriteLayerSet zombie_attack_left_layerSet[] = {
-    {zombie_attack_left_layerSet0,5,1},
-    {zombie_attack_left_layerSet1,5,1},
-    {zombie_attack_left_layerSet2,12,1},
-    {zombie_attack_left_layerSet3,1,1},
-    {zombie_attack_left_layerSet4,1,1},
-    {zombie_attack_left_layerSet5,25,1},
+    {zombie_attack_left_layerSet0,2,1},
+    {zombie_attack_left_layerSet1,15,1},
+    {zombie_attack_left_layerSet2,20,1},
+    {zombie_attack_left_layerSet3,3,1},
+    {zombie_attack_left_layerSet4,3,1},
+    {zombie_attack_left_layerSet5,3,1},
 };
 
 const SpriteSet zombie_attack_left = {zombie_attack_left_layerSet,6};
