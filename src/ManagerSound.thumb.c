@@ -163,7 +163,7 @@ void msound_mixMono() {
 	}
 }
 
-void msound_mixStereo() {
+ARM_IWRAM void msound_mixStereo() {
 	//int zero = 0;
 	int startingIdx = 0, i, idxChannel;
 	if (!soundBuffer.currentBuffer) {
@@ -187,8 +187,23 @@ void msound_mixStereo() {
 		    if (!soundChannel->stopA && i >= soundChannel->aOutOfPhase) {
 			    int idxData = soundChannel->currentIdxA >> INDEX_FRACTION;
 				if (soundChannel->attenuationA < MAX_DISTANCE) {
-			        soundBuffer.bufferA[startingIdx + i] += (soundChannel->data[idxData] >> 
-					    distanceAttenuation[soundChannel->attenuationA]);
+			        //soundBuffer.bufferA[startingIdx + i] += (soundChannel->data[idxData] >> 
+					//    distanceAttenuation[soundChannel->attenuationA]);
+					 //soundBuffer.bufferA[startingIdx + i] += (soundChannel->data[idxData] >> 
+					//    distanceAttenuation[soundChannel->attenuationA]);
+					int sound = 0;
+					if (soundChannel->data[idxData] > 0) {
+						sound = soundChannel->data[idxData] - soundChannel->attenuationA;
+						if (sound < 0){
+							sound = 0;
+						}
+					} else if (soundChannel->data[idxData] < 0){
+						sound = soundChannel->data[idxData] + soundChannel->attenuationA;
+						if (sound > 0){
+							sound = 0;
+						}
+					}
+					soundBuffer.bufferA[startingIdx + i] += sound;
 				}
 				/*if (soundChannel->attenuationA < MAX_DISTANCE) {
 					soundBuffer.bufferA[startingIdx + i] += (soundChannel->data[idxData]) - 
@@ -202,8 +217,21 @@ void msound_mixStereo() {
 			if (!soundChannel->stopB  && i >= soundChannel->bOutOfPhase) {
 			    int idxData = soundChannel->currentIdxB >> INDEX_FRACTION;
 				if (soundChannel->attenuationB < MAX_DISTANCE) {
-				    soundBuffer.bufferB[startingIdx + i] += (soundChannel->data[idxData] >> 
-					distanceAttenuation[soundChannel->attenuationB]);
+				    //soundBuffer.bufferB[startingIdx + i] += (soundChannel->data[idxData] >> 
+					//distanceAttenuation[soundChannel->attenuationB]);
+					int sound = 0;
+					if (soundChannel->data[idxData] > 0) {
+						sound = soundChannel->data[idxData] - soundChannel->attenuationB;
+						if (sound < 0){
+							sound = 0;
+						}
+					} else if (soundChannel->data[idxData] < 0){
+						sound = soundChannel->data[idxData] + soundChannel->attenuationB;
+						if (sound > 0){
+							sound = 0;
+						}
+					}
+					soundBuffer.bufferB[startingIdx + i] += sound;
 				}
 				/*if (soundChannel->attenuationB < MAX_DISTANCE) {
 					soundBuffer.bufferB[startingIdx + i] += (soundChannel->data[idxData]) - 
