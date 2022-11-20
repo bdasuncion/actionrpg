@@ -78,10 +78,21 @@ void commonCharacterMapEdgeCheck(CharacterAttr* character, const MapInfo *mapInf
 	BoundingBox charBoundingBox;
 	character->getBounds(character, &count, &charBoundingBox);
 	
-	character->position.x -= (charBoundingBox.startX < 0)*(charBoundingBox.startX);
-	character->position.y -= (charBoundingBox.startY < 0)*(charBoundingBox.startY);
-	character->position.x -= (charBoundingBox.endX > mapInfo->width)*(charBoundingBox.endX - mapInfo->width);
-	character->position.y -= (charBoundingBox.endY > mapInfo->height)*(charBoundingBox.endY - mapInfo->height);
+	bool leftEdge = (charBoundingBox.startX < 0);
+	bool rightEdge = (charBoundingBox.endX > mapInfo->width);
+	bool upperEdge = (charBoundingBox.startY < 0);
+	bool lowerEdge = (charBoundingBox.endY > mapInfo->height);
+	character->position.x -= leftEdge*(charBoundingBox.startX);
+	character->position.y -= upperEdge*(charBoundingBox.startY);
+	character->position.x -= rightEdge*(charBoundingBox.endX - mapInfo->width);
+	character->position.y -= lowerEdge*(charBoundingBox.endY - mapInfo->height);
+
+	if (character->free->type == EControlAiType) {
+		((CharacterAIControl*)character->free)->downBlocked |= lowerEdge;
+		((CharacterAIControl*)character->free)->upBlocked |= upperEdge;
+		((CharacterAIControl*)character->free)->leftBlocked |= leftEdge;
+		((CharacterAIControl*)character->free)->rightBlocked |= rightEdge;
+	}	
 }
 
 const CharFuncCollisionReaction common_collisionReactions[2][8] = {
@@ -130,7 +141,6 @@ const Position NOT_FOUND_POSITION = {-1, -1, -1};
 void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
     int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
 	
-	mprinter_printf("PAL ");
     for (i = 0; i < spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].numberOflayers; ++i) {
 
         yScreen = (spriteDisplay->baseY + 
@@ -149,19 +159,46 @@ void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
 		
 		id += spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].idOffset;
 		
-		mprinter_printf("%d ", spriteDisplay->basePalleteId + spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset);
 		oamBuf[i].attr2 =  ATTR2_SET(id,
 		    spriteDisplay->basePalleteId + 
 			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset, 3);
 			
 		oamBuf[i].fill = 0;
 	}
-	mprinter_printf("\n");
+}
+
+void commonSetToOamBufferAsObjWindow(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
+	int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
+
+    for (i = 0; i < spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].numberOflayers; ++i) {
+
+        yScreen = (spriteDisplay->baseY + 
+			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].offsetY) & 0x00FF;
+
+		oamBuf[i].attr0 = ATTR0_SETASWINOBJ(yScreen, 
+		    spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].shape);
+
+        xScreen = (spriteDisplay->baseX + 
+			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].offsetX) & 0x01FF;
+
+		oamBuf[i].attr1 = ATTR1_SET(xScreen, 
+			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].size,
+			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].hflip, 
+			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].vflip);
+
+		id += spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].idOffset;
+
+		//mprinter_printf("%d ", spriteDisplay->basePalleteId + spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset);
+		oamBuf[i].attr2 =  ATTR2_SET(id,
+		    spriteDisplay->basePalleteId + 
+			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset, 3);
+
+		oamBuf[i].fill = 0;
+	}
 }
 
 void commonDrawDisplay(SpriteDisplay *spriteDisplay) {
 	int i, id = spriteDisplay->baseImageId;
-	//mprinter_printf("PAL %d\n", id);
 	if (spriteDisplay->imageUpdateStatus == EUpdate) {
 		for (i = 0; i < spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].numberOflayers; ++i) {
 		    
@@ -293,7 +330,6 @@ void common_movingRight(CharacterAttr* character,
 	character->collisionCtrl.hasCollision = didCollide;
 	//if (didCollide && (otherCharBoundingBox->direction == ELeft || otherCharBoundingBox->direction == EUpleft ||
 	//	otherCharBoundingBox->direction == EDownleft)) {
-	//	mprinter_printf("OPPOSING FORCES!\n");
 	//}
 	xoffset = (character->delta.x)*greaterThanXOffset + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
@@ -313,7 +349,6 @@ void common_movingLeft(CharacterAttr* character,
 	bool greaterThanXOffset = xoffset > (-character->delta.x);
 	//if (didCollide && (otherCharBoundingBox->direction == ERight || otherCharBoundingBox->direction == EUpright ||
 	//	otherCharBoundingBox->direction == EDownright)) {
-	//	mprinter_printf("OPPOSING FORCES!\n");
 	//}
 	character->collisionCtrl.hasCollision = didCollide;
 	xoffset = (-character->delta.x)*greaterThanXOffset + (xoffset*(!greaterThanXOffset));
@@ -332,7 +367,6 @@ void common_movingUp(CharacterAttr* character,
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	//if (didCollide && (otherCharBoundingBox->direction == EDown || otherCharBoundingBox->direction == EDownright ||
 	//	otherCharBoundingBox->direction == EDownleft)) {
-	//	mprinter_printf("OPPOSING FORCES!\n");
 	//}
 	int yoffset = (otherCharBoundingBox->endY - charBoundingBox->startY)*(charBoundingBox->startY > otherCharBoundingBox->startY);
 	bool greaterThanYOffset = yoffset > (-character->delta.y);
@@ -353,7 +387,6 @@ void common_movingDown(CharacterAttr* character,
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	//if (didCollide && (otherCharBoundingBox->direction == EUp || otherCharBoundingBox->direction == EUpleft ||
 	//	otherCharBoundingBox->direction == EUpright)) {
-	//	mprinter_printf("OPPOSING FORCES!\n");
 	//}
 	int yoffset = (charBoundingBox->endY - otherCharBoundingBox->startY)*(charBoundingBox->endY < otherCharBoundingBox->endY);
 	bool greaterThanYOffset = yoffset > (character->delta.y);
@@ -411,7 +444,6 @@ void common_movingLeftUpOffset(CharacterAttr* character,
 	int yOffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
 	//if (didCollide && (otherCharBoundingBox->direction == ERight || otherCharBoundingBox->direction == EDown ||
 	//	otherCharBoundingBox->direction == EDownright)) {
-	//	mprinter_printf("OPPOSING FORCES!\n");
 	//}
 	bool doOffsetY = (xOffset > yOffset);
 	bool greaterThanYOffset = yOffset > (-character->delta.y);
@@ -799,7 +831,7 @@ void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInf
    eventBox.endX = character->position.x + charControl->width;
    eventBox.startY = character->position.y - charControl->height;
    eventBox.endY = character->position.y + charControl->height;
-   //mprinter_printf("GHOSTHAND PALETTE ID %d\n", character->spriteDisplay.basePalleteId);
+
     if (targetCharacter) {
        charControl->target = &targetCharacter->position;
     }
