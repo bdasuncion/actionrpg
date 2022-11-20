@@ -364,6 +364,8 @@ typedef struct BG_object2Layers
 
 #define ATTR0_SET(yPos, shape) (ATTR0_Y(yPos) | ATTR0_SHAPE(shape) | ATTR0_BLEND)
  
+#define ATTR0_SETASWINOBJ(yPos, shape) (ATTR0_Y(yPos) | ATTR0_SHAPE(shape) | ATTR0_WIN)
+
 #define ATTR1_X(n)          (n)
 #define ATTR1_AFF(n)		(n<<9)
 #define	ATTR1_HFLIP			BITC
@@ -391,4 +393,6 @@ typedef struct BG_object2Layers
 
 #define CONVERT_TO_BOUNDINGBOX_Y(y, stat) \
 	(y - (DIVIDE_BY_2(stat[EBBCnvrtWidth])))
+	
+#define ARM_IWRAM __attribute__((noinline, target("arm"), section(".iwram")))
 #endif
