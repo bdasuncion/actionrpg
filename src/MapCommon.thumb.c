@@ -39,16 +39,16 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	sprite_palette_init();
 	mchar_reinit(characterCollection, &alisa);
 	
-	//TODO change this
+	//TODO change this to common usage
 	alisa_init(alisa, controlPool);
-	//nameless_init(alisa);
     commonCharacterSetPosition(alisa, 
 	   eventTransfer->transferToX, eventTransfer->transferToY, 0, eventTransfer->directionOnTransfer);
 	alisa->doAction(alisa, mapInfo, characterCollection, charActionCollection);
+	
+	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
 	mscr_initCharMoveRef(screenAttribute, mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 		
-	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
 	mapInfo->transferTo = eventTransfer;
 		
 	mbg_init(screenAttribute, mapInfo, characterCollection, controlPool);
@@ -79,8 +79,8 @@ void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterC
 	}
 	
 	if (blendVal <= 0) {
+		mapInfo->mapFunction = ((MapInfo*)mapInfo->transferTo->mapInfo)->mapFunction;
 	    mapInfo->transferTo = NULL;
-		mapInfo->mapFunction = NULL;
 	}
 	blendBlack(blendVal);
 }
