@@ -529,14 +529,10 @@ void common_mapMovingRight(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	int xoffset = (charBoundingBox->endX - otherCharBoundingBox->startX);
-	
 	character->collisionCtrl.hasCollision = didCollide;
-	//character->position.x -= (charBoundingBox->endX - otherCharBoundingBox->startX + 1)*didCollide;
-	//character->position.x -= (xoffset + 1)*didCollide;
 	xoffset += 1;
 	xoffset *= didCollide;
 	character->position.x -= xoffset;
-	
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->rightBlocked |= (xoffset != 0);
 	}
@@ -547,12 +543,9 @@ void common_mapMovingLeft(CharacterAttr* character,
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	int xoffset = (otherCharBoundingBox->endX - charBoundingBox->startX);
 	character->collisionCtrl.hasCollision = didCollide;
-	//character->position.x += (otherCharBoundingBox->endX - charBoundingBox->startX + 1)*didCollide;
-	//character->position.x += (xoffset + 1)*didCollide;
 	xoffset += 1;
 	xoffset *= didCollide;
 	character->position.x += xoffset;
-	
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->leftBlocked |= (xoffset != 0);
 	}
@@ -563,12 +556,9 @@ void common_mapMovingUp(CharacterAttr* character,
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	int yoffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
 	character->collisionCtrl.hasCollision = didCollide;
-	//character->position.y += (otherCharBoundingBox->endY - charBoundingBox->startY + 1)*didCollide;
-	//character->position.y += (yoffset + 1)*didCollide;
 	yoffset += 1;
 	yoffset *= didCollide;
 	character->position.y += yoffset;
-	
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->upBlocked |= (yoffset != 0);
 	}
@@ -579,12 +569,9 @@ void common_mapMovingDown(CharacterAttr* character,
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	int yoffset = (charBoundingBox->endY - otherCharBoundingBox->startY);
 	character->collisionCtrl.hasCollision = didCollide;
-	//character->position.y -= (charBoundingBox->endY - otherCharBoundingBox->startY + 1)*didCollide;
-	//character->position.y -= (yoffset + 1)*didCollide;
 	yoffset += 1;
 	yoffset *= didCollide;
 	character->position.y -= yoffset;
-	
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->downBlocked |= (yoffset != 0);
 	}  
@@ -601,12 +588,8 @@ void common_mapMovingRightUpOffset(CharacterAttr* character,
 	yOffset *= doOffsetY*didCollide;
 	xOffset += 1;
 	xOffset *= (!doOffsetY)*didCollide;
-	//character->position.y += (yOffset + 1)*doOffsetY*didCollide;
-	//character->position.x -= (xOffset + 1)*(!doOffsetY)*didCollide;
 	character->position.y += yOffset;
 	character->position.x -= xOffset;
-	//character->position.y += (yOffset)*doOffsetY*didCollide;
-	//character->position.x -= (xOffset)*(!doOffsetY)*didCollide;
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->upBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->rightBlocked |= (xOffset != 0);
@@ -620,17 +603,12 @@ void common_mapMovingLeftUpOffset(CharacterAttr* character,
 	int yOffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
 	bool doOffsetY = (xOffset > yOffset);
 	character->collisionCtrl.hasCollision = didCollide;
-	
 	yOffset += 1;
 	yOffset *= doOffsetY*didCollide;
 	xOffset += 1;
 	xOffset *= (!doOffsetY)*didCollide;
-	//character->position.y += (yOffset + 1)*doOffsetY*didCollide;
-	//character->position.x += (xOffset +  1)*(!doOffsetY)*didCollide;
 	character->position.y += yOffset;
 	character->position.x += xOffset;
-	//character->position.y += (yOffset)*doOffsetY*didCollide;
-	//character->position.x += (xOffset)*(!doOffsetY)*didCollide;
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->upBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->leftBlocked |= (xOffset != 0);
@@ -640,7 +618,6 @@ void common_mapMovingLeftUpOffset(CharacterAttr* character,
 void common_mapMovingRightDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
-	//int xOffset = charBoundingBox->endX - otherCharBoundingBox->startX;
 	int xOffset = (charBoundingBox->endX - otherCharBoundingBox->startX);
 	int yOffset = (charBoundingBox->endY - otherCharBoundingBox->startY);
 	bool doOffsetY = (xOffset > yOffset);
@@ -649,12 +626,8 @@ void common_mapMovingRightDownOffset(CharacterAttr* character,
 	yOffset *= doOffsetY*didCollide;
 	xOffset += 1;
 	xOffset *= (!doOffsetY)*didCollide;
-	//character->position.y -= (yOffset + 1)*doOffsetY*didCollide;
-	//character->position.x -= (xOffset + 1)*(!doOffsetY)*didCollide;
 	character->position.y -= yOffset;
 	character->position.x -= xOffset;
-	//character->position.y -= (yOffset)*doOffsetY*didCollide;
-	//character->position.x -= (xOffset)*(!doOffsetY)*didCollide;
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->downBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->rightBlocked |= (xOffset != 0);
@@ -672,12 +645,8 @@ void common_mapMovingLeftDownOffset(CharacterAttr* character,
 	yOffset *= doOffsetY*didCollide;
 	xOffset += 1;
 	xOffset *= (!doOffsetY)*didCollide;
-	//character->position.y -= (yOffset + 1)*doOffsetY*didCollide;
-	//character->position.x += (xOffset + 1)*(!doOffsetY)*didCollide;
 	character->position.y -= yOffset;
 	character->position.x += xOffset;
-	//character->position.y -= (yOffset)*doOffsetY*didCollide;
-	//character->position.x += (xOffset)*(!doOffsetY)*didCollide;
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->downBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->leftBlocked |= (xOffset != 0);
@@ -702,28 +671,24 @@ void commonGetBoundsFromMap(s16 x, s16 y, const MapInfo* mapInfo, BoundingBox *c
 	}
 }
 
-inline void commonCheckMapCollision(CharacterAttr *character, const MapInfo* mapInfo, const Position *points, 
-    int pointCount, const BoundingBox *characterBoundingBox, const CharFuncCollisionReaction reaction) {
-	int i, count;
+inline void commonCheckMapCollision(CharacterAttr *character, const MapInfo* mapInfo, const Position *point, 
+    const BoundingBox *characterBoundingBox, const CharFuncCollisionReaction reaction) {
 	BoundingBox mapBoundingBox;
-	for (i = 0; i < pointCount; i++) {
-	    commonGetBoundsFromMap(points[i].x, points[i].y, mapInfo, &mapBoundingBox);
-		reaction(character, characterBoundingBox, &mapBoundingBox);
-		//if (character->collisionCtrl.hasCollision) {
-		//    character->getBounds(character, &count, characterBoundingBox);
-		//}
-	}
+	commonGetBoundsFromMap(point->x, point->y, mapInfo, &mapBoundingBox);
+	reaction(character, characterBoundingBox, &mapBoundingBox);
 }
 
 void commonMovingUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, 
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.startX, characterBoundingBox.startY, 0},
-        { characterBoundingBox.endX, characterBoundingBox.startY, 0} };
+	for (i = 0; i < 2; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.startX, characterBoundingBox.startY - 1, 0},
+			{ characterBoundingBox.endX, characterBoundingBox.startY - 1, 0} };
 	
-	commonCheckMapCollision(character, mapInfo, points, 2, &characterBoundingBox, reaction);		
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
 	
 }
 
@@ -731,82 +696,97 @@ void commonMovingDownMapCollision(CharacterAttr *character, const MapInfo* mapIn
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.startX, characterBoundingBox.endY, 0},
+	for (i = 0; i < 2; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.startX, characterBoundingBox.endY, 0},
         { characterBoundingBox.endX, characterBoundingBox.endY, 0} };
 		
-	commonCheckMapCollision(character, mapInfo, points, 2, &characterBoundingBox, reaction);		
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}		
 }
 
 void commonMovingRightMapCollision(CharacterAttr *character, const MapInfo* mapInfo, 
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.endX, characterBoundingBox.startY, 0},
+	for (i = 0; i < 2; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.endX, characterBoundingBox.startY, 0},
         { characterBoundingBox.endX, characterBoundingBox.endY, 0} };
 	
-	commonCheckMapCollision(character, mapInfo, points, 2, &characterBoundingBox, reaction);
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
 }
 
 void commonMovingLeftMapCollision(CharacterAttr *character, const MapInfo* mapInfo, 
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.startX, characterBoundingBox.startY, 0},
-        { characterBoundingBox.startX, characterBoundingBox.endY, 0} };
+	for (i = 0; i < 2; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.startX - 1, characterBoundingBox.startY, 0},
+			{ characterBoundingBox.startX - 1, characterBoundingBox.endY, 0} };
 	
-	commonCheckMapCollision(character, mapInfo, points, 2, &characterBoundingBox, reaction);
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
 }
 
 void commonMovingLeftUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, 
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.startX, characterBoundingBox.endY, 0},
-		{ characterBoundingBox.endX, characterBoundingBox.startY, 0}, 
-		{ characterBoundingBox.startX, characterBoundingBox.startY, 0}};
+	for (i = 0; i < 3; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.startX - 1, characterBoundingBox.endY, 0},
+			{ characterBoundingBox.endX, characterBoundingBox.startY - 1, 0}, 
+			{ characterBoundingBox.startX - 1, characterBoundingBox.startY - 1, 0}};
 	
-	commonCheckMapCollision(character, mapInfo, points, 3, &characterBoundingBox, reaction);
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
 }
 
 void commonMovingLeftDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, 
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.startX, characterBoundingBox.startY, 0},
-		{ characterBoundingBox.endX, characterBoundingBox.endY, 0},
-        { characterBoundingBox.startX, characterBoundingBox.endY, 0} };
+	for (i = 0; i < 3; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.startX - 1, characterBoundingBox.startY - 1, 0},
+			{ characterBoundingBox.endX, characterBoundingBox.endY, 0},
+			{ characterBoundingBox.startX - 1, characterBoundingBox.endY, 0} };
 	
-	commonCheckMapCollision(character, mapInfo, points, 3, &characterBoundingBox, reaction);
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
 }
 
 void commonMovingRightUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, 
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox, mapBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.endX, characterBoundingBox.endY, 0},
-		{ characterBoundingBox.startX, characterBoundingBox.startY, 0},
-		{ characterBoundingBox.endX, characterBoundingBox.startY, 0} };
+    for (i = 0; i < 3; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.endX, characterBoundingBox.endY, 0},
+			{ characterBoundingBox.startX - 1, characterBoundingBox.startY - 1, 0},
+			{ characterBoundingBox.endX, characterBoundingBox.startY - 1, 0} };
 	
-	commonCheckMapCollision(character, mapInfo, points, 3, &characterBoundingBox, reaction);
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
 }
 
 void commonMovingRightDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, 
 	CharFuncCollisionReaction reaction) {
     int count, i;
     BoundingBox characterBoundingBox, mapBoundingBox;
-    character->getBounds(character, &count, &characterBoundingBox);
-    Position points[] = { { characterBoundingBox.endX, characterBoundingBox.startY, 0},
-		{ characterBoundingBox.startX, characterBoundingBox.endY, 0},
-        { characterBoundingBox.endX, characterBoundingBox.endY, 0} };
+    for (i = 0; i < 3; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { { characterBoundingBox.endX, characterBoundingBox.startY - 1, 0},
+			{ characterBoundingBox.startX - 1, characterBoundingBox.endY, 0},
+			{ characterBoundingBox.endX, characterBoundingBox.endY, 0} };
 	
-	commonCheckMapCollision(character, mapInfo, points, 3, &characterBoundingBox, reaction);
+		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
 }
+
 
 void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventControl *eventControl) {
    CharacterEventControl *charControl = (CharacterEventControl*)character->free;
