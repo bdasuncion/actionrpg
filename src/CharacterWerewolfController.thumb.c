@@ -22,7 +22,6 @@ void werewolf_scanSurroundingsController(CharacterAttr* character/*,
    
 	//if (charControl->currentStatus == EWerewolfStatusHuntTarget) {
 	//	character->controller;
-	//   mprinter_printf("HUNT TARGET\n");
 	//	return;
 	//}
 	

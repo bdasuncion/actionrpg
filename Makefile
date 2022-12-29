@@ -23,12 +23,13 @@ INCLUDES	:=	inc
 # options for code generation8
 #---------------------------------------------------------------------------------
 #ARCH	:=	-mthumb -mthumb-interwork
+#ARCH	:=	-mthumb-interwork
 
 CFLAGS	:=	-g -Wall -O3 -fno-strict-aliasing\
 			-mcpu=arm7tdmi -mtune=arm7tdmi\
 # 			-fomit-frame-pointer\
 #			-ffast-math \
-			$(ARCH)
+#			$(ARCH)
 
 CFLAGS	+=	$(INCLUDE)
 

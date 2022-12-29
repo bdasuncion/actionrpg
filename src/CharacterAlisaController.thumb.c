@@ -100,7 +100,6 @@ void alisa_controller(CharacterAttr* character) {
 	EDirections direction = KEYPRESS_DIRECTION;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 
-    //mprinter_printf("POS CONT %d %d %d\n", character->position.x, character->position.y,  character->nextAction);
 	if (charControl->currentStatus == EAlisaStatusStunned) {
 		character->controller = &alisa_stunnedController; 
 		alisa_stunnedController(character);
@@ -148,7 +147,6 @@ void alisa_slashController(CharacterAttr* character) {
 	if (controlButtonHold(charControl, &alisa_slashController, &hold, ALISA_NORMALATTACK_INTERVALMAX) &&
 		(character->nextAction != EAlisaNormalSwordSlash && character->nextAction != EAlisaStrongSwordSlash)) {
 		//TODO Add strong attack for when normal attack threshhold is reached
-		mprinter_printf("HOLD %d\n", hold);
 		if (hold >= ALISA_NORMALATTACK_INTERVALMAX) {
 			character->nextAction = EAlisaStrongSwordSlash;
 		} else {
@@ -159,7 +157,7 @@ void alisa_slashController(CharacterAttr* character) {
 	if (character->nextAction == EAlisaNormalSwordSlash || character->nextAction == EAlisaStrongSwordSlash) {
 		commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
-		mprinter_printf("%s\n", character->nextAction == EAlisaNormalSwordSlash ? "NORMAL": "STRONG");
+//		mprinter_printf("%s\n", character->nextAction == EAlisaNormalSwordSlash ? "NORMAL": "STRONG");
 		if (isLastFrame) {
 			character->controller = &alisa_controller;
 			character->controller(character, NULL, NULL);
@@ -194,7 +192,8 @@ void alisa_prepareDashController(CharacterAttr* character) {
 		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
 		if (direction != character->faceDirection & 
 			direction != clockwise & direction != counterClockwise &
-			character->spriteDisplay.numberOfFramesPassed >= ALISA_MIN_BACKWARD_DASH) {
+			character->spriteDisplay.numberOfFramesPassed >= ALISA_MIN_BACKWARD_DASH &
+			character->nextAction == character->action) {
 			character->controller = &alisa_dashBackwardController;
 			character->controller(character, NULL, NULL);
 			return;
@@ -203,7 +202,7 @@ void alisa_prepareDashController(CharacterAttr* character) {
 	
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
-	mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
+//	mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
 	if (isLastFrame) {
 		character->controller = &alisa_dashForwardController;
 		character->controller(character, NULL, NULL);

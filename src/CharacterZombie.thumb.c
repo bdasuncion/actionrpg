@@ -141,7 +141,7 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->spriteDisplay.baseImageId = sprite_vram_findId();
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(ZOMBIE, ZOMBIE_PAL_CNT);
-	sprite_palette_copy32_ID(zombie_walk_up_pal, character->spriteDisplay.basePalleteId);
+	sprite_palette_copy32_ID(zombie_walk_side_pal, character->spriteDisplay.basePalleteId);
 	character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	CharacterAIControl *charControl = mchar_getControlType(controlPool);
 	charControl->type = EControlAiType;
@@ -163,9 +163,6 @@ void zombie_doAction(CharacterAttr* character,
 	CharacterActionCollection *charActionCollection) {
 	int boundBoxCount = 0;
 	CharBoundingBox boundingBox;
-	
-	//u16 *pal = sprite_get_palette_ID(character->spriteDisplay.basePalleteId);
-	//mprinter_printf("ZOMBIE %d %d %d\n", pal[1], pal[2], pal[3]);
 	
 	if (character->nextAction < EZombieActionCount) {
 		zombie_actions[character->nextAction](character, mapInfo, 
@@ -200,8 +197,6 @@ void zombie_actionWalk(CharacterAttr* character,
 	    character->movementCtrl.currentFrame = 0;
 	}
 	
-	//commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
-	//mprinter_printf("nextAnimationFrame %d\n", nextAnimationFrame);
 	if (commonGetCurrentAnimationFrame(character) == 0 || commonGetCurrentAnimationFrame(character) == 2) {
 		character->delta.x = zombie_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
 		character->position.x += character->delta.x;
@@ -225,7 +220,6 @@ void zombie_actionWalk(CharacterAttr* character,
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 		
 	if (commonIsFoundPosition(&charControl->target)) {
-		//mprinter_printf("FOUND TARGET");
 		charControl->currentStatus = EZombieStatusHuntTarget;
 	}
 }

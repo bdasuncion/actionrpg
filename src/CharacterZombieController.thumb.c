@@ -210,7 +210,6 @@ void zombie_isStunnedController(CharacterAttr* character) {
 	++charControl->actions[charControl->currentAction].currentFrame;
 	
 	if (commonDoNextAction(character)) {
-		mprinter_printf("BACK TO HUNT\n");
 	    charControl->currentAction = MAXACTIONS;
 		character->controller = &zombie_huntController;
 		character->stats.currentStatus = EStatusNormal;

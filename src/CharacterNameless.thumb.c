@@ -37,7 +37,7 @@ extern const SpriteSet maincharacter_stand;
 extern const SpriteSet maincharacter_walk;
 extern const SpriteSet ghosthand_appear;
 extern const SpriteSet ghosltyman;
-const unsigned short maincharacterlower_walk_pal[16];
+extern const unsigned short maincharacterlower_walk_pal[16];
 
 void nameless_doAction(CharacterAttr* nameless, const MapInfo *mapInfo, 
     const void *dummy, CharacterActionCollection *charActionCollection);
@@ -68,7 +68,6 @@ void nameless_init(CharacterAttr* nameless) {
 	nameless->spriteDisplay.imageUpdateStatus = EUpdate;
 	nameless->spriteDisplay.basePalleteId = sprite_palette_findId(NAMELESS, NAMELESS_PAL_CNT);
 	
-	//mprinter_printf("PALLETTE ID %d\n", nameless->spriteDisplay.basePalleteId);
 	sprite_palette_copy32_ID(maincharacterlower_walk_pal, nameless->spriteDisplay.basePalleteId);
 	sprite_palette_copy32_ID(maincharacterlower_walk_pal, nameless->spriteDisplay.basePalleteId);
 	

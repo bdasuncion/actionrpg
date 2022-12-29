@@ -150,8 +150,6 @@ void ghostlyHand_doAppear(CharacterAttr* ghostlyHand, const MapInfo *mapInfo,
 		ghostlyHand->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
 	
-	//mprinter_printf("current frame %d\n", ghostlyHand->spriteDisplay.currentAnimationFrame);
-	//mprinter_printf("current DISPLAY frame %d\n", ghostlyHand->spriteDisplay.numberOfFramesPassed);
 	ghostlyHand->action = ghostlyHand->nextAction;
 	ghostlyHand->direction = ghostlyHand->nextDirection;
 	

@@ -64,9 +64,6 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		    mchar_action(characterCollection);
 		    mchar_resolveAction(characterCollection, mapInfo, charActionCollection);
 		}
-		/*mprinter_printf("%d,%d\n", screenAttribute.position.x,
-			screenAttribute.position.y);
-		mprinter_printf("%d,%d\n", mapInfo.width, mapInfo.height);*/
 		
 		//screenAttribute.controller(&screenAttribute, 
 		//	&mapInfo);
@@ -109,7 +106,7 @@ int main() {
 	//MapInfo mapInfo = map_night_street;
 	//MapInfo mapInfo = mapTest;
 	CharacterAttr *alisa;
-		
+	
 	sprite_vram_init();
 	sprite_palette_init();
 	

@@ -108,10 +108,7 @@ void mbg_setVerticalTiles(const MapInfo *mapInfo,
 	u16 mapblock_width = MAPBLOCK_WIDTH_TILE_COUNT;
 	u16 mapblock_height = MAPBLOCK_HEIGHT_TILE_COUNT;
 	u16 mapblock_xidx = bg_tile_x_idx & MAPBLOCK_WIDTH_MAXIDX;
-	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;
-
-	//mprinter_printf("x:%d y:%d\n", mapblock_xidx, mapblock_yidx);
-		
+	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;		
 	u16 bg_width_tile_count = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	
 	s32 i,layeridx;
@@ -140,9 +137,7 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 	u16 mapblock_height = MAPBLOCK_HEIGHT_TILE_COUNT;
 	u16 mapblock_xidx = bg_tile_x_idx & MAPBLOCK_WIDTH_MAXIDX;
 	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;
-	
-	//mprinter_printf("x:%d y:%d\n", bg_tile_x_idx, bg_tile_y_idx);
-	
+		
 	u16 bg_width_tile_count = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	s32 i,layeridx;
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
@@ -168,25 +163,14 @@ ECollisionStatus mbg_checkBoundary(
 	//mapInfo->collisionTable;
 	charAttr->getBounds(charAttr, &boundBoxCount, boundingBox);
 	
-	for (i = 0; i < boundBoxCount; ++i) {
-		mprinter_printf("x:%d,y:%d\n", boundingBox[i].upperLeftPt.x, 
-			boundingBox[i].upperLeftPt.y);
-	}
-	
 	return ENoCollide;
 }
-	
+//TODO Remove?
 void mbg_checkCollision(
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,
 	const EDirections direction)
 {
-//	ECollisionStatus status = ENoCollide;
-//	status = mbg_checkBoundary(mapInfo, charAttr);
-//	if (status == ENoCollide) {
-//	}
-//	return status;
-
 	Position point;
 	int collisionValueOnPosition;
 	
@@ -200,7 +184,6 @@ void mbg_checkCollision(
 		for (i = 0; i < total; ++i) {
 			point.y += i*TILE_HEIGHT;
 			mbg_collisionAtPosition(mapInfo, &point, &collisionValueOnPosition);
-//			mprinter_printf("COLLISION:%d\n", collisionValueOnPosition);
 			if (collisionValueOnPosition) {
 				GET_REMAINDER_8(charBoundingBox->upperLeftPt.x);
 			}
@@ -238,14 +221,4 @@ void mbg_collisionAtPosition(const MapInfo *mapInfo,
 		DIVIDE_BY_TILES_PER_ENTRY(DIVIDE_BY_TILE_WIDTH(position->x));
 	u32 verticaloffsetIdx = 
 		DIVIDE_BY_TILE_HEIGHT(position->y)*arrayWidth;
-	//u8 *collision = mapInfo->collisionTable;
-	//u32 *collision = mapInfo->collisionTable;
-	
-	//*collisionValueOnPosition =
-	//	GET_COLLISION_FROM_ENTRY(collision[verticaloffsetIdx + horizontalIdx],
-	//		position->x);
-	
-	//mprinter_printf("AT POSITION X:%d Y:%d\n",position->x, position->y);
-	//mprinter_printf("AT IDX X:%d Y:%d\n",horizontalIdx, DIVIDE_BY_TILE_HEIGHT(position->y));
-	//mprinter_printf("AT TILE:%d\n", TILE_IDX(position->x));
 }

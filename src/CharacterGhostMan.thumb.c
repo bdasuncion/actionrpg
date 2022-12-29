@@ -128,7 +128,6 @@ void ghostMan_doSit(CharacterAttr* ghostMan, const MapInfo *mapInfo,
 		distance *= (distance < 0)*(-1) + (distance >= 0)*1;
 		msound_setChannel3d(&soundeffect_ghost_moan3, false, rightPhaseDelay, leftPhaseDelay, distance);
 	}*/
-	//mprinter_printf("DO TRANSITION\n");
 	ghostMan->movementCtrl.maxFrames = 0;
 	ghostMan->movementCtrl.currentFrame = 0;
 	
@@ -177,7 +176,6 @@ void ghostMan_doFollow(CharacterAttr* ghostMan, const MapInfo *mapInfo,
 		ghostMan->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
 	
-	//mprinter_printf("GHOSTMAN PALETTE ID %d\n", ghostMan->spriteDisplay.basePalleteId);
 	ghostMan->action = ghostMan->nextAction;
 	ghostMan->direction = ghostMan->nextDirection;
 	

@@ -296,8 +296,6 @@ void alisa_doAction(CharacterAttr* alisa,
 	const MapInfo *mapInfo, const void *dummy, 
 	CharacterActionCollection *charActionCollection) {
 	
-	//u16 *pal = sprite_get_palette_ID(alisa->spriteDisplay.basePalleteId);
-	//mprinter_printf("ALISA %d %d %d\n", pal[1], pal[2], pal[3]);
 	if (alisa->nextAction < EAlisaActionCount) {
 		alisa_actions[alisa->nextAction](alisa, mapInfo, NULL, charActionCollection);
 	}
@@ -389,8 +387,6 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
 
-	
-	//mprinter_printf("DIRECTION %d\n", character->direction);
 	//mprinter_printf("JAPANESE %d\n", 'か');
 	//mprinter_printf("JAPANESE2 %d\n", 'め');
 	//mprinter_printf("JAPANESE3 %d\n", '火');
@@ -447,10 +443,6 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
-	
-	
-	mprinter_printf("ACTION FRAMES %d %d\n", alisa->spriteDisplay.numberOfFramesPassed, 
-		alisa->spriteDisplay.currentAnimationFrame);
 	
 	alisa->movementCtrl.maxFrames = 0;
 	alisa->movementCtrl.currentFrame = 0;

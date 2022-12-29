@@ -173,8 +173,6 @@ void mchar_checkCollisionAbove(BoundingBox *boundingBox, BoundingBox *checkWithB
 	    boundingBox->startY <= checkWithBoundingBox->endY) ||
 		(boundingBox->endY >= checkWithBoundingBox->startY &&
 		boundingBox->endY <= checkWithBoundingBox->endY))) {
-		
-		mprinter_printf("COLLISION ABOVE %d\n", idx);
 	}
 }
 
@@ -190,8 +188,6 @@ void mchar_checkCollisionBelow(BoundingBox *boundingBox, BoundingBox *checkWithB
 	    boundingBox->startY <= checkWithBoundingBox->endY) ||
 		(boundingBox->endY >= checkWithBoundingBox->startY &&
 		boundingBox->endY <= checkWithBoundingBox->endY))) {
-		
-		mprinter_printf("COLLISION BELOW %d\n", idx);
 	}
 }
 
