@@ -394,5 +394,5 @@ typedef struct BG_object2Layers
 #define CONVERT_TO_BOUNDINGBOX_Y(y, stat) \
 	(y - (DIVIDE_BY_2(stat[EBBCnvrtWidth])))
 	
-#define ARM_IWRAM __attribute__((noinline, target("arm"), section(".iwram")))
+#define ARM_IWRAM __attribute__((noinline, target("arm"), section(".iwram"), long_call))
 #endif
