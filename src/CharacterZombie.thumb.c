@@ -216,7 +216,6 @@ void zombie_actionWalk(CharacterAttr* character,
 	boundingBox.endX = CONVERT_2POS(position->x) + zombie_scanSurroundingOffset[character->direction][1].x;
 	boundingBox.endY = CONVERT_2POS(position->y) + zombie_scanSurroundingOffset[character->direction][1].y;
 	
-	mprinter_printf("BOX %d %d %d %d\n", boundingBox.startX, boundingBox.startY, boundingBox.endX, boundingBox.endY);
 	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 		
