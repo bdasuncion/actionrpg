@@ -116,8 +116,8 @@ void alisa_controller(CharacterAttr* character) {
 	if (direction != EUnknown) {
 		character->nextAction = EAlisaRun;
 		character->nextDirection = direction;
-		if (!(direction == EUpleft | direction == EDownleft & character->faceDirection == ELeft) && 
-			!(direction == EUpright | direction == EDownright & character->faceDirection == ERight)) {
+		if (!((direction == EUpleft | direction == EDownleft) & character->faceDirection == ELeft) && 
+			!((direction == EUpright | direction == EDownright) & character->faceDirection == ERight)) {
 			character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
 		}
 		//character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
