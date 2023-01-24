@@ -47,24 +47,24 @@ const u8 zombie_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
 
 const s32 zombie_walkOffsetX[EDirectionsCount][zombie_WALK_MVMNT_CTRL_MAX] = {
     {0,0,0,0,0},
-	{1,0,0,0,1},
-	{1,0,1,0,1},
-	{1,0,0,0,1},
+	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
+	{1*MOVE_STR,0,1*MOVE_STR,0,1*MOVE_STR},
+	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1,0,0,0,-1},
-	{-1,0,-1,0,-1},
-	{-1,0,0,0,-1}
+	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
+	{-1*MOVE_STR,0,-1*MOVE_STR,0,-1*MOVE_STR},
+	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG}
 };
 
 const s32 zombie_walkOffsetY[EDirectionsCount][zombie_WALK_MVMNT_CTRL_MAX] = {
-    {1,0,1,0,1},
-	{1,0,0,0,1},
+    {1*MOVE_STR,0,1*MOVE_STR,0,1*MOVE_STR},
+	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1,0,0,0,-1},
-	{-1,0,-1,0,-1},
-	{-1,0,0,0,-1},
+	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
+	{-1*MOVE_STR,0,-1*MOVE_STR,0,-1*MOVE_STR},
+	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{1,0,0,0,1}
+	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG}
 };
 
 const OffsetPoints zombie_scanSurroundingOffset[8][2] = {
@@ -211,11 +211,12 @@ void zombie_actionWalk(CharacterAttr* character,
 	++character->movementCtrl.currentFrame;
 	character->spriteDisplay.spriteSet = zombieWalk[character->direction];
 	
-	boundingBox.startX = position->x + zombie_scanSurroundingOffset[character->direction][0].x;
-	boundingBox.startY = position->y + zombie_scanSurroundingOffset[character->direction][0].y;
-	boundingBox.endX = position->x + zombie_scanSurroundingOffset[character->direction][1].x;
-	boundingBox.endY = position->y + zombie_scanSurroundingOffset[character->direction][1].y;
+	boundingBox.startX = CONVERT_2POS(position->x) + zombie_scanSurroundingOffset[character->direction][0].x;
+	boundingBox.startY = CONVERT_2POS(position->y) + zombie_scanSurroundingOffset[character->direction][0].y;
+	boundingBox.endX = CONVERT_2POS(position->x) + zombie_scanSurroundingOffset[character->direction][1].x;
+	boundingBox.endY = CONVERT_2POS(position->y) + zombie_scanSurroundingOffset[character->direction][1].y;
 	
+	mprinter_printf("BOX %d %d %d %d\n", boundingBox.startX, boundingBox.startY, boundingBox.endX, boundingBox.endY);
 	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 		
@@ -305,9 +306,9 @@ void zombie_actionAttack(CharacterAttr* character,
 		Position collisionPoints[2];
 		int attackVal = 1, countPoints = 2;
 		
-		collisionPoints[0].x = character->position.x + zombie_strike_offsetValues[character->direction][0].x;
-		collisionPoints[0].y = character->position.y + zombie_strike_offsetValues[character->direction][0].y;
-		collisionPoints[1].x = character->position.x + zombie_strike_offsetValues[character->direction][1].x;
+		collisionPoints[0].x = CONVERT_2POS(character->position.x) + zombie_strike_offsetValues[character->direction][0].x;
+		collisionPoints[0].y = CONVERT_2POS(character->position.y) + zombie_strike_offsetValues[character->direction][0].y;
+		collisionPoints[1].x = CONVERT_2POS(character->position.x) + zombie_strike_offsetValues[character->direction][1].x;
 		collisionPoints[1].y = collisionPoints[0].y + zombie_strike_offsetValues[character->direction][1].y;	
 	
 		mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
@@ -391,10 +392,10 @@ int zombie_setPosition(CharacterAttr* character,
 	character->spriteDisplay.baseX = CONVERT_TO_SCRXPOS(character->position.x, 
 		scr_pos->x, zombie_scrConversionMeasurements);
 	
-	charStartX = character->position.x - ZOMBIE_SCREENDISPLAYOFFSET_X;
-	charStartY = character->position.y;
-	charEndX = character->position.x + ZOMBIE_SCREENDISPLAYOFFSET_X;
-	charEndY = character->position.y - ZOMBIE_SCREENDISPLAYOFFSET_Y;
+	charStartX = CONVERT_2POS(character->position.x) - ZOMBIE_SCREENDISPLAYOFFSET_X;
+	charStartY = CONVERT_2POS(character->position.y);
+	charEndX = CONVERT_2POS(character->position.x) + ZOMBIE_SCREENDISPLAYOFFSET_X;
+	charEndY = CONVERT_2POS(character->position.y) - ZOMBIE_SCREENDISPLAYOFFSET_Y;
 	
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
 		character->spriteDisplay.imageUpdateStatus = ((!character->spriteDisplay.isInScreen)*EUpdate) + 
@@ -444,7 +445,7 @@ void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionC
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
 		for (j = 0; j < charActionEvent->count; ++j) {
-			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
+			isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
 		}
 		if (isHit) {
 			character->stats.currentLife -= 1;

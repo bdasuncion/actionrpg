@@ -224,4 +224,22 @@ typedef struct CharacterCollection {
 	CharacterAttr **characters;
 	CharacterAttr **charactersDoEvent;
 } ALIGN4 CharacterCollection;
+
+#define MOVEFRACTION 8
+#define MOVE_STR (1 << MOVEFRACTION)
+#define MOVE_DIAG ((MOVE_STR*7)/10)
+#define CONVERT_2MOVE(val) ((val) << MOVEFRACTION)
+#define CONVERT_2POS(val) ((val) >> MOVEFRACTION)
+
+#define CONVERT_TO_SCRXPOS(x, scr_x, stat) \
+	((CONVERT_2POS(x) - (stat[EScrCnvrtWidth] >> 1)) - scr_x)&0x1FF
+	
+#define CONVERT_TO_SCRYPOS(y, scr_y, stat) \
+	((CONVERT_2POS(y) - stat[EScrCnvrtHeight]) - scr_y)&0xFF
+
+#define CONVERT_TO_BOUNDINGBOX_X(x, stat) \
+	(CONVERT_2POS(x) - (DIVIDE_BY_2(stat[EBBCnvrtLength])))
+
+#define CONVERT_TO_BOUNDINGBOX_Y(y, stat) \
+	(CONVERT_2POS(y) - (DIVIDE_BY_2(stat[EBBCnvrtWidth])))
 #endif

@@ -45,24 +45,24 @@ const u8 werewolf_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
 
 const s32 werewolf_runOffsetX[EDirectionsCount][werewolf_RUN_MVMNT_CTRL_MAX] = {
     {0,0,0,0,0},
-	{1,1,1,1,1},
-	{1,2,1,2,1},
-	{1,1,1,1,1},
+	{1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG},
+	{1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1,-1,-1,-1,-1},
-	{-1,-2,-1,-2,-1},
-	{-1,-1,-1,-1,-1}
+	{-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG}
 };
 
 const s32 werewolf_runOffsetY[EDirectionsCount][werewolf_RUN_MVMNT_CTRL_MAX] = {
-    {1,2,1,2,1},
-	{1,1,1,1,1},
+    {1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1,-2,-1,-2,-1},
-	{-1,-1,-1,-1,-1},
-	{-1,-1,-1,-1,-1},
+	{-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{1,1,1,1,1}
+	{1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG}
 };
 
 const CharFuncCollisionReaction werewolf_collisionReactions[][8] = {
@@ -300,10 +300,10 @@ int werewolf_setPosition(CharacterAttr* character,
 	character->spriteDisplay.baseX = CONVERT_TO_SCRXPOS(character->position.x, 
 		scr_pos->x, werewolf_scrConversionMeasurements);
 	
-	charStartX = character->position.x - WEREWOLF_SCREENDISPLAYOFFSET_X;
-	charStartY = character->position.y;
-	charEndX = character->position.x + WEREWOLF_SCREENDISPLAYOFFSET_X;
-	charEndY = character->position.y - WEREWOLF_SCREENDISPLAYOFFSET_Y;
+	charStartX = CONVERT_2POS(character->position.x) - WEREWOLF_SCREENDISPLAYOFFSET_X;
+	charStartY = CONVERT_2POS(character->position.y);
+	charEndX = CONVERT_2POS(character->position.x) + WEREWOLF_SCREENDISPLAYOFFSET_X;
+	charEndY = CONVERT_2POS(character->position.y) - WEREWOLF_SCREENDISPLAYOFFSET_Y;
 	
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
 		character->spriteDisplay.imageUpdateStatus = ((!character->spriteDisplay.isInScreen)*EUpdate) + 
@@ -391,7 +391,7 @@ void werewolf_checkActionEventCollision(CharacterAttr *character, CharacterActio
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
 		for (j = 0; j < charActionEvent->count; ++j) {
-			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
+			isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
 		}
 		if (isHit) {
 		    character->stats.currentLife -= 1;

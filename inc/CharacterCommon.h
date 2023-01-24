@@ -20,6 +20,7 @@ void commonCharacterInit(CharacterAttr* character, int initialize, int action, E
 bool commonIsInScreen(int charStartX, int charEndX, int charStartY, int charEndY, 
     const Position *scr_pos, const ScreenDimension *scr_dim);
 bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+bool commonCollissionPointInBounds(const Position *collisionPoint, const BoundingBox *boundingBox);
 bool commonPositionInBounds(const Position *position, const BoundingBox *boundingBox);
 void commonCharacterMapEdgeCheck(CharacterAttr* character, const MapInfo* mapInfo);
 bool common_checkNext(bool isOtherCharBelow, const BoundingBox *charBoundingBox, 
@@ -58,7 +59,7 @@ void common_mapMovingRightDownOffset(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_mapMovingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void commonGetBoundsFromMap(s16 x, s16 y, const MapInfo* mapInfo, BoundingBox *charBoundingBox);
+void commonGetBoundsFromMap(s32 x, s32 y, const MapInfo* mapInfo, BoundingBox *charBoundingBox);
 void commonMovingUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonMovingDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonMovingRightMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
@@ -74,7 +75,7 @@ bool commonDoNextAction(CharacterAttr* character);
 const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
 const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
 const Position* commonFindCharTypePositionByDistance(const CharacterCollection *characterCollection, 
-const Position *refPos, int dist, CHARACTERTYPE fromType, CHARACTERTYPE toType);
+	const Position *refPos, int dist, CHARACTERTYPE fromType, CHARACTERTYPE toType);
 extern const CharFuncCollisionReaction common_collisionReactions[2][8];
 extern const CharFuncCollisionReaction common_mapCollisionReactions[8];
 extern const CommonMapCollision common_mapCollision[8];

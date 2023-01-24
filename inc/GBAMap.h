@@ -63,7 +63,7 @@ typedef struct MapInfo {
 	u16 mapEntryCount:2;
 	u16 tileSetCount:8;
 	u16 palletteCnt:4;
-	u16 eventTranferCount:6;
+	u16 eventTransferCount:6;
 	u16 characterCount:7;
 	EventTransfer *transferTo;
 	u16 **mapEntry;

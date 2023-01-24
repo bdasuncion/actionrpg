@@ -29,95 +29,47 @@ extern const EDirections directions[EDirectionsCount];
 extern const Sound soundeffect_slash;
 
 const s32 alisa_runOffsetX[EDirectionsCount][alisa_RUN_MVMNT_CTRL_MAX] = {
-    /*{0,0,0,0,0},
-	{1,2,1,2,1},
-	{2,2,2,2,2},
-	{1,2,1,2,1},
+{0,0,0,0,0},
+    {2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG},
+	{2*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,2*MOVE_STR},
+	{2*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,2*MOVE_STR},
 	{0,0,0,0,0},
-	{-1,-2,-1,-2,-1},
-	{-2,-2,-2,-2,-2},
-	{-1,-2,-1,-2,-1}*/
-	{0,0,0,0,0},
-	{1,1,2,1,1},
-	{2,1,2,1,2},
-	{1,1,2,1,1},
-	{0,0,0,0,0},
-	{-1,-1,-2,-1,-1},
-	{-2,-1,-2,-1,-2},
-	{-1,-1,-2,-1,-1}
+	{-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG},
+	{-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR},
+	{-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG}
 };
 
 const s32 alisa_runOffsetY[EDirectionsCount][alisa_RUN_MVMNT_CTRL_MAX] = {
-    /*{2,2,2,2,2},
-	{1,2,1,2,1},
+	{2*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,2*MOVE_STR},
+	{2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1,-2,-1,-2,-1},
-	{-2,-2,-2,-2,-2},
-	{-1,-2,-1,-2,-1},
+	{-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG},
+	{-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR},
+	{-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG},
 	{0,0,0,0,0},
-	{1,2,1,2,1}*/
-	{2,1,2,1,2},
-	{1,1,2,1,1},
-	{0,0,0,0,0},
-	{-2,-1,-2,-1,-2},
-	{-1,-1,-2,-1,-1},
-	{-1,-1,-2,-1,-1},
-	{0,0,0,0,0},
-	{1,1,2,1,1}
+	{2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG}
 };
 
 const s32 alisa_dashOffsetX[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
-/*	{0,0,0,0,0},
-	{2,1,2,1,2},
-	{2,2,3,2,2},
-	{2,1,2,1,2},
-	{0,0,0,0,0},
-	{-2,-1,-2,-1,-2},
-	{-2,-2,-3,-2,-2},
-	{-2,-1,-2,-1,-2}*/
-	/*{0,0,0},
-	{3,2,3},
-	{4,3,4},
-	{3,2,3},
 	{0,0,0},
-	{-3,-2,-3},
-	{-4,-3,-4},
-	{-3,-2,-3}*/
+	{4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG},
+	{4*MOVE_STR,4*MOVE_STR,4*MOVE_STR,4*MOVE_STR},
+	{4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG},
 	{0,0,0},
-	{3,3,3,3},
-	{4,4,4,4},
-	{3,3,3,3},
-	{0,0,0},
-	{-3,-3,-3,-3},
-	{-4,-4,-4,-4},
-	{-3,-3,-3,-3}
+	{-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG},
+	{-4*MOVE_STR,-4*MOVE_STR,-4*MOVE_STR,-4*MOVE_STR},
+	{-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG}
 };
 
 const s32 alisa_dashOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
-	/*{2,2,3,2,2},
-	{2,1,2,1,2},
-	{0,0,0,0,0},
-	{-2,-2,-3,-2,-2},
-	{-2,-1,-2,-1,-2},
-	{-2,-1,-2,-1,-2},
-	{0,0,0,0,0},
-	{2,1,2,1,2}*/
-	/*{4,3,3},
-	{3,2,3},
+	{4*MOVE_STR,4*MOVE_STR,4*MOVE_STR,4*MOVE_STR},
+	{4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG},
 	{0,0,0},
-	{-4,-3,-4},
-	{-3,-2,-3},
-	{-3,-2,-3},
+	{-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG},
+	{-4*MOVE_STR,-4*MOVE_STR,-4*MOVE_STR,-4*MOVE_STR},
+	{-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG,-4*MOVE_DIAG},
 	{0,0,0},
-	{3,2,3}*/
-	{4,4,4,4},
-	{3,3,3,3},
-	{0,0,0},
-	{-4,-4,-4,-4},
-	{-3,-3,-3,-3},
-	{-3,-3,-3,-3},
-	{0,0,0},
-	{3,3,3,3}
+	{4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG}
 };
 
 #define ALISA_SCRCNVRTWIDTH 16
@@ -307,7 +259,7 @@ void checkForEvents(CharacterAttr* alisa,
 	MapInfo *mapInfo) {
 	int boundBoxCount = 0, i;
 	BoundingBox eventBox, alisaBoundingBox;
-	for (i = 0; i < mapInfo->eventTranferCount; ++i) {
+	for (i = 0; i < mapInfo->eventTransferCount; ++i) {
 		transferToBoundingBox(&mapInfo->tranfers[i], &eventBox);
 		alisa->getBounds(alisa, &boundBoxCount, &alisaBoundingBox);
 		if (hasCollision(&alisaBoundingBox, &eventBox)) {
@@ -422,9 +374,9 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
-	collisionPoints[0].x = alisa->position.x + slash_offsetValues[alisa->direction][0].x;
-	collisionPoints[0].y = alisa->position.y + slash_offsetValues[alisa->direction][0].y;
-	collisionPoints[1].x = alisa->position.x + slash_offsetValues[alisa->direction][1].x;
+	collisionPoints[0].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][0].x;
+	collisionPoints[0].y = CONVERT_2POS(alisa->position.y) + slash_offsetValues[alisa->direction][0].y;
+	collisionPoints[1].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][1].x;
 	collisionPoints[1].y = collisionPoints[0].y + slash_offsetValues[alisa->direction][1].y;	
 	
 	mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
@@ -624,7 +576,7 @@ void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollec
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
 		for (j = 0; j < charActionEvent->count; ++j) {
-			isHit |= commonPositionInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
+			isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
 		}
 		if (isHit) {
 			alisa->stats.currentLife -= 1;

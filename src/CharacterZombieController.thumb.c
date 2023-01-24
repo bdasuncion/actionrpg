@@ -116,8 +116,8 @@ const EDirections NEAR_TARGET[5][5] = {
 };
 
 void findAttackDirection(const Position *charPosition, const Position *target, EDirections *direction) {
-	int xDist = charPosition->x - target->x;
-	int yDist = charPosition->y - target->y;
+	int xDist = CONVERT_2POS(charPosition->x) - CONVERT_2POS(target->x);
+	int yDist = CONVERT_2POS(charPosition->y) - CONVERT_2POS(target->y);
 	EDirections xDirection, yDirection;
 	xDirection = (xDist > 0)*(ELeft) + (!(xDist > 0))*(ERight);
 	yDirection = (yDist > 0)*(EUp) + (!(yDist > 0))*(EDown);
@@ -155,8 +155,8 @@ void zombie_huntController(CharacterAttr* character) {
 		}
 	}
 		
-	distanceX = charControl->target.x - character->position.x + DIST_OFFSET;
-	distanceY = charControl->target.y - character->position.y + DIST_OFFSET;
+	distanceX = CONVERT_2POS(charControl->target.x) - CONVERT_2POS(character->position.x) + DIST_OFFSET;
+	distanceY = CONVERT_2POS(charControl->target.y) - CONVERT_2POS(character->position.y) + DIST_OFFSET;
 	
 	if (charControl->actions[charControl->currentAction].action != EZombieAttack && (distanceX < DIST_OFFSET*2 && distanceX >= 0) && (distanceY < DIST_OFFSET*2 && distanceY >= 0)) {
 		EDirections goDirection;
