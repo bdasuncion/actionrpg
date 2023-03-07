@@ -57,6 +57,9 @@ typedef volatile signed int 		vs32;
 #define BIT31 (1<<31)
 #define BIT(n) (1<<(n))
 
+#define WAITCNT *(vu16*)0x4000204
+#define STDWAIT 0x4017
+
 typedef enum ERegStatus
 {
 	EDisable,

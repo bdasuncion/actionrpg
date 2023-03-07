@@ -95,6 +95,10 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 	}
 }
 
+void setWaitState() {
+	WAITCNT = STDWAIT;
+}
+
 int main() {
 	CharacterCollection characterCollection;
 	OAMCollection oamCollection;
@@ -109,6 +113,7 @@ int main() {
 	
 	sprite_vram_init();
 	sprite_palette_init();
+	setWaitState();
 	
 	mapInfo.screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 	
