@@ -74,24 +74,24 @@ const CharFuncCollisionReaction werewolf_collisionReactions[][8] = {
 		&common_noMovement,
 		&common_noMovement,
 		&common_noMovement },
-	{	&common_movingDown,
+	{	&common_movingDownOffset,
 		&common_movingRightDownOffset,
-		&common_movingRight,
+		&common_movingRightOffset,
 		&common_movingRightUpOffset,
-		&common_movingUp,
+		&common_movingUpOffset,
 		&common_movingLeftUpOffset,
-		&common_movingLeft,
+		&common_movingLeftOffset,
 		&common_movingLeftDownOffset}
 };
 
 const CharFuncCollisionReaction werewolf_mapCollisionReactions[8] = {
-	&common_mapMovingDown,
+	&common_mapMovingDownOffset,
 	&common_mapMovingRightDownOffset,
-	&common_mapMovingRight,
+	&common_mapMovingRightOffset,
 	&common_mapMovingRightUpOffset,
-	&common_mapMovingUp,
+	&common_mapMovingUpOffset,
 	&common_mapMovingLeftUpOffset,
-	&common_mapMovingLeft,
+	&common_mapMovingLeftOffset,
 	&common_mapMovingLeftDownOffset
 };
 
@@ -335,10 +335,13 @@ void werewolf_getBoundingBoxMoving(const CharacterAttr* character,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, werewolf_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, werewolf_boundingBoxMeasurements);
+	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + werewolf_boundingBoxMeasurements[EBBCnvrtLength];
 	boundingBox->endY = y + werewolf_boundingBoxMeasurements[EBBCnvrtWidth];
+	boundingBox->startZ = z;
+	boundingBox->endZ = z + WEREWOLF_HEIGHT;
 	//boundingBox->height = werewolf_boundingBoxMeasurements[EBBCnvrtHeight];
 	boundingBox->direction = character->direction;
 	boundingBox->isMoving = true;
@@ -350,11 +353,14 @@ void werewolf_getBoundingBoxStanding(const CharacterAttr* character,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, werewolf_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, werewolf_boundingBoxMeasurements);
+	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + werewolf_boundingBoxMeasurements[EBBCnvrtLength];
 	boundingBox->endY = y + werewolf_boundingBoxMeasurements[EBBCnvrtWidth];
 	//boundingBox->height = werewolf_boundingBoxMeasurements[EBBCnvrtHeight];
+	boundingBox->startZ = z;
+	boundingBox->endZ = z + WEREWOLF_HEIGHT;
 	boundingBox->direction = character->direction;
 	boundingBox->isMoving = false;
 	boundingBox->isMovable = false;

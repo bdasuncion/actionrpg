@@ -34,6 +34,8 @@ extern const EDirections directions[EDirectionsCount];
 #define ZOMBIE_ATTACK_FRAME_START 3
 #define ZOMBIE_ATTACK_FRAME_END 4
 
+#define ZOMBIE_NATTACK_ZPOS_OFFSET 16
+
 const u8 zombie_scrConversionMeasurements[EScrCnvrtMeasureCount] = {
 	ZOMBIE_SCRCNVRTWIDTH,
 	ZOMBIE_SCRCNVRTHEIGHT
@@ -307,8 +309,10 @@ void zombie_actionAttack(CharacterAttr* character,
 		
 		collisionPoints[0].x = CONVERT_2POS(character->position.x) + zombie_strike_offsetValues[character->direction][0].x;
 		collisionPoints[0].y = CONVERT_2POS(character->position.y) + zombie_strike_offsetValues[character->direction][0].y;
+		collisionPoints[0].z = CONVERT_2POS(character->position.z) + ZOMBIE_NATTACK_ZPOS_OFFSET;
 		collisionPoints[1].x = CONVERT_2POS(character->position.x) + zombie_strike_offsetValues[character->direction][1].x;
 		collisionPoints[1].y = collisionPoints[0].y + zombie_strike_offsetValues[character->direction][1].y;	
+		collisionPoints[1].z = CONVERT_2POS(character->position.z) + ZOMBIE_NATTACK_ZPOS_OFFSET;
 	
 		mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
 	}
@@ -353,11 +357,13 @@ void zombie_getBoundingBoxMoving(const CharacterAttr* character,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, zombie_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, zombie_boundingBoxMeasurements);
+	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + zombie_boundingBoxMeasurements[EBBCnvrtLength];
 	boundingBox->endY = y + zombie_boundingBoxMeasurements[EBBCnvrtWidth];
-	//boundingBox->height = werewolf_boundingBoxMeasurements[EBBCnvrtHeight];
+	boundingBox->startZ = z;
+	boundingBox->endZ = z + ZOMBIE_HEIGHT;
 	boundingBox->direction = character->direction;
 	boundingBox->isMoving = true;
 	boundingBox->isMovable = false;
@@ -368,11 +374,13 @@ void zombie_getBoundingBoxStanding(const CharacterAttr* character,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, zombie_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, zombie_boundingBoxMeasurements);
+	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + zombie_boundingBoxMeasurements[EBBCnvrtLength];
 	boundingBox->endY = y + zombie_boundingBoxMeasurements[EBBCnvrtWidth];
-	//boundingBox->height = werewolf_boundingBoxMeasurements[EBBCnvrtHeight];
+	boundingBox->startZ = z;
+	boundingBox->endZ = z + ZOMBIE_HEIGHT;
 	boundingBox->direction = character->direction;
 	boundingBox->isMoving = false;
 	boundingBox->isMovable = false;

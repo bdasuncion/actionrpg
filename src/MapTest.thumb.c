@@ -28,7 +28,7 @@ const CharacterInit testMapCharacters[] = { {80, 70, GHOSTHAND}, {230, 105, GHOS
     {110, 140, GHOSTHAND}, {160, 175, GHOSTHAND}, {176, 182, GHOSTHAND}, 
 	{160, 245, GHOSTHAND}, {176, 237, GHOSTHAND}, {230, 330, GHOSTHAND} };
 
-const EventTransfer mapTestEvents[] = { { 0, 0, 32, 64, &mapgraveyard, 16, 16, ELeft } };
+const EventTransfer mapTestEvents[] = { { 0, 0, 32, 64, 1, &mapgraveyard, 16, 16, ELeft } };
 
 const MapInfo mapTest = { 384, 384, 2, 1, 3, 1, 8, NULL, mapTestEntry, allTiles, allPalletes, mapTestEvents, NULL, testMapCharacters, NULL };
 

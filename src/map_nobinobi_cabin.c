@@ -177,7 +177,7 @@ const CharacterInit actors_map_nobinobi_cabin[] = {
 };
 
 const EventTransfer transfer_map_nobinobi_cabin[] = {
-    { 16, 80, 430, 185, &map_night_street, 32, 63, ELeft},
+    { 16, 80, 430, 185, 1, &map_night_street, 32, 63, ELeft},
 	//{ 16, 80, 24, 24, &mapTest, 16, 32, ERight},
 };
 

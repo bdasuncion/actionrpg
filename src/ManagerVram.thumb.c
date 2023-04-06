@@ -8,6 +8,7 @@
 #define BLOCKSPERCHARACTERSMALL 16 //(512B) for every small character
 #define BLOCKSPERCHARACTERMEDIUM 24 //(768B) for every medium character
 #define BLOCKSPERCHARACTERLARGE 32 //(1024B) for every large character
+#define BLOCKSPERCHARACTERVLARGE 64 //(1024B) for every large character
 //#define BLOCKSPERCHARACTER 40 //1KB(1024) for every character
 #define MAXNCHARACTER 15
 #define MAXNCHARACTERSMALL 10
