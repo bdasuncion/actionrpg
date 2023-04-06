@@ -24,6 +24,7 @@
 
 #define SLASH_STARTSOUND_FRAME 3
 #define DASH_STARTMOVE_FRAME 1
+#define ALISA_NATTACK_ZPOS_OFFSET 16
 
 extern const EDirections directions[EDirectionsCount];
 extern const Sound soundeffect_slash;
@@ -72,14 +73,20 @@ const s32 alisa_dashOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
 	{4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG}
 };
 
+const s32 alisa_zOffsetDown =  -1*MOVE_STR;
+
 #define ALISA_SCRCNVRTWIDTH 16
 #define ALISA_SCRCNVRTHEIGHT 26
 
 #define ALISA_LENGTH 14
 #define ALISA_WIDTH 14
-#define ALISA_HEIGHT 18
+#define ALISA_HEIGHT 22
 
 #define ALISA_PAL_CNT 2
+
+#define ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION 2
+#define ALISA_NORMALSLASH_ANIMATIONFRAME_END_COLLISION 3
+#define ALISA_NORMALSLASH_FRAME_END_COLLISION 5
 
 const u8 alisa_scrConversionMeasurements[EScrCnvrtMeasureCount] = {
 	ALISA_SCRCNVRTWIDTH,
@@ -158,24 +165,24 @@ const CharFuncCollisionReaction alisa_collisionReactions[][8] = {
 		&common_noMovement,
 		&common_noMovement,
 		&common_noMovement },
-	{	&common_movingDown,
+	{	&common_movingDownOffset,
 		&common_movingRightDownOffset,
-		&common_movingRight,
+		&common_movingRightOffset,
 		&common_movingRightUpOffset,
-		&common_movingUp,
+		&common_movingUpOffset,
 		&common_movingLeftUpOffset,
-		&common_movingLeft,
+		&common_movingLeftOffset,
 		&common_movingLeftDownOffset}
 };
 
 const CharFuncCollisionReaction alisa_mapCollisionReactions[8] = {
-    	&common_mapMovingDown,
+    	&common_mapMovingDownOffset,
 		&common_mapMovingRightDownOffset,
-		&common_mapMovingRight,
+		&common_mapMovingRightOffset,
 		&common_mapMovingRightUpOffset,
-		&common_mapMovingUp,
+		&common_mapMovingUpOffset,
 		&common_mapMovingLeftUpOffset,
-		&common_mapMovingLeft,
+		&common_mapMovingLeftOffset,
 		&common_mapMovingLeftDownOffset
 };
 
@@ -219,7 +226,7 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	
 	
 	commonCharacterInit(alisa, EAlisaInitialize, EAlisaStand, EDown);
-	commonCharacterSetPosition(alisa, 0, 0, 0, EDown);
+	commonCharacterSetPosition(alisa, 0, 0, 1, EDown);
 	alisa->controller = &alisa_controller;
 	alisa->doAction = &alisa_doAction;
 	alisa->setPosition = &alisa_setPosition;
@@ -254,30 +261,6 @@ void alisa_doAction(CharacterAttr* alisa,
 	
 	commonCheckForEvents(alisa, mapInfo);
 }
-/*
-void checkForEvents(CharacterAttr* alisa,
-	MapInfo *mapInfo) {
-	int boundBoxCount = 0, i;
-	BoundingBox eventBox, alisaBoundingBox;
-	for (i = 0; i < mapInfo->eventTransferCount; ++i) {
-		transferToBoundingBox(&mapInfo->tranfers[i], &eventBox);
-		alisa->getBounds(alisa, &boundBoxCount, &alisaBoundingBox);
-		if (hasCollision(&alisaBoundingBox, &eventBox)) {
-			mapInfo->transferTo = &mapInfo->tranfers[i];
-			mapInfo->mapFunction = &fadeToBlack;
-			break;
-		}
-	}
-}*/
-
-//TODO move to common
-/*
-void transferToBoundingBox(const EventTransfer *transfer, BoundingBox *boundingBox) {
-    boundingBox->startX = transfer->x;
-	boundingBox->startY = transfer->y;
-	boundingBox->endX = transfer->x + transfer->width;
-	boundingBox->endY = transfer->y + transfer->height;
-}*/
 
 int alisa_setPosition(CharacterAttr* alisa,
 	OBJ_ATTR *oamBuf, 
@@ -288,6 +271,7 @@ int alisa_setPosition(CharacterAttr* alisa,
 		scr_pos->y, alisa_scrConversionMeasurements);
 	alisa->spriteDisplay.baseX = CONVERT_TO_SCRXPOS(alisa->position.x, 
 		scr_pos->x, alisa_scrConversionMeasurements);
+	alisa->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(alisa->position.z);
 	
 	//TODO add in screen check
 	commonSetToOamBuffer(&alisa->spriteDisplay, oamBuf);
@@ -311,6 +295,8 @@ void alisa_actionStand(CharacterAttr* alisa,
 	alisa->delta.y = 0;
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
+	
+	commonGravityEffect(alisa, alisa_zOffsetDown);
 	
 	alisa->movementCtrl.maxFrames = 0;
 	alisa->movementCtrl.currentFrame = 0;
@@ -347,7 +333,14 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	
 	alisa->delta.y = alisa_runOffsetY[alisa->direction][alisa->movementCtrl.currentFrame];
 	alisa->position.y += alisa->delta.y;
-		
+	
+	//alisa->verticalDirection = EVDown;
+	//alisa->delta.z = alisa_zOffsetDown;
+	//alisa->position.z += alisa->delta.z;
+	commonGravityEffect(alisa, alisa_zOffsetDown);
+	
+	//temporary
+	//alisa->position.z = CONVERT_2MOVE(1);
 	
 	++alisa->movementCtrl.currentFrame;
 	//alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->direction];
@@ -374,12 +367,16 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
-	collisionPoints[0].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][0].x;
-	collisionPoints[0].y = CONVERT_2POS(alisa->position.y) + slash_offsetValues[alisa->direction][0].y;
-	collisionPoints[1].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][1].x;
-	collisionPoints[1].y = collisionPoints[0].y + slash_offsetValues[alisa->direction][1].y;	
+	if (alisa->spriteDisplay.currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION) {
+		collisionPoints[0].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][0].x;
+		collisionPoints[0].y = CONVERT_2POS(alisa->position.y) + slash_offsetValues[alisa->direction][0].y;
+		collisionPoints[0].z = CONVERT_2POS(alisa->position.z) + ALISA_NATTACK_ZPOS_OFFSET;
+		collisionPoints[1].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][1].x;
+		collisionPoints[1].y = collisionPoints[0].y + slash_offsetValues[alisa->direction][1].y;
+		collisionPoints[1].z = CONVERT_2POS(alisa->position.z) + ALISA_NATTACK_ZPOS_OFFSET;
+		mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
+	}
 	
-	mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
 	if (alisa->spriteDisplay.currentAnimationFrame == SLASH_STARTSOUND_FRAME && alisa->spriteDisplay.numberOfFramesPassed == 0) {
 		msound_setChannel(&soundeffect_slash, false);
 	}
@@ -496,28 +493,25 @@ void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.spriteSet = alisaStunnedSet[alisa->direction];
 }
 
-/*void alisa_getBounds(const CharacterAttr* alisa, 
-	int *count, CharBoundingBox *boundingBox) {
-	*count = 1;
-	u16 x = CONVERT_TO_BOUNDINGBOX_X(alisa->position.x, alisa_boundingBoxMeasurements);
-	u16 y = CONVERT_TO_BOUNDINGBOX_Y(alisa->position.y, alisa_boundingBoxMeasurements);
-	boundingBox->upperLeftPt.x = x;
-	boundingBox->upperLeftPt.y = y;
-	boundingBox->upperLeftPt.z = 0;
-	boundingBox->length = alisa_boundingBoxMeasurements[EBBCnvrtLength];
-	boundingBox->width = alisa_boundingBoxMeasurements[EBBCnvrtWidth];
-	boundingBox->height = alisa_boundingBoxMeasurements[EBBCnvrtHeight];
-}*/
-
 void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 
 	int *count, BoundingBox *boundingBox) {
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(alisa->position.x, alisa_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(alisa->position.y, alisa_boundingBoxMeasurements);
+	int belowGround = (alisa->position.z < 0);
+	int adjust =  (belowGround*(-1)) + (~belowGround*(1));
+	s16 z = adjust*CONVERT_TO_BOUNDINGBOX_Z(adjust*alisa->position.z);
+	//mprinter_printf("BOUNDING BOX %d\n", z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + alisa_boundingBoxMeasurements[EBBCnvrtLength];
 	boundingBox->endY = y + alisa_boundingBoxMeasurements[EBBCnvrtWidth];
+	boundingBox->startZ = z;
+	boundingBox->endZ = z + ALISA_HEIGHT;
+	/*if (alisa->position.z < 0)
+		mprinter_printf("ALISA MOV -%d -%d\n", -boundingBox->startZ, -alisa->position.z);
+	else
+		mprinter_printf("ALISA MOV %d %d\n", boundingBox->startZ, alisa->position.z);*/
 	//boundingBox->height = alisa_boundingBoxMeasurements[EBBCnvrtHeight];
 	boundingBox->direction = alisa->direction;
 	boundingBox->isMoving = true;
@@ -529,11 +523,18 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(alisa->position.x, alisa_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(alisa->position.y, alisa_boundingBoxMeasurements);
+	s16 z = commonConvertBoundingBoxZ(alisa->position.z);
+	
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + alisa_boundingBoxMeasurements[EBBCnvrtLength];
 	boundingBox->endY = y + alisa_boundingBoxMeasurements[EBBCnvrtWidth];
-	//boundingBox->height = alisa_boundingBoxMeasurements[EBBCnvrtHeight];
+	boundingBox->startZ = z;
+	boundingBox->endZ = z + ALISA_HEIGHT;
+	/*if (alisa->position.z < 0)
+		mprinter_printf("ALISA MOV -%d -%d\n", -boundingBox->startZ, -alisa->position.z);
+	else
+		mprinter_printf("ALISA MOV %d %d\n", boundingBox->startZ, alisa->position.z);*/
 	boundingBox->direction = alisa->direction;
 	boundingBox->isMoving = false;
 	boundingBox->isMovable = false;
@@ -541,6 +542,12 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 
 void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
     commonCharacterMapEdgeCheck(alisa, mapInfo);
+	int count;
+	BoundingBox mapBoundingBox, characterBoundingBox;
+	alisa->getBounds(alisa, &count, &characterBoundingBox);
+	commonGetBoundsFromMap(CONVERT_2POS(alisa->position.x), CONVERT_2POS(alisa->position.y), mapInfo, &mapBoundingBox);
+	common_fallingDown(alisa, &characterBoundingBox, &mapBoundingBox);
+	
 	alisa_mapCollision[alisa->direction](alisa, mapInfo, 
 	    alisa_mapCollisionReactions[alisa->direction]);
 }

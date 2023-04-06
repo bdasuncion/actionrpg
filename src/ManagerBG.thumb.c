@@ -108,7 +108,7 @@ void mbg_setVerticalTiles(const MapInfo *mapInfo,
 	u16 mapblock_width = MAPBLOCK_WIDTH_TILE_COUNT;
 	u16 mapblock_height = MAPBLOCK_HEIGHT_TILE_COUNT;
 	u16 mapblock_xidx = bg_tile_x_idx & MAPBLOCK_WIDTH_MAXIDX;
-	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;		
+	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;
 	u16 bg_width_tile_count = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	
 	s32 i,layeridx;
@@ -137,7 +137,6 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 	u16 mapblock_height = MAPBLOCK_HEIGHT_TILE_COUNT;
 	u16 mapblock_xidx = bg_tile_x_idx & MAPBLOCK_WIDTH_MAXIDX;
 	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;
-		
 	u16 bg_width_tile_count = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	s32 i,layeridx;
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {

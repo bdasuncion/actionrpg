@@ -30,14 +30,11 @@
 //extern const Sound soundeffect_slash;
 
 //TODO: Temporay only
-extern const MapInfo mapTest;
-extern const MapInfo map_nobinobi_cabin;
-extern const MapInfo map_night_street;
-extern const MapInfo mapforest;
-extern const Sound music_minamohana;
 extern const MapInfo mapsnowfield;
 extern const MapInfo mapforest;
 extern const EventTransfer transfer_mapforest[];
+extern const MusicTrack musickankandara_end;
+extern const EventTransfer startAt;
 
 void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo);
 void mapCommon_goDark(void *screenAttribute, void *characterCollection, MapInfo *mapInfo);
@@ -48,12 +45,11 @@ inline void waitForVBlank() {
 
 void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
  OAMCollection *oamCollection, ControlTypePool *controlPool, ScreenAttr *screenAttribute, 
-    CharacterActionCollection *charActionCollection) {
+    CharacterActionCollection *charActionCollection, Track *track) {
 	
 	//mapInfo->transferTo =  &mapInfo->tranfers[0];
 	//mapInfo->mapFunction = &fadeToBlack;
 	//mapInfo->screenEffect.processScreenEffect = &mapCommon_goDark;
-	
 	while(1) {	
 		mprinter_clear();
 
@@ -82,14 +78,14 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		
 		if (mapInfo->mapFunction) {
 		    mapInfo->mapFunction(screenAttribute, characterCollection, mapInfo, 
-			    controlPool, charActionCollection);
+			    controlPool, charActionCollection, track);
 		}
 		
 		mapInfo->screenEffect.processScreenEffect(screenAttribute, characterCollection, 
-		    mapInfo, controlPool, charActionCollection);
-		//msound_mix();
-		//msound_mixStereoASMR();
-		msound_mixMono();
+		    mapInfo, controlPool, charActionCollection, track);
+
+		msound_updateTrack(track);
+		msound_mixSound();
 		
 		waitForVBlank();
 	}
@@ -103,14 +99,14 @@ int main() {
 	CharacterCollection characterCollection;
 	OAMCollection oamCollection;
 	ControlTypePool controlPool;
-	MapInfo mapInfo = mapforest;
-	//MapInfo mapInfo = mapsnowfield;
+	//MapInfo mapInfo = mapforest;
+	MapInfo mapInfo = mapsnowfield;
 	ScreenAttr screenAttribute;
 	CharacterActionCollection charActionCollection;
 	//MapInfo mapInfo = map_night_street;
 	//MapInfo mapInfo = mapTest;
 	CharacterAttr *alisa;
-	
+	Track track = {&musickankandara_end,0,0};
 	sprite_vram_init();
 	sprite_palette_init();
 	setWaitState();
@@ -139,23 +135,22 @@ int main() {
 	
 	//mbg_init(&screenAttribute, &mapInfo, &characterCollection, &controlPool, &charActionCollection);
 	//mapInfo.mapFunction = &fadeToBlack;
-	mapInfo.transferTo =  &mapInfo.tranfers[0];
+	//mapInfo.transferTo =  &mapInfo.tranfers[0];
+	mapInfo.transferTo =  &startAt;
 	//mapInfo.mapFunction(&screenAttribute, &characterCollection, &mapInfo, &controlPool, &charActionCollection);
-	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,  &charActionCollection);
+	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,
+		&charActionCollection, &track);
 	
 	mgame_setUpdater(&updateGameStatus);
 	//Initalize display for 2 backgrounds and 1-d sprites
 	initDisplay2BG();
 	
 	msound_init();
-	//msound_setUpStereo();
-	msound_setUpMono();
-	//test only should be called somewhere else
-	//msound_setChannel(&music_minamohana, true);
-	
+	msound_setUpMono(EMidHighQ);
+
 	mprinter_init();
 	gameloop(&mapInfo, &characterCollection, &oamCollection, &controlPool, 
-	   &screenAttribute, &charActionCollection);
+	   &screenAttribute, &charActionCollection, &track);
 	
 	return 0;
 }

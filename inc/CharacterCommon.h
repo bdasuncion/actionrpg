@@ -27,13 +27,13 @@ bool common_checkNext(bool isOtherCharBelow, const BoundingBox *charBoundingBox,
     const BoundingBox *otherCharBoundingBox);
 void common_noMovement(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_movingRight(CharacterAttr* character, 
+void common_movingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_movingLeft(CharacterAttr* character, 
+void common_movingLeftOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_movingUp(CharacterAttr* character, 
+void common_movingUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_movingDown(CharacterAttr* character, 
+void common_movingDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingRightUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
@@ -43,13 +43,13 @@ void common_movingRightDownOffset(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_mapMovingRight(CharacterAttr* character, 
+void common_mapMovingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_mapMovingLeft(CharacterAttr* character, 
+void common_mapMovingLeftOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_mapMovingUp(CharacterAttr* character, 
+void common_mapMovingUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
-void common_mapMovingDown(CharacterAttr* character, 
+void common_mapMovingDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_mapMovingRightUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
@@ -83,4 +83,7 @@ inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);
 inline int commonGetCurrentScreenFrame(const CharacterAttr* character);
 inline bool commonDoIntializeActions(CharacterAttr* character);
 inline bool commonIsFoundPosition(const Position* position);
+void common_fallingDown(CharacterAttr* character, BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void commonGravityEffect(CharacterAttr *character, int zOffsetDown);
+int commonConvertBoundingBoxZ(int zPos);
 #endif

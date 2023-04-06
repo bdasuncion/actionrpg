@@ -72,6 +72,12 @@ typedef enum EDirections {
 	EDirectionsCount
 }EDirections;
 
+typedef enum EVerticalDirections {
+	EVUnknown = -1,
+	EVDown,
+	EVUp
+}EVerticalDirections;
+
 typedef enum EButtons {
 	EButtonUnknown = -1,
 	EButtonB,

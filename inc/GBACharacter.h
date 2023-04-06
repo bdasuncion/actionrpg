@@ -197,7 +197,8 @@ typedef struct CharacterAttr {
 	EDirections direction:4;
 	EDirections faceDirection:4;
 	u8 nextAction;
-	EDirections nextDirection:8;
+	EDirections nextDirection:4;
+	EVerticalDirections verticalDirection:4;
 	MovementControl movementCtrl;
 	Position position;//3HW
 	Position delta;//3HW
@@ -236,10 +237,16 @@ typedef struct CharacterCollection {
 	
 #define CONVERT_TO_SCRYPOS(y, scr_y, stat) \
 	((CONVERT_2POS(y) - stat[EScrCnvrtHeight]) - scr_y)&0xFF
+	
+#define CONVERT_TO_SCRZPOS(z)\
+	(CONVERT_2POS(z))&0xFF
 
 #define CONVERT_TO_BOUNDINGBOX_X(x, stat) \
 	(CONVERT_2POS(x) - (DIVIDE_BY_2(stat[EBBCnvrtLength])))
 
 #define CONVERT_TO_BOUNDINGBOX_Y(y, stat) \
 	(CONVERT_2POS(y) - (DIVIDE_BY_2(stat[EBBCnvrtWidth])))
+	
+#define CONVERT_TO_BOUNDINGBOX_Z(z) \
+	(CONVERT_2POS(z))
 #endif

@@ -87,6 +87,7 @@ void mscr_moveScr(ScreenAttr *scrAtt, MapInfo *mapInfo) {
 	if (ref) {
 		u16 x = CONVERT_2POS(ref->x);
 		u16 y = CONVERT_2POS(ref->y);
+		y -= CONVERT_2POS(ref->z);
 		u16 startXPos = scrAtt->position.x;
 		u16 startYPos = scrAtt->position.y;
 		s32 maxHorizontal = mapInfo->width - GBA_SCREEN_WIDTH;

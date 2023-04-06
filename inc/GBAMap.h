@@ -4,6 +4,7 @@
 #include "GBAObject.h"
 #include "GBACharacter.h"
 #include "GBACharacterType.h"
+#include "GBASound.h"
 
 typedef enum MAPID {
     MapNoneID,
@@ -24,9 +25,9 @@ typedef struct MapCollision {
 } ALIGN2 MapCollision;
 
 typedef struct TileSet {
-    u32 size:16;
-	u32 compression:2;
-	u32* tileData;
+    const u32 size:16;
+	const u32 compression:2;
+	const u32* tileData;
 } ALIGN4 TileSet;
 
 typedef struct EventTransfer {
@@ -34,13 +35,15 @@ typedef struct EventTransfer {
 	u16 y;
 	u16 transferToX;
 	u16 transferToY;
-	void *mapInfo;
-	u16 width:6;
-	u16 height:6;
+	u16 transferToZ;
+	const void *mapInfo;
+	u16 width:8;
+	u16 length:8;
+	u16 zOffset:8;
 	u16 directionOnTransfer:3;
 } ALIGN4 EventTransfer;
 
-typedef void (*FuncMap)(void *screenAttribute, void *characterCollection, void *mapInfo, void *controlPool, void *charActionCollection);
+typedef void (*FuncMap)(void *screenAttribute, void *characterCollection, void *mapInfo, void *controlPool, void *charActionCollection, void *track);
 
 typedef struct CharacterInit {
     u16 x;
@@ -66,13 +69,17 @@ typedef struct MapInfo {
 	u16 eventTransferCount:6;
 	u16 characterCount:7;
 	EventTransfer *transferTo;
-	u16 **mapEntry;
-	TileSet **tileSet;
-	u16 **pallette;
-	EventTransfer *tranfers;
-	MapCollision *collisionMap;
-	CharacterInit *characterInit;
+	const u16 **mapEntry;
+	const TileSet **tileSet;
+	const u16 **pallette;
+	const EventTransfer *tranfers;
+	//const MapCollision *collisionMap;
+	const u8 *heightMap; 
+	const CharacterInit *characterInit;
 	FuncMap mapFunction;
+	FuncMap onInitMap;
+	FuncMap onExitMap;
+	const MusicTrack *music;
 	ScreenEffect screenEffect;
 } ALIGN4 MapInfo;
 #endif

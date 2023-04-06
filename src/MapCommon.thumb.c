@@ -31,10 +31,16 @@ void map_nofunction(ScreenAttr *screenAttribute, CharacterCollection *characterC
 }
 
 void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
-        MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection) {
-
-    CharacterAttr *alisa;
+        MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+		Track *track) {
+	CharacterAttr *alisa;
 	EventTransfer *eventTransfer = mapInfo->transferTo;
+
+	if (mapInfo->onExitMap) {
+		mapInfo->onExitMap(screenAttribute, characterCollection, 
+        mapInfo, controlPool, charActionCollection, track);
+	}
+
 	sprite_vram_init();
 	sprite_palette_init();
 	mchar_reinit(characterCollection, &alisa);
@@ -42,15 +48,32 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	//TODO change this to common usage
 	alisa_init(alisa, controlPool);
     commonCharacterSetPosition(alisa, 
-	   eventTransfer->transferToX, eventTransfer->transferToY, 0, eventTransfer->directionOnTransfer);
+	   eventTransfer->transferToX, eventTransfer->transferToY, eventTransfer->transferToZ, eventTransfer->directionOnTransfer);
 	alisa->doAction(alisa, mapInfo, characterCollection, charActionCollection);
 	
 	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
 	mscr_initCharMoveRef(screenAttribute, mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
-		
+
 	mapInfo->transferTo = eventTransfer;
-		
+	
+	alisa->checkMapCollision(alisa, mapInfo);
+
+	if (mapInfo->music && track->musicTrack != mapInfo->music) {
+		track->musicTrack = mapInfo->music;
+		track->trackIndex = 0;
+		track->framesPassed = 0;
+	} else if (!mapInfo->music) {
+		track->musicTrack = NULL;
+		track->trackIndex = 0;
+		track->framesPassed = 0;
+	}
+	
+	if (mapInfo->onInitMap) {
+		mapInfo->onInitMap(screenAttribute, characterCollection, 
+        mapInfo, controlPool, charActionCollection, track);
+	}
+
 	mbg_init(screenAttribute, mapInfo, characterCollection, controlPool);
 	
 	mapInfo->mapFunction = &returnToScreen;
