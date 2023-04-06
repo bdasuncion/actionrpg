@@ -54,18 +54,34 @@ typedef struct SampleSoundChannel
 	bool repeating:1;
 	bool stopA:1;
 	bool stopB:1;
-	u32 attenuationA:4;
-	u32 attenuationB:4;
+	u32 attenuationA:8;
+	u32 attenuationB:8;
+	u32 dummy:6;
 	u32 currentIdxA;//20:12
 	u32 currentIdxB;//20:12
 	u16 idxStep;
 	//const void *position;
 	const s8 *data;
+	const void *source;
+	//const s16 *data;
 }SampleSoundChannel;
+
+typedef enum SoundQuality {
+	ELowQ,
+	ELowMidQ,
+	EMidQ,
+	EMidHighQ,
+	EHighQ,
+	EBestQ,
+	ESoundQualityCount
+} SoundQuality;
 
 typedef struct SoundBuffer {
 	u32 currentBuffer;
-	//s8	*buffer;
+	SoundQuality soundQuality;
+	u32 rcpMixFrequency;//For conversion from division to fixed point multiplication
+	//s16	*intermediaryBufferA;
+	//s16	*intermediaryBufferB;
 	s8	*bufferA;
 	s8	*bufferB;
 }ALIGN4 SoundBuffer;
@@ -76,5 +92,42 @@ typedef struct Sound {
 	u32 sampleSize:5;
 	const void *data;
 }ALIGN4 Sound;
+
+typedef struct Instrument {
+	s8 *data;
+	u32 length:20;
+	u32 loopStart:20;
+	u32 loopLength:20;
+	u32 dummy:4;
+}ALIGN4 Instrument;
+
+typedef struct PatternData {
+	const Instrument *instrument;
+	u32 note:16;
+	u32 volume:6;
+	u32 dummy:10;
+}ALIGN4 PatternData;
+
+typedef struct MusicTrack {
+	//PatternData *columns[4];
+	PatternData **columns;
+	int length;
+}ALIGN4 MusicTrack;
+
+typedef struct Track {
+	const MusicTrack *musicTrack;
+	u32 trackIndex;
+	u32 framesPassed;
+}ALIGN4 Track;
+
+typedef struct MusicChannel {
+	const Instrument *instrument; // pointer to the instrument
+	u32 idx; // current position in the data (20.12 fixed-point)
+	u32 idxStep; // increment (20.12 fixed-point)
+	u32 volume; // volume (0-64, sort of 1.6 fixed-point)
+	u32 length; // length of the whole sound (20.12 fixed-point)
+	bool loop:1;
+	bool play:1; 
+} MusicChannel;
 
 #endif
