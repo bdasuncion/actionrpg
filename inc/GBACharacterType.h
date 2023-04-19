@@ -24,6 +24,6 @@ typedef struct PaletteIdControl {
 	CHARACTERTYPE type;
 }ALIGN4 PaletteIdControl;
 
-typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection);
-typedef void (*FuncCharacterSet)(CharacterAttr *character);
+//typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection);
+//typedef void (*FuncCharacterSet)(CharacterAttr *character);
 #endif

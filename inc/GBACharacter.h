@@ -215,12 +215,15 @@ typedef void (*CharFuncCollisionReaction)(CharacterAttr* character,
 	  
 typedef void (*CommonMapCollision)(CharacterAttr *character, const void* mapInfo, 
     CharFuncCollisionReaction *reaction);
-	
+
 typedef struct ControlTypePool {
   u32 count:6;
   u32 currentCount:6;
   ControlTypeUnion *collection;
 } ALIGN4 ControlTypePool;
+
+typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection);
+typedef void (*FuncCharacterSet)(CharacterAttr *character);
 
 typedef struct CharacterCollection {
     u32 poolSize:8;
@@ -229,7 +232,7 @@ typedef struct CharacterCollection {
 	u32 countCharacterTransfer:8;
 	CharacterAttr **characters;
 	CharacterAttr **charactersDoEvent;
-	void **characterTransfer;
+	FuncCharacterInit *characterTransfer;
 } ALIGN4 CharacterCollection;
 
 #define MOVEFRACTION 8

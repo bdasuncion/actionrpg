@@ -13,8 +13,8 @@
 #include "GBATransparency.h"
 
 //TODO move this somewhere else
-//#include "CharacterAlisa.h"
-//#include "CharacterWerewolf.h"
+#include "CharacterAlisa.h"
+
 #include "CharacterCommon.h"
 
 #define DEFAULT_SCREEN_BOUNDING_BOX 0
@@ -124,6 +124,8 @@ int main() {
 	moam_initBuffer(&oamCollection);
 	
 	mchar_init(&characterCollection, MAX_CHARCOUNT);
+	mchar_initTransferableCharacters(&characterCollection, 1);
+	mchar_addTransferableCharacters(&characterCollection, &alisa_init);
 	
 	mchar_actione_init(&charActionCollection, MAX_CHARACTIONEVENT);
 	

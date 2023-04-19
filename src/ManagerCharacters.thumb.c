@@ -49,6 +49,21 @@ void mchar_init(CharacterCollection *charCollection, int size) {
 	}
 }
 
+void mchar_initTransferableCharacters(CharacterCollection *charCollection, int size) {
+	if (charCollection) {
+		int i;
+		charCollection->countCharacterTransfer = 0;
+		charCollection->characterTransfer = malloc(sizeof(FuncCharacterInit)*size);
+	}
+}
+
+void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit *charInitFunc) {
+	if (charCollection) {
+		charCollection->characterTransfer[charCollection->countCharacterTransfer] = charInitFunc;
+		++charCollection->countCharacterTransfer;
+	}
+}	
+
 void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1, 
 	ControlTypePool *controlPool) {
 	alisa_init(charCollection->characters[charCollection->currentSize], controlPool);

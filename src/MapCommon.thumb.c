@@ -10,8 +10,8 @@
 #include "ManagerBG.h"
 #include "ManagerVram.h"
 
-#include "CharacterAlisa.h"
-#include "CharacterNameless.h"
+//#include "CharacterAlisa.h"
+//#include "CharacterNameless.h"
 
 #define DEFAULT_SCREEN_BOUNDING_BOX 0
 #define DELAY 2
@@ -33,8 +33,9 @@ void map_nofunction(ScreenAttr *screenAttribute, CharacterCollection *characterC
 void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
         MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 		Track *track) {
-	CharacterAttr *alisa;
+	CharacterAttr *character;
 	EventTransfer *eventTransfer = mapInfo->transferTo;
+	int i;
 
 	if (mapInfo->onExitMap) {
 		mapInfo->onExitMap(screenAttribute, characterCollection, 
@@ -43,21 +44,24 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 
 	sprite_vram_init();
 	sprite_palette_init();
-	mchar_reinit(characterCollection, &alisa);
+	mchar_reinit(characterCollection, &character);
 	
 	//TODO change this to common usage
-	alisa_init(alisa, controlPool);
-    commonCharacterSetPosition(alisa, 
+	//alisa_init(character, controlPool);
+	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
+		characterCollection->characterTransfer[i](character, controlPool);
+	}
+    commonCharacterSetPosition(character, 
 	   eventTransfer->transferToX, eventTransfer->transferToY, eventTransfer->transferToZ, eventTransfer->directionOnTransfer);
-	alisa->doAction(alisa, mapInfo, characterCollection, charActionCollection);
+	character->doAction(character, mapInfo, characterCollection, charActionCollection);
 	
 	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
 	mscr_initCharMoveRef(screenAttribute, mapInfo,
-		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
+		&character->position, DEFAULT_SCREEN_BOUNDING_BOX);
 
 	mapInfo->transferTo = eventTransfer;
 	
-	alisa->checkMapCollision(alisa, mapInfo);
+	character->checkMapCollision(character, mapInfo);
 
 	if (mapInfo->music && track->musicTrack != mapInfo->music) {
 		track->musicTrack = mapInfo->music;
