@@ -60,3 +60,19 @@ extern const SpriteSet alisa_dashbackwardwithsword_up;
 
 const SpriteSet *alisaDashBackwardWithSwordSet[] = { &alisa_dashbackwardwithsword_down, &alisa_dashbackwardwithsword_down, &alisa_dashbackwardwithsword_right, 
     &alisa_dashbackwardwithsword_up, &alisa_dashbackwardwithsword_up, &alisa_dashbackwardwithsword_up, &alisa_dashbackwardwithsword_left, &alisa_dashbackwardwithsword_down };
+	
+extern const SpriteSet alisa_jumpwithsword_down;
+extern const SpriteSet alisa_jumpwithsword_left;
+extern const SpriteSet alisa_jumpwithsword_right;
+extern const SpriteSet alisa_jumpwithsword_up;
+
+const SpriteSet *alisaJumpWithSwordSet[] = { &alisa_jumpwithsword_down, &alisa_jumpwithsword_down, &alisa_jumpwithsword_right, 
+    &alisa_jumpwithsword_up, &alisa_jumpwithsword_up, &alisa_jumpwithsword_up, &alisa_jumpwithsword_left, &alisa_jumpwithsword_down };
+	
+extern const SpriteSet alisa_fallingdown_down;
+extern const SpriteSet alisa_fallingdown_left;
+extern const SpriteSet alisa_fallingdown_right;
+extern const SpriteSet alisa_fallingdown_up;
+
+const SpriteSet *alisaFallingDownSet[] = { &alisa_fallingdown_down, &alisa_fallingdown_down, &alisa_fallingdown_right, 
+    &alisa_fallingdown_up, &alisa_fallingdown_up, &alisa_fallingdown_up, &alisa_fallingdown_left, &alisa_fallingdown_down };

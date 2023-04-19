@@ -14,6 +14,8 @@ typedef enum AlisaAction
 	EAlisaPrepareDash,
 	EAlisaDashForward,
 	EAlisaDashBackward,
+	EAlisaJump,
+	EAlisaFallingDown,
 	EAlisaStunned,
 	EAlisaActionCount
 } AlisaAction;
@@ -22,6 +24,7 @@ typedef enum AlisaStatus
 {
 	EAlisaStatusNormal,
 	EAlisaStatusStunned,
+	EAlisaStatusFalling,
 } AlisaStatus;
 
 
@@ -31,6 +34,7 @@ void alisa_controller(CharacterAttr* character);
 void alisa_slashController(CharacterAttr* character);
 void alisa_dashForwardController(CharacterAttr* character);
 void alisa_prepareDashController(CharacterAttr* character);
+void alisa_jumpController(CharacterAttr* character);
 void alisa_getBoundingBoxStanding(const CharacterAttr* alisa, 
 	int *count, BoundingBox *boundingBox);
 void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 

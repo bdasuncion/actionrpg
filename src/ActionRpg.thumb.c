@@ -50,6 +50,7 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 	//mapInfo->transferTo =  &mapInfo->tranfers[0];
 	//mapInfo->mapFunction = &fadeToBlack;
 	//mapInfo->screenEffect.processScreenEffect = &mapCommon_goDark;
+	commonInitShadow();
 	while(1) {	
 		mprinter_clear();
 

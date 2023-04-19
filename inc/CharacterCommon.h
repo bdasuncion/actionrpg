@@ -83,7 +83,10 @@ inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);
 inline int commonGetCurrentScreenFrame(const CharacterAttr* character);
 inline bool commonDoIntializeActions(CharacterAttr* character);
 inline bool commonIsFoundPosition(const Position* position);
-void common_fallingDown(CharacterAttr* character, BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+int common_fallingDown(CharacterAttr* character, const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void commonGravityEffect(CharacterAttr *character, int zOffsetDown);
 int commonConvertBoundingBoxZ(int zPos);
+void commonInitShadow();
+int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf);
+void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo);
 #endif

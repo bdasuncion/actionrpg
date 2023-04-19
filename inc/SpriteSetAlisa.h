@@ -15,3 +15,5 @@ extern const SpriteSet *alisaStunnedSet[];
 extern const SpriteSet *alisaDashForwardSet[];
 extern const SpriteSet *alisaPrepareDashSet[];
 extern const SpriteSet *alisaDashBackwardWithSwordSet[];
+extern const SpriteSet *alisaJumpWithSwordSet[];
+extern const SpriteSet *alisaFallingDownSet[];

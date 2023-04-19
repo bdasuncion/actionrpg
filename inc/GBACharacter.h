@@ -70,9 +70,11 @@ typedef struct SpriteDisplay {
 	UpdateStatus palleteUpdateStatus:1;//TODO remove?
 	u32 numberOfFramesPassed:8;//Count from last update
 	u32 currentAnimationFrame:7;
+	bool isInScreen:1;
 	u32 baseY:8;
 	u32 baseX:9;
-	bool isInScreen:1;
+	u32 shadow:8;
+	u32 dummy:7;
 }ALIGN4 SpriteDisplay;
 
 typedef struct MovementControl {
@@ -101,6 +103,8 @@ typedef void (*CharFuncCollisionCheck)(void* charAtt, bool isOtherCharBelow,
 typedef void (*CharFuncMapCollisionCheck)(void* charAtt, void* mapInfo);
 
 typedef void (*CharFuncActionCollision)(void *charAtt, void *actionEvents);
+
+typedef void (*CharFuncFallingCollision)(void *charAtt, const void *boundingBox, const void *otherBoundingBox);
 
 typedef struct ActionControl {
 	u8 doForNumFrames;
@@ -222,8 +226,10 @@ typedef struct CharacterCollection {
     u32 poolSize:8;
 	u32 currentSize:8;
 	u32 characterEventCurrentSize:8;
+	u32 countCharacterTransfer:8;
 	CharacterAttr **characters;
 	CharacterAttr **charactersDoEvent;
+	void **characterTransfer;
 } ALIGN4 CharacterCollection;
 
 #define MOVEFRACTION 8

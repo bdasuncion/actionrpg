@@ -15,6 +15,7 @@ void alisa_slashController(CharacterAttr* character);
 void alisa_prepareDashController(CharacterAttr* character);
 void alisa_dashForwardController(CharacterAttr* character);
 void alisa_dashBackwardController(CharacterAttr* character);
+void alisa_fallingDownController(CharacterAttr* character);
 
 const EDirections DEFAULT_DIRECTIONMAP[EDirectionsCount] = {
 	EDown,EDown,ERight,EUp,EUp,EUp,ELeft,EDown
@@ -60,11 +61,12 @@ bool controlButtonCheck(CharacterAttr* character) {
 		return isInit;
 	}
 	
-	/*if (isLPressed() && charControl->buttonL_Ready) {
-		charControl->buttonL_Ready = false;
+	if (isLPressed() && charControl->buttonL_Ready) {
+		//charControl->buttonL_Ready = false;
+		character->controller = charControl->controlMap.buttonL;
 	}
 	
-	if (isRPressed() && charControl->buttonR_Ready) {
+	/*if (isRPressed() && charControl->buttonR_Ready) {
 		charControl->buttonR_Ready = false;
 	}*/
 	
@@ -103,6 +105,12 @@ void alisa_controller(CharacterAttr* character) {
 	if (charControl->currentStatus == EAlisaStatusStunned) {
 		character->controller = &alisa_stunnedController; 
 		alisa_stunnedController(character);
+		return;
+	}
+	
+	if (character->nextAction == EAlisaFallingDown) {
+		character->controller = &alisa_fallingDownController; 
+		alisa_fallingDownController(character);
 		return;
 	}
 
@@ -259,6 +267,61 @@ void alisa_dashBackwardController(CharacterAttr* character) {
 		character->controller = &alisa_controller;
 		character->controller(character, NULL, NULL);
 	}
+}
+
+void alisa_jumpController(CharacterAttr* character) {
+   //EDirections direction = KEYPRESS_DIRECTION;
+   int nextScreenFrame, nextAnimationFrame, hold;
+   bool isLastFrame = false;
+   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+      
+   	/*if (character->nextAction != EAlisaFallingDown) {
+		character->controller = &alisa_controller; 
+		character->controller(character, NULL, NULL);
+		return;
+	}*/
+	
+	character->getBounds = &alisa_getBoundingBoxMoving;
+	
+	character->nextAction = EAlisaJump;
+	
+	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	if (isLastFrame) {
+		//mprinter_printf("")
+		character->nextDirection = character->direction;
+		character->nextAction = EAlisaFallingDown;
+		character->controller = &alisa_fallingDownController;
+		character->controller(character, NULL, NULL);
+	}
+}
+
+void alisa_fallingDownController(CharacterAttr* character) {
+   int nextScreenFrame, nextAnimationFrame, hold;
+   bool isLastFrame = false;
+   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+      
+   	if (character->nextAction != EAlisaFallingDown) {
+		mprinter_printf("GO TO STAND\n");
+		character->nextDirection = character->faceDirection;
+		character->nextAction = EAlisaStand;
+		character->controller = &alisa_controller; 
+		character->controller(character, NULL, NULL);
+		//character->getBounds = &alisa_getBoundingBoxMoving;
+		return;
+	}
+	
+	//character->getBounds = &alisa_getBoundingBoxMoving;
+	
+	character->nextAction = EAlisaFallingDown;
+	
+	//commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+
+	//mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
+	/*if (isLastFrame) {
+		character->nextDirection = character->faceDirection;
+		character->controller = &alisa_controller;
+		character->controller(character, NULL, NULL);
+	}*/
 }
 
 void alisa_stunnedController(CharacterAttr* character) {

@@ -140,6 +140,26 @@ const CommonMapCollision common_mapCollision[8] = {
 
 const Position NOT_FOUND_POSITION = {-1, -1, -1};
 
+extern const SpriteDisplay common_shadowDisplay;
+extern const unsigned short shadow_pal[];
+
+void commonInitShadow() {
+	lzss2vram(common_shadowDisplay.spriteSet->set[0].layers[0].image, common_shadowDisplay.baseImageId);
+}
+
+int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf){
+	if (y <= 160 &&  x <= 240) {
+		SpriteDisplay shadowDisplay = common_shadowDisplay;
+		shadowDisplay.baseY = y;
+		shadowDisplay.baseX = x;
+		shadowDisplay.isInScreen = true;
+
+		commonSetToOamBuffer(&shadowDisplay, oamBuf);
+		return 1;
+	}
+	return 0;
+}
+
 void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
     int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
 	
@@ -197,6 +217,7 @@ void commonSetToOamBufferAsObjWindow(SpriteDisplay *spriteDisplay, OBJ_ATTR *oam
 		oamBuf[i].fill = 0;
 	}
 }
+
 void commonDrawDisplay(SpriteDisplay *spriteDisplay) {
 	int i, id = spriteDisplay->baseImageId;
 	if (spriteDisplay->imageUpdateStatus == EUpdate) {
@@ -531,38 +552,18 @@ void common_movingLeftDownOffset(CharacterAttr* character,
 	}
 }
 
-void common_fallingDown(CharacterAttr* character, 
-    BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	//bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);		
+int common_fallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
-	//int zoffset2 = (otherCharBoundingBox->startZ - charBoundingBox->startZ);
 	int deltaZ = CONVERT_2POS(-character->delta.z);
-	//character->collisionCtrl.hasCollision = didCollide;
 	
-	/*bool  endGreaterThanStart = zoffset1 <= zoffset2;
-	int zoffset = ((zoffset1 >= 0)*(zoffset1 <= zoffset2)*(zoffset1 + 1)) + ((zoffset2 >= 0)*(zoffset2 < zoffset1)*(zoffset2 + 1));
-	
-	character->position.z += CONVERT_2MOVE(zoffset);
-	charBoundingBox->startZ += zoffset;
-	charBoundingBox->endZ += zoffset;
-	character->delta.z = 0;*/
-	
-	if (zoffset1 >= 0 && deltaZ > zoffset1) {
-		zoffset1 += 1;
-		character->position.z += CONVERT_2MOVE(zoffset1);
-		charBoundingBox->startZ += zoffset1;
-		charBoundingBox->endZ += zoffset1;
+	if (zoffset1 >= 0 && zoffset1 <= deltaZ) {
+		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
 		character->delta.z = 0;
-		
-		if (character->position.z >= 0)
-			mprinter_printf("OFFSET1 %d\n", CONVERT_2POS(character->position.z));
-		else
-			mprinter_printf("OFFSET1 -%d\n", CONVERT_2POS(-character->position.z));
+		return 0;
 	}
-	if (character->position.z >= 0)
-			mprinter_printf("OFFSET1 %d\n", CONVERT_2POS(character->position.z));
-		else
-			mprinter_printf("OFFSET1 -%d\n", CONVERT_2POS(-character->position.z));
+		
+	return -zoffset1;
 }
 
 inline void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {
@@ -573,8 +574,8 @@ inline void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {
 }
 
 inline int commonConvertBoundingBoxZ(int zPos) {
-	int belowGround = (zPos < 0);
-	int adjust =  (belowGround*(-1)) + (~belowGround*(1));
+	bool belowGround = zPos < 0;
+	int adjust =  (belowGround*(-1)) + ((!belowGround)*(1));
 	return adjust*CONVERT_TO_BOUNDINGBOX_Z(adjust*zPos);
 }
 
@@ -831,6 +832,71 @@ void commonMovingRightDownMapCollision(CharacterAttr *character, const MapInfo* 
 			{ characterBoundingBox.endX, characterBoundingBox.endY, 0} };
 	
 		commonCheckMapCollision(character, mapInfo, &points[i], &characterBoundingBox, reaction);
+	}
+}
+
+void commonFallingDownRight(CharacterAttr *character, const BoundingBox *charBoundingBox, 
+	const BoundingBox *otherCharBoundingBox) {
+	//mprinter_printf("RIGHT ");
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	if (didCollide) {
+		mprinter_printf("COLLIDE ");
+		int offset = charBoundingBox->endX - otherCharBoundingBox->startX;
+		character->position.x -= CONVERT_2MOVE(offset + 1);
+	}
+}
+
+void commonFallingDownLeft(CharacterAttr *character, const BoundingBox *charBoundingBox, 
+	const BoundingBox *otherCharBoundingBox) {
+	//mprinter_printf("LEFT %d %d %d %d other %d %d %d %d", charBoundingBox->startX, charBoundingBox->startY,
+	//charBoundingBox->endX, charBoundingBox->endY, otherCharBoundingBox->startX, otherCharBoundingBox->startY,
+	//otherCharBoundingBox->endX, otherCharBoundingBox->endY);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	if (didCollide) {
+		mprinter_printf("COLLIDE ");
+		int offset = otherCharBoundingBox->endX - charBoundingBox->startX;
+		character->position.x += CONVERT_2MOVE(offset + 1);
+	}
+}
+
+void commonFallingDownUp(CharacterAttr *character, const BoundingBox *charBoundingBox, 
+	const BoundingBox *otherCharBoundingBox) {
+	//mprinter_printf("UP ");
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	if (didCollide) {
+		mprinter_printf("COLLIDE ");
+		int offset = otherCharBoundingBox->endY - charBoundingBox->startY;
+		character->position.y += CONVERT_2MOVE(offset + 1);
+	}
+}
+
+void commonFallingDownDown(CharacterAttr *character, const BoundingBox *charBoundingBox, 
+	const BoundingBox *otherCharBoundingBox) {
+	//mprinter_printf("DOWN\n");
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	if (didCollide) {
+		mprinter_printf("COLLIDE ");
+		int offset = charBoundingBox->endY - otherCharBoundingBox->startY;
+		character->position.y -= CONVERT_2MOVE(offset + 1);
+	}
+}
+
+const CharFuncFallingCollision fallingDownReaction[] = {
+	&commonFallingDownRight, &commonFallingDownLeft, &commonFallingDownUp, &commonFallingDownDown
+};
+
+void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo) {
+	BoundingBox characterBoundingBox, mapBoundingBox;
+	int count, i;
+	for (i = 0; i < 4; ++i) {
+		character->getBounds(character, &count, &characterBoundingBox);
+		Position points[] = { 
+			{ character->position.x + CONVERT_2MOVE(8), character->position.y, 0},
+			{ character->position.x - CONVERT_2MOVE(8), character->position.y, 0},
+			{ character->position.x, character->position.y - CONVERT_2MOVE(8), 0},
+			{ character->position.x, character->position.y + CONVERT_2MOVE(8), 0} };	
+		commonGetBoundsFromMap(CONVERT_2POS(points[i].x), CONVERT_2POS(points[i].y), mapInfo, &mapBoundingBox);
+		fallingDownReaction[i](character, &characterBoundingBox, &mapBoundingBox);
 	}
 }
 
