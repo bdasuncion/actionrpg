@@ -1,4 +1,4 @@
-#include <stdlib.h>
+/*#include <stdlib.h>
 #include "GBAObject.h"
 #include "GBAMap.h"
 #include "GBABG.h"
@@ -40,3 +40,4 @@ void test_checkCollision(
 	const CharBoundingBox *charBoundingBox,
 	const EDirections direction){
 }
+*/

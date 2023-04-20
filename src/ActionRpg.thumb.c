@@ -30,8 +30,9 @@
 //extern const Sound soundeffect_slash;
 
 //TODO: Temporay only
-extern const MapInfo mapsnowfield;
-extern const MapInfo mapforest;
+//extern const MapInfo mapsnowfield;
+//extern const MapInfo mapforest;
+extern const MapInfo mapheighttest;
 extern const EventTransfer transfer_mapforest[];
 extern const MusicTrack musickankandara_end;
 extern const EventTransfer startAt;
@@ -100,12 +101,9 @@ int main() {
 	CharacterCollection characterCollection;
 	OAMCollection oamCollection;
 	ControlTypePool controlPool;
-	//MapInfo mapInfo = mapforest;
-	MapInfo mapInfo = mapsnowfield;
+	MapInfo mapInfo;
 	ScreenAttr screenAttribute;
 	CharacterActionCollection charActionCollection;
-	//MapInfo mapInfo = map_night_street;
-	//MapInfo mapInfo = mapTest;
 	CharacterAttr *alisa;
 	Track track = {&musickankandara_end,0,0};
 	sprite_vram_init();

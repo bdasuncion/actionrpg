@@ -1,4 +1,4 @@
-#include <stdlib.h>
+/*#include <stdlib.h>
 #include "GBAMap.h"
 #include "GBACharacterType.h"
 
@@ -165,3 +165,4 @@ const CharacterInit actors_map_night_street[] = {
 const EventTransfer transfer_map_night_street[] = {
 };
 const MapInfo map_night_street = { 512, 256, 2, 7, 3, 0, 1, NULL , mapentryset_map_night_street, tileset_map_night_street, pallette_map_night_street, transfer_map_night_street, collision_map_night_street, actors_map_night_street, NULL };
+*/

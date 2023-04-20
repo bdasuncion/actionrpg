@@ -23,7 +23,7 @@ extern const unsigned short werewolfupperbody_run_down_pal[16];
 #define WEREWOLF_HEIGHT 24
 
 #define WEREWOLF_SCRCNVRTWIDTH 16
-#define WEREWOLF_SCRCNVRTHEIGHT 26
+#define WEREWOLF_SCRCNVRTHEIGHT 30
 
 #define WEREWOLF_SCREENDISPLAYOFFSET_X 10
 #define WEREWOLF_SCREENDISPLAYOFFSET_Y 28
@@ -157,7 +157,7 @@ void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	
 	//set to 0
 	commonCharacterInit(character, EWerewolfInitialize, EWerewolfWalk, EDown);
-	commonCharacterSetPosition(character, 0, 0, 0, EDown);
+	commonCharacterSetPosition(character, 0, 0, 1, EDown);
 	character->controller = &werewolf_scanSurroundingsController;
 	character->doAction = &werewolf_doAction;
 	character->setPosition = &werewolf_setPosition;
@@ -232,7 +232,9 @@ void werewolf_actionWalk(CharacterAttr* character,
 	character->position.x += character->delta.x;
 	
 	character->delta.y = werewolf_runOffsetY[character->direction][character->movementCtrl.currentFrame];
-	character->position.y += character->delta.y;		
+	character->position.y += character->delta.y;
+	
+	commonGravityEffect(character, common_zOffsetDown);
 	
 	++character->movementCtrl.currentFrame;
 	character->spriteDisplay.spriteSet = werewolfRun[character->direction];
@@ -258,6 +260,8 @@ void werewolf_actionFindTarget(CharacterAttr* character,
 	Position *position = &character->position;
 	BoundingBox boundingBox;
 	
+	//character->position.z = CONVERT_2MOVE(1);
+	
 	boundingBox.startX = position->x + werewolf_scanSurroundingOffset[character->direction][0].x;
 	boundingBox.startY = position->y + werewolf_scanSurroundingOffset[character->direction][0].y;
 	boundingBox.endX = position->x + werewolf_scanSurroundingOffset[character->direction][1].x;
@@ -281,6 +285,8 @@ void werewolf_actionFindTarget(CharacterAttr* character,
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
 	
+	commonGravityEffect(character, common_zOffsetDown);
+	
 	character->action = character->nextAction;
 	character->direction = character->nextDirection;
 		
@@ -294,11 +300,12 @@ int werewolf_setPosition(CharacterAttr* character,
 {
 
 	int charStartX, charStartY, charEndX, charEndY;
-	
+	int numberOfShadow = 0;
 	character->spriteDisplay.baseY = CONVERT_TO_SCRYPOS(character->position.y, 
 		scr_pos->y, werewolf_scrConversionMeasurements);
 	character->spriteDisplay.baseX = CONVERT_TO_SCRXPOS(character->position.x, 
 		scr_pos->x, werewolf_scrConversionMeasurements);
+	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
 	
 	charStartX = CONVERT_2POS(character->position.x) - WEREWOLF_SCREENDISPLAYOFFSET_X;
 	charStartY = CONVERT_2POS(character->position.y);
@@ -310,32 +317,25 @@ int werewolf_setPosition(CharacterAttr* character,
 		    (character->spriteDisplay.isInScreen*character->spriteDisplay.imageUpdateStatus);
 		character->spriteDisplay.isInScreen = true;
 		commonSetToOamBuffer(&character->spriteDisplay, oamBuf);
-		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers;
+		
+		numberOfShadow = commonSetShadow(character->spriteDisplay.baseX, 
+			character->spriteDisplay.baseY + character->spriteDisplay.shadow + WEREWOLF_SCRCNVRTHEIGHT,
+			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
+			
+		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
 	}
 	
 	character->spriteDisplay.isInScreen = false;
 	return 0;
 }
 
-void werewolf_getBounds(const CharacterAttr* character, 
-	int *count, CharBoundingBox *boundingBox) {
-	*count = 1;
-	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, werewolf_boundingBoxMeasurements);
-	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, werewolf_boundingBoxMeasurements);
-	boundingBox->upperLeftPt.x = x;
-	boundingBox->upperLeftPt.y = y;
-	boundingBox->upperLeftPt.z = 0;
-	boundingBox->length = werewolf_boundingBoxMeasurements[EBBCnvrtLength];
-	boundingBox->width = werewolf_boundingBoxMeasurements[EBBCnvrtWidth];
-	boundingBox->height = werewolf_boundingBoxMeasurements[EBBCnvrtHeight];
-}
-
 void werewolf_getBoundingBoxMoving(const CharacterAttr* character, 
 	int *count, BoundingBox *boundingBox) {
 	*count = 1;
+
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, werewolf_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, werewolf_boundingBoxMeasurements);
-	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
+	s16 z = commonConvertBoundingBoxZ(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + werewolf_boundingBoxMeasurements[EBBCnvrtLength];
@@ -353,7 +353,7 @@ void werewolf_getBoundingBoxStanding(const CharacterAttr* character,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, werewolf_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, werewolf_boundingBoxMeasurements);
-	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
+	s16 z = commonConvertBoundingBoxZ(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + werewolf_boundingBoxMeasurements[EBBCnvrtLength];
@@ -367,6 +367,21 @@ void werewolf_getBoundingBoxStanding(const CharacterAttr* character,
 }
 
 void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
+	int count;
+	BoundingBox mapBoundingBox, characterBoundingBox;
+	CharacterPlayerControl *charControl = (CharacterAIControl*)character->free;
+	int fallingDown;
+
+	character->getBounds(character, &count, &characterBoundingBox);
+	commonGetBoundsFromMap(CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), mapInfo, &mapBoundingBox);
+	fallingDown = common_fallingDown(character, &characterBoundingBox, &mapBoundingBox);
+	
+	character->spriteDisplay.shadow = fallingDown;
+	
+	if (fallingDown > 0) {
+		commonFallingDownCollision(character, mapInfo);
+	} 
+	
     commonCharacterMapEdgeCheck(character, mapInfo);
 	werewolf_mapCollision[character->direction](character, mapInfo, 
 	    werewolf_mapCollisionReactions[character->direction]);

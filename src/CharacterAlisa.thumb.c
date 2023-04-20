@@ -372,13 +372,7 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	alisa->delta.y = alisa_runOffsetY[alisa->direction][alisa->movementCtrl.currentFrame];
 	alisa->position.y += alisa->delta.y;
 	
-	//alisa->verticalDirection = EVDown;
-	//alisa->delta.z = alisa_zOffsetDown;
-	//alisa->position.z += alisa->delta.z;
 	commonGravityEffect(alisa, alisa_zOffsetDown);
-	
-	//temporary
-	//alisa->position.z = CONVERT_2MOVE(1);
 	
 	++alisa->movementCtrl.currentFrame;
 	//alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->direction];
@@ -649,14 +643,11 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 	commonGetBoundsFromMap(CONVERT_2POS(alisa->position.x), CONVERT_2POS(alisa->position.y), mapInfo, &mapBoundingBox);
 	fallingDown = common_fallingDown(alisa, &characterBoundingBox, &mapBoundingBox);
 	
-	//mprinter_printf("DIST %d\n", fallingDown);
 	alisa->spriteDisplay.shadow = fallingDown;
 	if (fallingDown > 0) {
 		alisa->nextAction = EAlisaFallingDown;
-		//alisa->controller = &alisa_fallingDownController;
 		commonFallingDownCollision(alisa, mapInfo);
 	} else if (alisa->nextAction == EAlisaFallingDown && fallingDown <= 0) {
-		//mprinter_printf("STOP\n");
 		alisa->nextAction = EAlisaStand;
 	}
 	

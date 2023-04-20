@@ -72,6 +72,7 @@ void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr
 	++charCollection->currentSize;
 }
 
+//TODO Update this to handle multiple characters
 void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1) {
     int i;
 	CharacterAttr *playable;

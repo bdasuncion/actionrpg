@@ -1,4 +1,4 @@
-#include <stdlib.h>
+/*#include <stdlib.h>
 #include "GBAObject.h"
 #include "GBAMap.h"
 #include "GBABG.h"
@@ -172,8 +172,8 @@ const u16 *mapentryset_map_nobinobi_cabin[] = { mapentry_map_nobinobi_cabin[0], 
 const ActionControl actionControl_ghosthand[] = {{ 0, ELeft, EGhosthandAppear }};
 const CharacterEventControl event_ghosthandOnTrain = { EControlEventType, 0, 24, 24, 1, 0, NULL, &ghostlyHand_controller, false, actionControl_ghosthand };
 const CharacterInit actors_map_nobinobi_cabin[] = {
-	{ 205, 120, GHOSTHAND, &event_ghosthandOnTrain },
-	{ 325, 115, GHOSTMAN, NULL }
+	{ 205, 120, 1, GHOSTHAND, &event_ghosthandOnTrain },
+	{ 325, 115, 1, GHOSTMAN, NULL }
 };
 
 const EventTransfer transfer_map_nobinobi_cabin[] = {
@@ -182,3 +182,4 @@ const EventTransfer transfer_map_nobinobi_cabin[] = {
 };
 
 const MapInfo map_nobinobi_cabin = { 512, 256, 2, 8, 4, 1, 2, NULL , mapentryset_map_nobinobi_cabin, tileset_map_nobinobi_cabin, pallette_map_nobinobi_cabin, transfer_map_nobinobi_cabin, collision_map_nobinobi_cabin, actors_map_nobinobi_cabin, NULL };
+*/

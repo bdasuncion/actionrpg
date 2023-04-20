@@ -1,4 +1,4 @@
-#include <stdlib.h>
+/*#include <stdlib.h>
 #include "GBAMap.h"
 
 extern const MapInfo mapforest;
@@ -301,3 +301,4 @@ const EventTransfer transfer_mapsnowfield[] = {
 };
 const MapInfo mapsnowfield = { 512, 512, 2, 10, 4, 1, 0, NULL , mapentryset_mapsnowfield, tileset_mapsnowfield, pallette_mapsnowfield,
 transfer_mapsnowfield, heightMap_mapsnowfield, actors_mapsnowfield, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
+*/

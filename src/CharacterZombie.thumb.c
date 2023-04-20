@@ -210,6 +210,8 @@ void zombie_actionWalk(CharacterAttr* character,
 		character->delta.y = 0;
 	}
 	
+	commonGravityEffect(character, common_zOffsetDown);
+	
 	++character->movementCtrl.currentFrame;
 	character->spriteDisplay.spriteSet = zombieWalk[character->direction];
 	
@@ -264,6 +266,8 @@ void zombie_actionChaseTarget(CharacterAttr* character,
 		character->delta.y = 0;
 	}
 	
+	commonGravityEffect(character, common_zOffsetDown);
+	
 	++character->movementCtrl.currentFrame;
 	character->spriteDisplay.spriteSet = zombieChase[character->direction];
 	
@@ -289,6 +293,8 @@ void zombie_actionAttack(CharacterAttr* character,
 	
 	character->delta.x = 0;
 	character->delta.y = 0;
+	
+	commonGravityEffect(character, common_zOffsetDown);
 	
 	if (commonUpdateAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
@@ -341,6 +347,8 @@ void zombie_actionStunned(CharacterAttr* character,
 	character->delta.x = 0;
 	character->delta.y = 0;
 	
+	commonGravityEffect(character, common_zOffsetDown);
+	
 	if (commonUpdateAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -357,7 +365,7 @@ void zombie_getBoundingBoxMoving(const CharacterAttr* character,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, zombie_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, zombie_boundingBoxMeasurements);
-	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
+	u16 z = commonConvertBoundingBoxZ(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + zombie_boundingBoxMeasurements[EBBCnvrtLength];
@@ -374,7 +382,7 @@ void zombie_getBoundingBoxStanding(const CharacterAttr* character,
 	*count = 1;
 	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, zombie_boundingBoxMeasurements);
 	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, zombie_boundingBoxMeasurements);
-	u16 z = CONVERT_TO_BOUNDINGBOX_Z(character->position.z);
+	u16 z = commonConvertBoundingBoxZ(character->position.z);
 	boundingBox->startX = x;
 	boundingBox->startY = y;
 	boundingBox->endX = x + zombie_boundingBoxMeasurements[EBBCnvrtLength];
@@ -398,6 +406,7 @@ int zombie_setPosition(CharacterAttr* character,
 		scr_pos->y, zombie_scrConversionMeasurements);
 	character->spriteDisplay.baseX = CONVERT_TO_SCRXPOS(character->position.x, 
 		scr_pos->x, zombie_scrConversionMeasurements);
+	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
 	
 	charStartX = CONVERT_2POS(character->position.x) - ZOMBIE_SCREENDISPLAYOFFSET_X;
 	charStartY = CONVERT_2POS(character->position.y);
@@ -417,6 +426,21 @@ int zombie_setPosition(CharacterAttr* character,
 }
 
 void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
+	int count;
+	BoundingBox mapBoundingBox, characterBoundingBox;
+	CharacterPlayerControl *charControl = (CharacterAIControl*)character->free;
+	int fallingDown;
+
+	character->getBounds(character, &count, &characterBoundingBox);
+	commonGetBoundsFromMap(CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), mapInfo, &mapBoundingBox);
+	fallingDown = common_fallingDown(character, &characterBoundingBox, &mapBoundingBox);
+	
+	character->spriteDisplay.shadow = fallingDown;
+	
+	if (fallingDown > 0) {
+		commonFallingDownCollision(character, mapInfo);
+	}
+	
     commonCharacterMapEdgeCheck(character, mapInfo);
 	common_mapCollision[character->direction](character, mapInfo, 
 	    common_mapCollisionReactions[character->direction]);

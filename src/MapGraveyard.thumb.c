@@ -1,4 +1,4 @@
-#include <stdlib.h>
+/*#include <stdlib.h>
 #include "GBAObject.h"
 #include "GBABG.h"
 #include "GBAVideo.h"
@@ -157,3 +157,4 @@ const EventTransfer transfer_mapgraveyard[] = {
 	{ 496, 144, 24, 24, 1, &mapTest, 16, 32, ERight},
 };
 const MapInfo mapgraveyard = { 512, 256, 2, 2, 1, 1, 5, NULL , mapentryset_mapgraveyard, tileset_mapgraveyard, pallette_mapgraveyard, transfer_mapgraveyard, collision_mapgraveyard, actors_mapgraveyard, NULL };
+*/

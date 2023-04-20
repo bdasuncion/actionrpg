@@ -280,11 +280,11 @@ const TileSet *tileset_mapheighttest[] = { &tileset_forest_ground_side, &tileset
 const u16 *pallette_mapheighttest[] = {  pallette_forest_ground_side, };
 const u16 *mapentryset_mapheighttest[] = { mapentry_mapheighttest[0], mapentry_mapheighttest[1], };
 const CharacterInit actors_mapheighttest[] = {
-
+	{ 64, 128, 49, WEREWOLF }, { 64, 154, 49, ZOMBIE }
 };
 const EventTransfer transfer_mapheighttest[] = {
 };
-const MapInfo mapheighttest = { 512, 512, 2, 5, 1, 0, 0, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
+const MapInfo mapheighttest = { 512, 512, 2, 5, 1, 0, 2, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
 transfer_mapheighttest, heightMap_mapheighttest, actors_mapheighttest, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
 
 const EventTransfer startAt = { 400, 400, 128, 128, 49, &mapheighttest, 16, 48, 0, ERight};

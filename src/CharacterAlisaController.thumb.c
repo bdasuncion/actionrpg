@@ -301,7 +301,6 @@ void alisa_fallingDownController(CharacterAttr* character) {
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
       
    	if (character->nextAction != EAlisaFallingDown) {
-		mprinter_printf("GO TO STAND\n");
 		character->nextDirection = character->faceDirection;
 		character->nextAction = EAlisaStand;
 		character->controller = &alisa_controller; 
@@ -309,19 +308,8 @@ void alisa_fallingDownController(CharacterAttr* character) {
 		//character->getBounds = &alisa_getBoundingBoxMoving;
 		return;
 	}
-	
-	//character->getBounds = &alisa_getBoundingBoxMoving;
-	
-	character->nextAction = EAlisaFallingDown;
-	
-	//commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
-	//mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
-	/*if (isLastFrame) {
-		character->nextDirection = character->faceDirection;
-		character->controller = &alisa_controller;
-		character->controller(character, NULL, NULL);
-	}*/
+	character->nextAction = EAlisaFallingDown;
 }
 
 void alisa_stunnedController(CharacterAttr* character) {

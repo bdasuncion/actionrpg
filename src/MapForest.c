@@ -185,7 +185,7 @@ const TileSet *tileset_mapforest[] = { &tileset_thickgrass, &tileset_trees, &til
 const u16 *pallette_mapforest[] = {  pallette_thickgrass, pallette_trees, pallette_treestrunks, pallette_treetops, };
 const u16 *mapentryset_mapforest[] = { mapentry_mapforest[0], mapentry_mapforest[1], };
 const CharacterInit actors_mapforest[] = {
-	{ 312, 232, WEREWOLF }, 	{ 104, 312, WEREWOLF }, 	{ 264, 88, WEREWOLF }, 
+	{ 312, 232, 1, WEREWOLF }, 	{ 104, 312, 1, WEREWOLF }, 	{ 264, 88, 1, WEREWOLF }, 
 };
 const EventTransfer transfer_mapforest[] = {
 	{ 352, 288, 24, 96, 1, &mapsnowfield, 16, 48, 0, ERight},
