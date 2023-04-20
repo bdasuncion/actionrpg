@@ -287,4 +287,4 @@ const EventTransfer transfer_mapheighttest[] = {
 const MapInfo mapheighttest = { 512, 512, 2, 5, 1, 0, 0, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
 transfer_mapheighttest, heightMap_mapheighttest, actors_mapheighttest, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
 
-const EventTransfer startAt = { 400, 400, 128, 128, 64, &mapheighttest, 16, 48, 0, ERight};
+const EventTransfer startAt = { 400, 400, 128, 128, 49, &mapheighttest, 16, 48, 0, ERight};

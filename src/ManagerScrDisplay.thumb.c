@@ -49,6 +49,7 @@ void mscr_initCharMoveRef(ScreenAttr *scrAtt, const MapInfo *mapInfo,
 	
 	scrAtt->position.x = CONVERT_2POS(moveReference->x) - DIVIDE_BY_2(GBA_SCREEN_WIDTH);
 	scrAtt->position.y = CONVERT_2POS(moveReference->y) - DIVIDE_BY_2(GBA_SCREEN_HEIGHT);
+	scrAtt->position.y -= CONVERT_2POS(moveReference->z);
 	
 	mscr_adjustScreenToMapLimits(scrAtt, mapInfo);
 	
