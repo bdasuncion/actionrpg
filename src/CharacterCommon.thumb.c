@@ -140,6 +140,8 @@ const CommonMapCollision common_mapCollision[8] = {
 
 const Position NOT_FOUND_POSITION = {-1, -1, -1};
 
+const s32 common_zOffsetDown =  -2*MOVE_STR;
+
 extern const SpriteDisplay common_shadowDisplay;
 extern const unsigned short shadow_pal[];
 
@@ -840,7 +842,6 @@ void commonFallingDownRight(CharacterAttr *character, const BoundingBox *charBou
 	//mprinter_printf("RIGHT ");
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	if (didCollide) {
-		mprinter_printf("COLLIDE ");
 		int offset = charBoundingBox->endX - otherCharBoundingBox->startX;
 		character->position.x -= CONVERT_2MOVE(offset + 1);
 	}
@@ -853,7 +854,6 @@ void commonFallingDownLeft(CharacterAttr *character, const BoundingBox *charBoun
 	//otherCharBoundingBox->endX, otherCharBoundingBox->endY);
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	if (didCollide) {
-		mprinter_printf("COLLIDE ");
 		int offset = otherCharBoundingBox->endX - charBoundingBox->startX;
 		character->position.x += CONVERT_2MOVE(offset + 1);
 	}
@@ -864,7 +864,6 @@ void commonFallingDownUp(CharacterAttr *character, const BoundingBox *charBoundi
 	//mprinter_printf("UP ");
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	if (didCollide) {
-		mprinter_printf("COLLIDE ");
 		int offset = otherCharBoundingBox->endY - charBoundingBox->startY;
 		character->position.y += CONVERT_2MOVE(offset + 1);
 	}
@@ -875,7 +874,6 @@ void commonFallingDownDown(CharacterAttr *character, const BoundingBox *charBoun
 	//mprinter_printf("DOWN\n");
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	if (didCollide) {
-		mprinter_printf("COLLIDE ");
 		int offset = charBoundingBox->endY - otherCharBoundingBox->startY;
 		character->position.y -= CONVERT_2MOVE(offset + 1);
 	}

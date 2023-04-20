@@ -8,6 +8,7 @@
 #include <stdbool.h>
 
 extern const CharacterAttr openSlot;
+extern const s32 common_zOffsetDown;
 void commonRemoveCharacter(CharacterAttr *character);
 void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf);
 void commonDrawDisplay(SpriteDisplay *spriteDisplay);

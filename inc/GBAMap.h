@@ -48,6 +48,7 @@ typedef void (*FuncMap)(void *screenAttribute, void *characterCollection, void *
 typedef struct CharacterInit {
     u16 x;
 	u16 y;
+	u16 z;
 	CHARACTERTYPE type;
 	const CharacterEventControl *eventControl;
 } CharacterInit;

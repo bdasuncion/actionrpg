@@ -87,8 +87,10 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 	for ( i = 0; i < mapInfo->characterCount; ++characterCollection->currentSize, ++i) {
 		CharacterAttr *character = characterCollection->characters[characterCollection->currentSize];
 	    chacterInit[mapInfo->characterInit[i].type](character, controlPool);
-		commonCharacterSetPosition(character, mapInfo->characterInit[i].x, mapInfo->characterInit[i].y, 0, EDown);
+		commonCharacterSetPosition(character, mapInfo->characterInit[i].x, mapInfo->characterInit[i].y,
+		mapInfo->characterInit[i].z, EDown);
 		character->doAction(character, mapInfo, characterCollection, charActionCollection);
+		character->checkMapCollision(character, mapInfo);
 		if (mapInfo->characterInit[i].eventControl) {
 		    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);
 			character->controller = &commonTriggerCharacterEvent;
