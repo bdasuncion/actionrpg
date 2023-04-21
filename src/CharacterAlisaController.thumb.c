@@ -101,7 +101,7 @@ void alisa_setCharacter(CharacterAttr* character) {
 void alisa_controller(CharacterAttr* character) {	
 	EDirections direction = KEYPRESS_DIRECTION;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
-
+	character->distanceFromGround = 1024;
 	if (charControl->currentStatus == EAlisaStatusStunned) {
 		character->controller = &alisa_stunnedController; 
 		alisa_stunnedController(character);
@@ -141,7 +141,8 @@ void alisa_slashController(CharacterAttr* character) {
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
-      
+   character->distanceFromGround = 1024;
+   
    	if (charControl->currentStatus == EAlisaStatusStunned) {
 		alisa_stunnedController(character);
 		character->controller = &alisa_stunnedController; 
@@ -274,7 +275,7 @@ void alisa_jumpController(CharacterAttr* character) {
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
-      
+    character->distanceFromGround = 1024;
    	/*if (character->nextAction != EAlisaFallingDown) {
 		character->controller = &alisa_controller; 
 		character->controller(character, NULL, NULL);
@@ -299,13 +300,14 @@ void alisa_fallingDownController(CharacterAttr* character) {
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
-      
+   character->distanceFromGround = 1024;
+     mprinter_printf("FALLING DOWN CONTROLLER\n");
    	if (character->nextAction != EAlisaFallingDown) {
+		mprinter_printf("NOT FALLING\n");
 		character->nextDirection = character->faceDirection;
 		character->nextAction = EAlisaStand;
 		character->controller = &alisa_controller; 
 		character->controller(character, NULL, NULL);
-		//character->getBounds = &alisa_getBoundingBoxMoving;
 		return;
 	}
 

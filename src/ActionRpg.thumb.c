@@ -128,17 +128,11 @@ int main() {
 	mchar_actione_init(&charActionCollection, MAX_CHARACTIONEVENT);
 	
 	mchar_getPlayerCharacter(&characterCollection, &alisa, &controlPool);
-	//commonCharacterSetPosition(alisa, 430, 185, 0, EDown);
-	commonCharacterSetPosition(alisa, 24, 96, 0, EDown);
 	
 	mscr_initCharMoveRef(&screenAttribute, &mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 	
-	//mbg_init(&screenAttribute, &mapInfo, &characterCollection, &controlPool, &charActionCollection);
-	//mapInfo.mapFunction = &fadeToBlack;
-	//mapInfo.transferTo =  &mapInfo.tranfers[0];
 	mapInfo.transferTo =  &startAt;
-	//mapInfo.mapFunction(&screenAttribute, &characterCollection, &mapInfo, &controlPool, &charActionCollection);
 	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,
 		&charActionCollection, &track);
 	

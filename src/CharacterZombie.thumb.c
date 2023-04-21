@@ -435,7 +435,7 @@ void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) 
 	commonGetBoundsFromMap(CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), mapInfo, &mapBoundingBox);
 	fallingDown = common_fallingDown(character, &characterBoundingBox, &mapBoundingBox);
 	
-	character->spriteDisplay.shadow = fallingDown;
+	character->distanceFromGround = fallingDown;
 	
 	if (fallingDown > 0) {
 		commonFallingDownCollision(character, mapInfo);

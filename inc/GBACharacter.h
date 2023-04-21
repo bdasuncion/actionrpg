@@ -73,7 +73,7 @@ typedef struct SpriteDisplay {
 	bool isInScreen:1;
 	u32 baseY:8;
 	u32 baseX:9;
-	u32 shadow:8;
+	//u32 shadow:8;
 	u32 dummy:7;
 }ALIGN4 SpriteDisplay;
 
@@ -196,7 +196,8 @@ typedef struct CharacterAttr {
 	CharacterStats stats;
 	u8 id;
 	s8 type;
-	u16 dummy;
+	s16 distanceFromGround:12;
+	s16 dummy:4;
 	u8 action;
 	EDirections direction:4;
 	EDirections faceDirection:4;

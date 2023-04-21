@@ -170,7 +170,6 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 			    checkMapCollision(charCollection->characters[checkCollisionIdx], mapInfo);
 		}
 		
-		
 		for (i = 0; i < charCollection->currentSize; ++i) {
 			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], charActionCollection);
 		}

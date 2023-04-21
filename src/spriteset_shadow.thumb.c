@@ -16,4 +16,4 @@ const SpriteSet shadow = {shadow_layerSet,1};
 const int shadow_palletteId = 15;
 const int shadow_imageId = 512;
 
-const SpriteDisplay common_shadowDisplay = { &shadow, shadow_imageId, EUpdate, shadow_palletteId, EUpdate,0,0,1,0,0,0,0 };
+const SpriteDisplay common_shadowDisplay = { &shadow, shadow_imageId, EUpdate, shadow_palletteId, EUpdate,0,0,1,0,0,0 };

@@ -568,6 +568,22 @@ int common_fallingDown(CharacterAttr* character,
 	return -zoffset1;
 }
 
+int common_fallingDownOnChar(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
+	int deltaZ = CONVERT_2POS(-character->delta.z);
+	
+	if (didCollide && zoffset1 >= 0 && zoffset1 <= deltaZ) {
+		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+		//character->delta.z = 0;deltaZ
+		return 0;
+	}
+		
+	return -zoffset1;
+	//return 1024;
+}
+
 inline void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {
 	int isAboveGround;
 	character->verticalDirection = EVDown;

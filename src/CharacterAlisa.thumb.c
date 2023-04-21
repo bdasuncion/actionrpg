@@ -312,7 +312,7 @@ int alisa_setPosition(CharacterAttr* alisa,
 	
 	//if (alisa->spriteDisplay.shadow > 0) {
 	numberOfShadow = commonSetShadow(alisa->spriteDisplay.baseX, 
-			alisa->spriteDisplay.baseY + alisa->spriteDisplay.shadow + ALISA_SCRCNVRTHEIGHT,
+			alisa->spriteDisplay.baseY + alisa->distanceFromGround + ALISA_SCRCNVRTHEIGHT,
 			&oamBuf[alisa->spriteDisplay.spriteSet->set[alisa->spriteDisplay.currentAnimationFrame].numberOflayers]);
 	//}
     return alisa->spriteDisplay.spriteSet->set[alisa->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
@@ -643,13 +643,22 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 	commonGetBoundsFromMap(CONVERT_2POS(alisa->position.x), CONVERT_2POS(alisa->position.y), mapInfo, &mapBoundingBox);
 	fallingDown = common_fallingDown(alisa, &characterBoundingBox, &mapBoundingBox);
 	
-	alisa->spriteDisplay.shadow = fallingDown;
-	if (fallingDown > 0) {
+	//mprinter_printf("distance from char NOW %d\n", alisa->distanceFromGround);
+	//mprinter_printf("distance falling %d\n", fallingDown);
+	if (alisa->distanceFromGround <= 0) {
+		alisa->nextAction = EAlisaStand;
+	} else if (fallingDown > 0 ) {
 		alisa->nextAction = EAlisaFallingDown;
 		commonFallingDownCollision(alisa, mapInfo);
+		alisa->distanceFromGround = fallingDown;
 	} else if (alisa->nextAction == EAlisaFallingDown && fallingDown <= 0) {
 		alisa->nextAction = EAlisaStand;
 	}
+	
+	if (fallingDown < alisa->distanceFromGround) {
+		alisa->distanceFromGround = fallingDown;
+	}
+	//alisa->distanceFromGround = fallingDown;
 	
 	alisa_mapCollision[alisa->direction](alisa, mapInfo, 
 	    alisa_mapCollisionReactions[alisa->direction]);
@@ -658,7 +667,7 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter) {
 	
-	int count;
+	int count, fallingDistance;
 	BoundingBox alisaBoundingBox, otherCharBoundingBox;
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
@@ -666,6 +675,20 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	*checkNext = common_checkNext(isOtherCharBelow, &alisaBoundingBox, &otherCharBoundingBox);
 	if (!*checkNext) {
 		return;
+	}
+	fallingDistance = common_fallingDownOnChar(alisa, &alisaBoundingBox, &otherCharBoundingBox);
+	
+	//alisa->distanceFromGround = fallingDown;
+	//mprinter_printf("distance from char %d\n", fallingDistance);
+	if (fallingDistance != 0) {
+		alisa->nextAction = EAlisaFallingDown;
+	} else if (alisa->nextAction == EAlisaFallingDown && fallingDistance <= 0) {
+		//mprinter_printf("SHOULD STAND\n");
+		alisa->nextAction = EAlisaStand;
+	}
+	
+	if (fallingDistance >= 0 && fallingDistance < alisa->distanceFromGround ) {
+		alisa->distanceFromGround = fallingDistance;
 	}
 	
 	alisa_collisionReactions[alisaBoundingBox.isMoving][alisa->direction]

@@ -319,7 +319,7 @@ int werewolf_setPosition(CharacterAttr* character,
 		commonSetToOamBuffer(&character->spriteDisplay, oamBuf);
 		
 		numberOfShadow = commonSetShadow(character->spriteDisplay.baseX, 
-			character->spriteDisplay.baseY + character->spriteDisplay.shadow + WEREWOLF_SCRCNVRTHEIGHT,
+			character->spriteDisplay.baseY + character->distanceFromGround + WEREWOLF_SCRCNVRTHEIGHT,
 			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
 			
 		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
@@ -376,7 +376,7 @@ void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo
 	commonGetBoundsFromMap(CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), mapInfo, &mapBoundingBox);
 	fallingDown = common_fallingDown(character, &characterBoundingBox, &mapBoundingBox);
 	
-	character->spriteDisplay.shadow = fallingDown;
+	character->distanceFromGround = fallingDown;
 	
 	if (fallingDown > 0) {
 		commonFallingDownCollision(character, mapInfo);
