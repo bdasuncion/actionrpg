@@ -21,7 +21,7 @@
 u32	sprite_memory_bank = 0;
 u32 BG_memory_bank = 0;
 u32 palette_memory_bank = 0;
-VramIdControl idCollection[MAXNCHARACTER];
+VramIdControl idCollection[MAXNCHARACTER + BLOCKSPERCHARACTERMEDIUM + BLOCKSPERCHARACTERLARGE];
 PaletteIdControl paletteIdCollection[MAXNPALETTE];
 
 void sprite_vram_init() {
@@ -29,6 +29,33 @@ void sprite_vram_init() {
     for (i = 0; i < MAXNCHARACTER; ++i) {
 	    VramIdControl idCtrl;
 		idCtrl.id = BLOCKSPERCHARACTER * i;
+		idCtrl.status = VRAM_FREE;
+	    idCollection[i] = idCtrl;
+	}
+}
+
+void sprite_vram_init_sections() {
+    int i, j, currentID = 0;
+    for (i = 0; i < MAXNCHARACTERSMALL; ++i) {
+	    VramIdControl idCtrl;
+		idCtrl.id = currentID; ;
+		currentID += BLOCKSPERCHARACTERSMALL;
+		idCtrl.status = VRAM_FREE;
+	    idCollection[i] = idCtrl;
+	}
+	
+	for (j = 0; j < MAXNCHARACTERMEDIUM; ++i, ++j) {
+	    VramIdControl idCtrl;
+		idCtrl.id = currentID;
+		currentID += BLOCKSPERCHARACTERMEDIUM;
+		idCtrl.status = VRAM_FREE;
+	    idCollection[i] = idCtrl;
+	}
+	
+	for (j = 0; j < MAXNCHARACTERLARGE; ++i, ++j) {
+	    VramIdControl idCtrl;
+		idCtrl.id = currentID;
+		currentID += BLOCKSPERCHARACTERLARGE;
 		idCtrl.status = VRAM_FREE;
 	    idCollection[i] = idCtrl;
 	}
@@ -42,6 +69,33 @@ u32 sprite_vram_findId() {
 		    return idCollection[i].id;
 		}
 	}
+}
+
+u32 sprite_vram_findIdByType(CharacterSizeType type) {
+    int i;
+	if (type == ECharSizeSmall) {
+		for (i = 0; i < MAXNCHARACTERSMALL; ++i) {
+			if (idCollection[i].status == VRAM_FREE) {
+				idCollection[i].status = VRAM_TAKEN;
+				return idCollection[i].id;
+			}
+		}
+	} else if (type == ECharSizeMedium) {
+		for (i = MAXNCHARACTERSMALL; i < MAXNCHARACTERMEDIUM; ++i) {
+			if (idCollection[i].status == VRAM_FREE) {
+				idCollection[i].status = VRAM_TAKEN;
+				return idCollection[i].id;
+			}
+		}
+	} else if (type == ECharSizeLarge) {
+		for (i = MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM; i < MAXNCHARACTERLARGE; ++i) {
+			if (idCollection[i].status == VRAM_FREE) {
+				idCollection[i].status = VRAM_TAKEN;
+				return idCollection[i].id;
+			}
+		}
+	}
+  
 }
 
 void sprite_vram_freeId(u32 id) {

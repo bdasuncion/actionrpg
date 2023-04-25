@@ -167,7 +167,7 @@ void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->checkMapCollision = &werewolf_checkMapCollision;
 	character->checkActionCollision = &werewolf_checkActionEventCollision;
 		
-	character->spriteDisplay.baseImageId = sprite_vram_findId();
+	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(WEREWOLF, WEREWOLF_PAL_CNT);
 	sprite_palette_copy32_ID(werewolfupperbody_run_down_pal, character->spriteDisplay.basePalleteId);

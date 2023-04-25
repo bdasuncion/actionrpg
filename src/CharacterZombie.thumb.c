@@ -140,7 +140,7 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->checkMapCollision = &zombie_checkMapCollision;
 	character->checkActionCollision = &zombie_checkActionEventCollision;
 		
-	character->spriteDisplay.baseImageId = sprite_vram_findId();
+	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(ZOMBIE, ZOMBIE_PAL_CNT);
 	sprite_palette_copy32_ID(zombie_walk_side_pal, character->spriteDisplay.basePalleteId);

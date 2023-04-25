@@ -48,7 +48,7 @@ void crow_init(CharacterAttr* crow, ControlTypePool* controlPool) {
 	//use enum of character type
 	crow->type = CROW;
 	
-	crow->spriteDisplay.baseImageId = sprite_vram_findId();
+	crow->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	crow->spriteDisplay.imageUpdateStatus = EUpdate;
 	crow->spriteDisplay.basePalleteId = sprite_palette_findId(CROW, CROW_PAL_CNT);
 	

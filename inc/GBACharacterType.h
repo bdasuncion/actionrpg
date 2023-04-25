@@ -24,6 +24,12 @@ typedef struct PaletteIdControl {
 	CHARACTERTYPE type;
 }ALIGN4 PaletteIdControl;
 
+typedef enum CharacterSizeType {
+	ECharSizeSmall,
+	ECharSizeMedium,
+	ECharSizeLarge
+} CharacterSizeType;
+
 //typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection);
 //typedef void (*FuncCharacterSet)(CharacterAttr *character);
 #endif

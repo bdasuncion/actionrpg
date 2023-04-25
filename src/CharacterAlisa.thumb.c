@@ -247,7 +247,7 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	//use enum of character type
 	alisa->type = ALISA;
 	
-	alisa->spriteDisplay.baseImageId = sprite_vram_findId();
+	alisa->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 	alisa->spriteDisplay.basePalleteId = sprite_palette_findId(ALISA, ALISA_PAL_CNT);
 	//if (1) {

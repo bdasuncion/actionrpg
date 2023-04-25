@@ -14,8 +14,10 @@ void sprite_palette_reset();
 void memFill(const void* src, void* dst, u32 count);
 u32 lzss2vram(const u32* src, u32 id);
 void sprite_vram_init();
+void sprite_vram_init_sections();
 u32 sprite_vram_findId();
 void sprite_vram_freeId(u32 id);
 int sprite_palette_findId(CHARACTERTYPE type, int nPalette);
 u16* sprite_get_palette_ID(u32 id);
+u32 sprite_vram_findIdByType(CharacterSizeType type);
 #endif

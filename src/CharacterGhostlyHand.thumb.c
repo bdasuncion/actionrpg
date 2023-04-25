@@ -65,7 +65,7 @@ void ghostlyHand_init(CharacterAttr* ghostlyHand, ControlTypePool* controlPool)
 	//use enum of character type
 	ghostlyHand->type = GHOSTHAND;
 	
-	ghostlyHand->spriteDisplay.baseImageId = sprite_vram_findId();
+	ghostlyHand->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	ghostlyHand->spriteDisplay.imageUpdateStatus = EUpdate;
 	ghostlyHand->spriteDisplay.basePalleteId = sprite_palette_findId(GHOSTHAND, GHOSTLYHAND_PAL_CNT);
 	

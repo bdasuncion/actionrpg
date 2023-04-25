@@ -64,7 +64,7 @@ void nameless_init(CharacterAttr* nameless) {
 	//use enum of character type
 	nameless->type = NAMELESS;
 	
-	nameless->spriteDisplay.baseImageId = sprite_vram_findId();
+	nameless->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	nameless->spriteDisplay.imageUpdateStatus = EUpdate;
 	nameless->spriteDisplay.basePalleteId = sprite_palette_findId(NAMELESS, NAMELESS_PAL_CNT);
 	
