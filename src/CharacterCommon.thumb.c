@@ -144,13 +144,18 @@ const s32 common_zOffsetDown =  -2*MOVE_STR;
 
 extern const SpriteDisplay common_shadowDisplay;
 extern const unsigned short shadow_pal[];
+bool shouldSetShadow = true;
 
 void commonInitShadow() {
 	lzss2vram(common_shadowDisplay.spriteSet->set[0].layers[0].image, common_shadowDisplay.baseImageId);
 }
 
+void commonReverseDisplayShadow() {
+	shouldSetShadow = !shouldSetShadow;
+}
+
 int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf){
-	if (y <= 160 &&  x <= 240) {
+	if (shouldSetShadow) {
 		SpriteDisplay shadowDisplay = common_shadowDisplay;
 		shadowDisplay.baseY = y;
 		shadowDisplay.baseX = x;
@@ -327,22 +332,18 @@ inline bool inBounds(int value, int min, int max) {
     return (value >= min & value <= max);
 }
 
-//inline bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-    return (inBounds(charBoundingBox->startX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
-	    inBounds(charBoundingBox->endX, otherCharBoundingBox->startX, otherCharBoundingBox->endX)) & 
-		(inBounds(charBoundingBox->startY, otherCharBoundingBox->startY, otherCharBoundingBox->endY) | 
-		inBounds(charBoundingBox->endY, otherCharBoundingBox->startY, otherCharBoundingBox->endY)) &
-		(inBounds(charBoundingBox->startZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ) | 
-		inBounds(charBoundingBox->endZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ)); 
-}
-
-/*bool hasCollisionMap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+inline bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
     return (inBounds(charBoundingBox->startX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
 	    inBounds(charBoundingBox->endX, otherCharBoundingBox->startX, otherCharBoundingBox->endX)) & 
 		(inBounds(charBoundingBox->startY, otherCharBoundingBox->startY, otherCharBoundingBox->endY) | 
 		inBounds(charBoundingBox->endY, otherCharBoundingBox->startY, otherCharBoundingBox->endY)); 
-}*/
+}
+
+bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+    return isOverlap(charBoundingBox, otherCharBoundingBox) &
+		(inBounds(charBoundingBox->startZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ) | 
+		inBounds(charBoundingBox->endZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ)); 
+}
 
 bool commonCollissionPointInBounds(const Position *collisionPoint, const BoundingBox *boundingBox) {
 
@@ -558,10 +559,11 @@ int common_fallingDown(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
 	int deltaZ = CONVERT_2POS(-character->delta.z);
+	//bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	
 	if (zoffset1 >= 0 && zoffset1 <= deltaZ) {
 		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
-		character->delta.z = 0;
+		//character->delta.z = 0;
 		return 0;
 	}
 		
@@ -571,17 +573,18 @@ int common_fallingDown(CharacterAttr* character,
 int common_fallingDownOnChar(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didOverlap = isOverlap(charBoundingBox, otherCharBoundingBox) | isOverlap(otherCharBoundingBox, charBoundingBox);
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
 	int deltaZ = CONVERT_2POS(-character->delta.z);
 	
 	if (didCollide && zoffset1 >= 0 && zoffset1 <= deltaZ) {
 		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
-		//character->delta.z = 0;deltaZ
 		return 0;
+	} else if (didOverlap && zoffset1 <= 0) {
+		return -zoffset1;
 	}
-		
-	return -zoffset1;
-	//return 1024;
+	
+	return -1;
 }
 
 inline void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {

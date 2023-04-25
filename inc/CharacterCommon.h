@@ -88,6 +88,8 @@ int common_fallingDown(CharacterAttr* character, const BoundingBox *charBounding
 void commonGravityEffect(CharacterAttr *character, int zOffsetDown);
 int commonConvertBoundingBoxZ(int zPos);
 void commonInitShadow();
+void commonReverseDisplayShadow();
 int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf);
 void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo);
+bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 #endif

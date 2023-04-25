@@ -165,7 +165,6 @@ void alisa_slashController(CharacterAttr* character) {
 	
 	if (character->nextAction == EAlisaNormalSwordSlash || character->nextAction == EAlisaStrongSwordSlash) {
 		commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
-
 //		mprinter_printf("%s\n", character->nextAction == EAlisaNormalSwordSlash ? "NORMAL": "STRONG");
 		if (isLastFrame) {
 			character->controller = &alisa_controller;
@@ -301,9 +300,8 @@ void alisa_fallingDownController(CharacterAttr* character) {
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
    character->distanceFromGround = 1024;
-     mprinter_printf("FALLING DOWN CONTROLLER\n");
+   
    	if (character->nextAction != EAlisaFallingDown) {
-		mprinter_printf("NOT FALLING\n");
 		character->nextDirection = character->faceDirection;
 		character->nextAction = EAlisaStand;
 		character->controller = &alisa_controller; 
@@ -319,8 +317,10 @@ void alisa_stunnedController(CharacterAttr* character) {
 	bool isLastFrame = false;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	
+	//mprinter_printf("ACTIONS %d %d\n", character->nextAction, character->action);
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
+	//mprinter_printf("SCREEN %d %d\n", nextScreenFrame, MAX_STUN_ANIMATION);
 	if (nextScreenFrame > MAX_STUN_ANIMATION) {
 		charControl->currentStatus = EAlisaStatusNormal;
 		character->controller = &alisa_controller;

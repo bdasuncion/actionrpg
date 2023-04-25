@@ -109,26 +109,69 @@ void mchar_action(CharacterCollection *charCollection, const MapInfo *mapInfo)
 	}
 }
 
+void mchar_arrangeCharacters(CharacterCollection *charCollection) {
+	int charIdx, cmpIndex, count;
+	BoundingBox charBB, otherBB;
+	for (charIdx = 0; charIdx < charCollection->currentSize - 1; ++charIdx){
+		cmpIndex = charIdx + 1;
+		charCollection->characters[charIdx]->getBounds(charCollection->characters[charIdx], &count, &charBB);
+		charCollection->characters[cmpIndex]->getBounds(charCollection->characters[cmpIndex], &count, &otherBB);
+		//mprinter_printf("%d %d %d %d %d %d\n", CONVERT_2POS(charCollection->characters[charIdx]->position.y), 
+		//CONVERT_2POS(charCollection->characters[cmpIndex]->position.y), charBB.startZ, charBB.endZ, otherBB.startZ, otherBB.endZ);
+		if ((charCollection->characters[charIdx]->position.y <
+			charCollection->characters[cmpIndex]->position.y &&
+			charBB.startZ <= otherBB.endZ) || (otherBB.startZ > charBB.endZ)) {
+			CharacterAttr *charA = charCollection->characters[charIdx];
+			charCollection->characters[charIdx] = charCollection->characters[cmpIndex];
+			charCollection->characters[cmpIndex] = charA;
+		}
+	}
+}
+
+void mchar_resolveMapCollision(CharacterCollection *charCollection, const MapInfo *mapInfo) {
+	int checkCollisionIdx;
+	for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
+		    charCollection->characters[checkCollisionIdx]->
+			    checkMapCollision(charCollection->characters[checkCollisionIdx], mapInfo);
+		}
+}
+
+void mchar_resolveCharacterCollision(CharacterCollection *charCollection) {
+	int checkCollisionIdx;
+	for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
+		int ascendingIdx, descendingIdx;
+		bool checkNext = false;
+		CharacterAttr *character = charCollection->characters[checkCollisionIdx];
+		for (descendingIdx = checkCollisionIdx - 1; descendingIdx >= 0; --descendingIdx) {
+			character->checkCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
+			
+			if (!checkNext) {
+				break;
+			}
+		}
+		
+		for (ascendingIdx = checkCollisionIdx + 1; ascendingIdx < charCollection->currentSize; ++ascendingIdx) {
+			character->checkCollision(character, false, &checkNext, charCollection->characters[ascendingIdx]);
+			
+			if (!checkNext) {
+				break;
+			}
+		}
+	}
+}
+
+inline void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) {
+	if (charCollection->characters[charCollection->currentSize - 1]->type == NONE) {
+		--charCollection->currentSize;
+	}
+}
+
 void mchar_resolveAction(CharacterCollection *charCollection,
 	const MapInfo *mapInfo, CharacterActionCollection *charActionCollection) {
 
 	//TODO put priority on actions
 	if (charCollection) {
-		int i, charIdx, checkCollisionIdx;
-		
-		for (charIdx = 0; charIdx < charCollection->currentSize - 1; ++charIdx){
-			int cmpIndex = charIdx + 1;
-			if (charCollection->characters[charIdx]->position.y <
-			    charCollection->characters[cmpIndex]->position.y) {
-				CharacterAttr *charA = charCollection->characters[charIdx];
-				charCollection->characters[charIdx] = charCollection->characters[cmpIndex];
-				charCollection->characters[cmpIndex] = charA;
-			}
-		}
-		
-		if (charCollection->characters[charCollection->currentSize - 1]->type == NONE) {
-		    --charCollection->currentSize;
-		}
+		int i;
 		
 		if (charCollection->characterEventCurrentSize < 1) {
 			for (i = 0; i < charCollection->currentSize; ++i) {
@@ -143,36 +186,19 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 			}
 		}
 		
-		for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
-		    //int count = 0, compareCount = 0;
-            int ascendingIdx, descendingIdx;
-			bool checkNext = false;
-			CharacterAttr *character = charCollection->characters[checkCollisionIdx];
-		    for (descendingIdx = checkCollisionIdx - 1; descendingIdx >= 0; --descendingIdx) {
-				character->checkCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
-				
-				if (!checkNext) {
-				    break;
-				}
-			}
-			
-		    for (ascendingIdx = checkCollisionIdx + 1; ascendingIdx < charCollection->currentSize; ++ascendingIdx) {
-				character->checkCollision(character, false, &checkNext, charCollection->characters[ascendingIdx]);
-				
-				if (!checkNext) {
-				    break;
-				}
-			}
-		}
+		mchar_resolveMapCollision(charCollection, mapInfo);
 		
-		for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
-		    charCollection->characters[checkCollisionIdx]->
-			    checkMapCollision(charCollection->characters[checkCollisionIdx], mapInfo);
-		}
+		mchar_resolveCharacterCollision(charCollection);
+		
+		//mchar_resolveMapCollision(charCollection, mapInfo);
 		
 		for (i = 0; i < charCollection->currentSize; ++i) {
 			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], charActionCollection);
 		}
+		
+		mchar_arrangeCharacters(charCollection);
+		
+		mchar_resolveRemovedCharacters(charCollection);
 	}
 }
 

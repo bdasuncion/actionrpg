@@ -15,12 +15,12 @@
 
 extern const EDirections directions[EDirectionsCount];
 
-#define ZOMBIE_LENGTH 16
-#define ZOMBIE_WIDTH 16
-#define ZOMBIE_HEIGHT 24
+#define ZOMBIE_LENGTH 14
+#define ZOMBIE_WIDTH 10
+#define ZOMBIE_HEIGHT 28
 
 #define ZOMBIE_SCRCNVRTWIDTH 16
-#define ZOMBIE_SCRCNVRTHEIGHT 26
+#define ZOMBIE_SCRCNVRTHEIGHT 28
 
 #define ZOMBIE_SCREENDISPLAYOFFSET_X 10
 #define ZOMBIE_SCREENDISPLAYOFFSET_Y 28
@@ -400,7 +400,7 @@ int zombie_setPosition(CharacterAttr* character,
 	const ScreenDimension *scr_dim) 
 {
 
-	int charStartX, charStartY, charEndX, charEndY;
+	int charStartX, charStartY, charEndX, charEndY, numberOfShadow = 0;
 	
 	character->spriteDisplay.baseY = CONVERT_TO_SCRYPOS(character->position.y, 
 		scr_pos->y, zombie_scrConversionMeasurements);
@@ -418,7 +418,12 @@ int zombie_setPosition(CharacterAttr* character,
 		    (character->spriteDisplay.isInScreen*character->spriteDisplay.imageUpdateStatus);
 		character->spriteDisplay.isInScreen = true;
 		commonSetToOamBuffer(&character->spriteDisplay, oamBuf);
-		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers;
+		
+		numberOfShadow = commonSetShadow(character->spriteDisplay.baseX, 
+			character->spriteDisplay.baseY + character->distanceFromGround + ZOMBIE_SCRCNVRTHEIGHT,
+			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
+			
+		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
 	}
 	
 	character->spriteDisplay.isInScreen = false;

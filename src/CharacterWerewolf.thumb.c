@@ -20,7 +20,7 @@ extern const unsigned short werewolfupperbody_run_down_pal[16];
 
 #define WEREWOLF_LENGTH 16
 #define WEREWOLF_WIDTH 16
-#define WEREWOLF_HEIGHT 24
+#define WEREWOLF_HEIGHT 32
 
 #define WEREWOLF_SCRCNVRTWIDTH 16
 #define WEREWOLF_SCRCNVRTHEIGHT 30

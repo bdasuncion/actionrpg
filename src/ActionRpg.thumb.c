@@ -63,10 +63,9 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		    mchar_resolveAction(characterCollection, mapInfo, charActionCollection);
 		}
 		
-		//screenAttribute.controller(&screenAttribute, 
-		//	&mapInfo);
 		screenAttribute->controller(screenAttribute, mapInfo);
 		
+		commonReverseDisplayShadow();
 		mchar_setPosition(characterCollection, 
 			oamCollection,
 			&screenAttribute->position,
