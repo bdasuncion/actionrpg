@@ -420,6 +420,8 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo) {
     bool isLastFrame = false;
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	
+	commonGravityEffect(alisa, alisa_zOffsetDown);
 	if (commonUpdateAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -669,9 +671,7 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	BoundingBox alisaBoundingBox, otherCharBoundingBox;
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
-	
-	//mprinter_printf("FROM ALISA %d %d %d %d\n", CONVERT_2POS(otherCharacter->position.z), otherCharBoundingBox.startZ, otherCharBoundingBox.endZ, otherCharBoundingBox.endZ + 1);
-	
+		
 	*checkNext = common_checkNext(isOtherCharBelow, &alisaBoundingBox, &otherCharBoundingBox);
 	
 	if (!*checkNext) {
@@ -691,20 +691,6 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 			alisa->distanceFromGround = fallingDistance;
 		}
 	}
-	
-	
-	//mprinter_printf("%d %d\n", alisa->distanceFromGround, fallingDistance);
-	/*if (alisa->distanceFromGround == 0) {
-		mprinter_printf("STAND 1\n");
-		//alisa->nextAction = EAlisaStand;
-	} else if (fallingDistance > 0 || (alisa->distanceFromGround > 0 && fallingDistance < 0)) {
-		mprinter_printf("FALL 1\n");
-		alisa->nextAction = EAlisaFallingDown;
-	} else if (alisa->nextAction == EAlisaFallingDown && fallingDistance == 0) {
-		mprinter_printf("STAND 2\n");
-		alisa->nextAction = EAlisaStand;
-	}*/
-	
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	alisa_collisionReactions[alisaBoundingBox.isMoving][alisa->direction]
 	    (alisa, &alisaBoundingBox, &otherCharBoundingBox);

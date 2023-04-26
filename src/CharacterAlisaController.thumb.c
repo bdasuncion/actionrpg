@@ -130,7 +130,11 @@ void alisa_controller(CharacterAttr* character) {
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
 
-	if (alisa_isInterruptAction(character, charControl)) {
+	if (alisa_isStunned(character, charControl)) {
+		return;
+	}
+	
+	if (alisa_isFalling(character, charControl)) {
 		return;
 	}
 	
@@ -157,16 +161,64 @@ void alisa_controller(CharacterAttr* character) {
 	character->nextAction = EAlisaStand;
 }
 
+void alisa_normalSlashController(CharacterAttr* character) {
+	int nextScreenFrame, nextAnimationFrame, hold;
+	bool isLastFrame = false;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+	character->distanceFromGround = 1024;
+
+	if (alisa_isStunned(character, charControl)) {
+		return;
+	}
+
+	if (alisa_isFalling(character, charControl)) {
+		return;
+	}
+	character->nextAction = EAlisaNormalSwordSlash;
+	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	if (isLastFrame) {
+		character->controller = &alisa_controller;
+		character->controller(character, NULL, NULL);
+		return;
+	}
+}
+
+void alisa_strongSlashController(CharacterAttr* character) {
+	int nextScreenFrame, nextAnimationFrame, hold;
+	bool isLastFrame = false;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+	character->distanceFromGround = 1024;
+
+	if (alisa_isStunned(character, charControl)) {
+		return;
+	}
+
+	if (alisa_isFalling(character, charControl)) {
+		return;
+	}
+	character->nextAction = EAlisaStrongSwordSlash;
+	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	if (isLastFrame) {
+		character->controller = &alisa_controller;
+		character->controller(character, NULL, NULL);
+		return;
+	}
+}
+
 void alisa_slashController(CharacterAttr* character) {
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
    character->distanceFromGround = 1024;
    
-   	if (alisa_isInterruptAction(character, charControl)) {
+   	if (alisa_isStunned(character, charControl)) {
 		return;
 	}
 	
+	if (alisa_isFalling(character, charControl)) {
+		return;
+	}
+
 	character->stats.currentStatus = EStatusNormal;
 	character->getBounds = &alisa_getBoundingBoxStanding;
 	
@@ -175,19 +227,14 @@ void alisa_slashController(CharacterAttr* character) {
 		//TODO Add strong attack for when normal attack threshhold is reached
 		if (hold >= ALISA_NORMALATTACK_INTERVALMAX) {
 			character->nextAction = EAlisaStrongSwordSlash;
+			character->controller = &alisa_strongSlashController;
+			character->controller(character, NULL, NULL);
+			return;
 		} else {
 			character->nextAction = EAlisaNormalSwordSlash;
-		}
-	}
-	
-	if (character->nextAction == EAlisaNormalSwordSlash || character->nextAction == EAlisaStrongSwordSlash) {
-		commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
-//		mprinter_printf("%s\n", character->nextAction == EAlisaNormalSwordSlash ? "NORMAL": "STRONG");
-		if (isLastFrame) {
-			character->controller = &alisa_controller;
+			character->controller = &alisa_normalSlashController;
 			character->controller(character, NULL, NULL);
 		}
-		return;
 	}
 	
 	character->nextAction = EAlisaStand;
@@ -198,8 +245,12 @@ void alisa_prepareDashController(CharacterAttr* character) {
     int nextScreenFrame, nextAnimationFrame, hold;
     bool isLastFrame = false;
     CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
-      
+    character->distanceFromGround = 1024;
    	if (alisa_isStunned(character, charControl)) {
+		return;
+	}
+	
+	if (alisa_isFalling(character, charControl)) {
 		return;
 	}
 	
@@ -232,10 +283,11 @@ void alisa_prepareDashController(CharacterAttr* character) {
 }
 
 void alisa_dashForwardController(CharacterAttr* character) {
-   int nextScreenFrame, nextAnimationFrame, hold;
-   bool isLastFrame = false;
-   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
-      
+	int nextScreenFrame, nextAnimationFrame, hold;
+	bool isLastFrame = false;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+    character->distanceFromGround = 1024;
+	
    	if (alisa_isStunned(character, charControl)) {
 		return;
 	}
@@ -253,9 +305,10 @@ void alisa_dashForwardController(CharacterAttr* character) {
 }
 
 void alisa_dashBackwardController(CharacterAttr* character) {
-   int nextScreenFrame, nextAnimationFrame, hold;
-   bool isLastFrame = false;
-   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+	int nextScreenFrame, nextAnimationFrame, hold;
+	bool isLastFrame = false;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+	character->distanceFromGround = 1024;
       
     if (alisa_isStunned(character, charControl)) {
 		return;

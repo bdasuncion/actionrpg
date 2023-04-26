@@ -334,15 +334,22 @@ inline bool inBounds(int value, int min, int max) {
 
 inline bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
     return (inBounds(charBoundingBox->startX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
-	    inBounds(charBoundingBox->endX, otherCharBoundingBox->startX, otherCharBoundingBox->endX)) & 
+		inBounds(otherCharBoundingBox->startX, charBoundingBox->startX, charBoundingBox->endX) |
+	    inBounds(charBoundingBox->endX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
+	    inBounds(otherCharBoundingBox->endX, charBoundingBox->startX, charBoundingBox->endX))
+		&
 		(inBounds(charBoundingBox->startY, otherCharBoundingBox->startY, otherCharBoundingBox->endY) | 
-		inBounds(charBoundingBox->endY, otherCharBoundingBox->startY, otherCharBoundingBox->endY)); 
+		inBounds(otherCharBoundingBox->startY, charBoundingBox->startY, charBoundingBox->endY) |
+		inBounds(charBoundingBox->endY, otherCharBoundingBox->startY, otherCharBoundingBox->endY)|
+		inBounds(otherCharBoundingBox->endY, charBoundingBox->startY, charBoundingBox->endY));
 }
 
 bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
     return isOverlap(charBoundingBox, otherCharBoundingBox) &
 		(inBounds(charBoundingBox->startZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ) | 
-		inBounds(charBoundingBox->endZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ)); 
+		inBounds(otherCharBoundingBox->startZ, charBoundingBox->startZ, charBoundingBox->endZ) | 
+		inBounds(charBoundingBox->endZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ) |
+		inBounds(otherCharBoundingBox->endZ, charBoundingBox->startZ, charBoundingBox->endZ)); 
 }
 
 bool commonCollissionPointInBounds(const Position *collisionPoint, const BoundingBox *boundingBox) {
@@ -559,11 +566,9 @@ int common_fallingDown(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
 	int deltaZ = CONVERT_2POS(-character->delta.z);
-	//bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
 	
 	if (zoffset1 >= 0 && zoffset1 <= deltaZ) {
 		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
-		//character->delta.z = 0;
 		return 0;
 	}
 		
@@ -572,15 +577,14 @@ int common_fallingDown(CharacterAttr* character,
 
 int common_fallingDownOnChar(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
-	bool didOverlap = isOverlap(charBoundingBox, otherCharBoundingBox) | isOverlap(otherCharBoundingBox, charBoundingBox);
+	bool didOverlap = isOverlap(charBoundingBox, otherCharBoundingBox);
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
 	int deltaZ = CONVERT_2POS(-character->delta.z);
 	
-	if (didCollide && zoffset1 >= 0 && zoffset1 <= deltaZ) {
+	if (didOverlap && zoffset1 >= 0 && zoffset1 <= deltaZ) {
 		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
 		return 0;
-	} else if (didOverlap && zoffset1 <= 0) {
+	} else if (didOverlap && zoffset1 < 0) {
 		return -zoffset1;
 	}
 	
@@ -602,7 +606,7 @@ inline int commonConvertBoundingBoxZ(int zPos) {
 
 void common_mapMovingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int xoffset = (charBoundingBox->endX - otherCharBoundingBox->startX);
 	character->collisionCtrl.hasCollision = didCollide;
 	xoffset += 1;
@@ -615,7 +619,7 @@ void common_mapMovingRightOffset(CharacterAttr* character,
 	
 void common_mapMovingLeftOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int xoffset = (otherCharBoundingBox->endX - charBoundingBox->startX);
 	character->collisionCtrl.hasCollision = didCollide;
 	xoffset += 1;
@@ -628,7 +632,7 @@ void common_mapMovingLeftOffset(CharacterAttr* character,
 
 void common_mapMovingUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int yoffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
 	character->collisionCtrl.hasCollision = didCollide;
 	yoffset += 1;
@@ -641,7 +645,7 @@ void common_mapMovingUpOffset(CharacterAttr* character,
 
 void common_mapMovingDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int yoffset = (charBoundingBox->endY - otherCharBoundingBox->startY);
 	character->collisionCtrl.hasCollision = didCollide;
 	yoffset += 1;
@@ -654,7 +658,7 @@ void common_mapMovingDownOffset(CharacterAttr* character,
 	
 void common_mapMovingRightUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int xOffset = (charBoundingBox->endX - otherCharBoundingBox->startX);
 	int yOffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
 	bool doOffsetY = (xOffset > yOffset);
@@ -673,7 +677,7 @@ void common_mapMovingRightUpOffset(CharacterAttr* character,
 
 void common_mapMovingLeftUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int xOffset = (otherCharBoundingBox->endX - charBoundingBox->startX);
 	int yOffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
 	bool doOffsetY = (xOffset > yOffset);
@@ -692,7 +696,7 @@ void common_mapMovingLeftUpOffset(CharacterAttr* character,
 
 void common_mapMovingRightDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int xOffset = (charBoundingBox->endX - otherCharBoundingBox->startX);
 	int yOffset = (charBoundingBox->endY - otherCharBoundingBox->startY);
 	bool doOffsetY = (xOffset > yOffset);
@@ -711,7 +715,7 @@ void common_mapMovingRightDownOffset(CharacterAttr* character,
 
 void common_mapMovingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	int xOffset = (otherCharBoundingBox->endX - charBoundingBox->startX);
 	int yOffset = (charBoundingBox->endY - otherCharBoundingBox->startY);
 	bool doOffsetY = (xOffset > yOffset);
@@ -859,7 +863,7 @@ void commonMovingRightDownMapCollision(CharacterAttr *character, const MapInfo* 
 void commonFallingDownRight(CharacterAttr *character, const BoundingBox *charBoundingBox, 
 	const BoundingBox *otherCharBoundingBox) {
 	//mprinter_printf("RIGHT ");
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	if (didCollide) {
 		int offset = charBoundingBox->endX - otherCharBoundingBox->startX;
 		character->position.x -= CONVERT_2MOVE(offset + 1);
@@ -871,7 +875,7 @@ void commonFallingDownLeft(CharacterAttr *character, const BoundingBox *charBoun
 	//mprinter_printf("LEFT %d %d %d %d other %d %d %d %d", charBoundingBox->startX, charBoundingBox->startY,
 	//charBoundingBox->endX, charBoundingBox->endY, otherCharBoundingBox->startX, otherCharBoundingBox->startY,
 	//otherCharBoundingBox->endX, otherCharBoundingBox->endY);
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	if (didCollide) {
 		int offset = otherCharBoundingBox->endX - charBoundingBox->startX;
 		character->position.x += CONVERT_2MOVE(offset + 1);
@@ -881,7 +885,7 @@ void commonFallingDownLeft(CharacterAttr *character, const BoundingBox *charBoun
 void commonFallingDownUp(CharacterAttr *character, const BoundingBox *charBoundingBox, 
 	const BoundingBox *otherCharBoundingBox) {
 	//mprinter_printf("UP ");
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	if (didCollide) {
 		int offset = otherCharBoundingBox->endY - charBoundingBox->startY;
 		character->position.y += CONVERT_2MOVE(offset + 1);
@@ -891,7 +895,7 @@ void commonFallingDownUp(CharacterAttr *character, const BoundingBox *charBoundi
 void commonFallingDownDown(CharacterAttr *character, const BoundingBox *charBoundingBox, 
 	const BoundingBox *otherCharBoundingBox) {
 	//mprinter_printf("DOWN\n");
-	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox) | hasCollision(otherCharBoundingBox, charBoundingBox);
+	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
 	if (didCollide) {
 		int offset = charBoundingBox->endY - otherCharBoundingBox->startY;
 		character->position.y -= CONVERT_2MOVE(offset + 1);
@@ -946,7 +950,7 @@ void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInf
     }
    
 	targetCharacter->getBounds(targetCharacter, &count, &targetBox);
-	if (hasCollision(&eventBox, &targetBox) || hasCollision(&targetBox, &eventBox)) {
+	if (hasCollision(&eventBox, &targetBox)) {
 	    character->controller = &commonDoCharacterEvent;
 		charCollection->charactersDoEvent[charCollection->characterEventCurrentSize] = character;
 		++charCollection->characterEventCurrentSize;
