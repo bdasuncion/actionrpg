@@ -98,22 +98,42 @@ void alisa_setCharacter(CharacterAttr* character) {
 	character->controller = &alisa_controller; 
 }
 
+bool alisa_isStunned(CharacterAttr* character, CharacterPlayerControl *charControl) {
+	if (charControl->currentStatus == EAlisaStatusStunned) {
+		character->controller = &alisa_stunnedController; 
+		alisa_stunnedController(character);
+		return true;
+	}
+	return false;
+}
+
+bool alisa_isFalling(CharacterAttr* character, CharacterPlayerControl *charControl) {
+	if (character->nextAction == EAlisaFallingDown) {
+		character->controller = &alisa_fallingDownController; 
+		alisa_fallingDownController(character);
+		return true;
+	}
+	
+	return false;
+}
+
+bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charControl) {
+	if (character->nextAction != EAlisaFallingDown) {
+		character->controller = &alisa_controller;
+		character->controller(character, NULL, NULL);
+	}
+	return false;
+}
+
 void alisa_controller(CharacterAttr* character) {	
 	EDirections direction = KEYPRESS_DIRECTION;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
-	if (charControl->currentStatus == EAlisaStatusStunned) {
-		character->controller = &alisa_stunnedController; 
-		alisa_stunnedController(character);
+
+	if (alisa_isInterruptAction(character, charControl)) {
 		return;
 	}
 	
-	if (character->nextAction == EAlisaFallingDown) {
-		character->controller = &alisa_fallingDownController; 
-		alisa_fallingDownController(character);
-		return;
-	}
-
 	if (controlButtonCheck(character)) {
 		character->controller(character, NULL, NULL);
 		return;
@@ -143,10 +163,7 @@ void alisa_slashController(CharacterAttr* character) {
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
    character->distanceFromGround = 1024;
    
-   	if (charControl->currentStatus == EAlisaStatusStunned) {
-		alisa_stunnedController(character);
-		character->controller = &alisa_stunnedController; 
-		character->getBounds = &alisa_getBoundingBoxStanding;
+   	if (alisa_isInterruptAction(character, charControl)) {
 		return;
 	}
 	
@@ -182,10 +199,7 @@ void alisa_prepareDashController(CharacterAttr* character) {
     bool isLastFrame = false;
     CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
       
-   	if (charControl->currentStatus == EAlisaStatusStunned) {
-		alisa_stunnedController(character);
-		character->controller = &alisa_stunnedController; 
-		character->getBounds = &alisa_getBoundingBoxStanding;
+   	if (alisa_isStunned(character, charControl)) {
 		return;
 	}
 	
@@ -222,10 +236,7 @@ void alisa_dashForwardController(CharacterAttr* character) {
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
       
-   	if (charControl->currentStatus == EAlisaStatusStunned) {
-		alisa_stunnedController(character);
-		character->controller = &alisa_stunnedController; 
-		character->getBounds = &alisa_getBoundingBoxStanding;
+   	if (alisa_isStunned(character, charControl)) {
 		return;
 	}
 	
@@ -246,11 +257,7 @@ void alisa_dashBackwardController(CharacterAttr* character) {
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
       
-   	if (charControl->currentStatus == EAlisaStatusStunned) {
-		character->nextDirection = character->faceDirection;
-		character->controller = &alisa_stunnedController; 
-		character->controller(character, NULL, NULL);
-		character->getBounds = &alisa_getBoundingBoxStanding;
+    if (alisa_isStunned(character, charControl)) {
 		return;
 	}
 	
@@ -275,11 +282,14 @@ void alisa_jumpController(CharacterAttr* character) {
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
     character->distanceFromGround = 1024;
-   	/*if (character->nextAction != EAlisaFallingDown) {
-		character->controller = &alisa_controller; 
-		character->controller(character, NULL, NULL);
+ 
+	if (alisa_isStunned(character, charControl)) {
 		return;
-	}*/
+	}
+	
+    if (alisa_hasLanded(character, charControl)) {
+		return;
+	}
 	
 	character->getBounds = &alisa_getBoundingBoxMoving;
 	
@@ -300,15 +310,15 @@ void alisa_fallingDownController(CharacterAttr* character) {
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
    character->distanceFromGround = 1024;
-   
-   	if (character->nextAction != EAlisaFallingDown) {
-		character->nextDirection = character->faceDirection;
-		character->nextAction = EAlisaStand;
-		character->controller = &alisa_controller; 
-		character->controller(character, NULL, NULL);
+
+   	if (alisa_isStunned(character, charControl)) {
 		return;
 	}
-
+   
+	if (alisa_hasLanded(character, charControl)) {
+		return;
+	}
+   
 	character->nextAction = EAlisaFallingDown;
 }
 

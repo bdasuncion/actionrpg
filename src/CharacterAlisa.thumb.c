@@ -673,7 +673,9 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	//mprinter_printf("FROM ALISA %d %d %d %d\n", CONVERT_2POS(otherCharacter->position.z), otherCharBoundingBox.startZ, otherCharBoundingBox.endZ, otherCharBoundingBox.endZ + 1);
 	
 	*checkNext = common_checkNext(isOtherCharBelow, &alisaBoundingBox, &otherCharBoundingBox);
+	
 	if (!*checkNext) {
+		*checkNext = true;
 		return;
 	}
 	
