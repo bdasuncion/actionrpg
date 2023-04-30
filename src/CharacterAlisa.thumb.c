@@ -74,7 +74,8 @@ const s32 alisa_dashOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
 };
 
 const s32 alisa_jumpOffset[] = {1*MOVE_STR, 2*MOVE_STR};
-const s32 alisa_zOffsetDown =  -2*MOVE_STR;
+//const s32 alisa_zOffsetDown =  -2*MOVE_STR;
+const s32 alisa_zOffsetDown[2] =  {-1*MOVE_STR, -2*MOVE_STR};
 
 const s32 alisa_jumpOffsetX[EDirectionsCount][1] = {
 	{0},
@@ -333,7 +334,7 @@ void alisa_actionStand(CharacterAttr* alisa,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
-	commonGravityEffect(alisa, alisa_zOffsetDown);
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	
 	alisa->movementCtrl.maxFrames = 0;
 	alisa->movementCtrl.currentFrame = 0;
@@ -371,7 +372,7 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	alisa->delta.y = alisa_runOffsetY[alisa->direction][alisa->movementCtrl.currentFrame];
 	alisa->position.y += alisa->delta.y;
 	
-	commonGravityEffect(alisa, alisa_zOffsetDown);
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	
 	++alisa->movementCtrl.currentFrame;
 	//alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->direction];
@@ -387,7 +388,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
-	commonGravityEffect(alisa, alisa_zOffsetDown);
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	if (commonUpdateAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -421,7 +422,7 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
-	commonGravityEffect(alisa, alisa_zOffsetDown);
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	if (commonUpdateAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -516,17 +517,24 @@ void alisa_actionJump(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	if (alisa->action != alisa->nextAction) {
+		alisa->movementCtrl.maxFrames = 2;
 	}
 	
-		alisa->action = alisa->nextAction;
+	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
 
-	if (alisa->spriteDisplay.currentAnimationFrame == 0 || alisa->spriteDisplay.currentAnimationFrame == 1) {
+	if (alisa->spriteDisplay.currentAnimationFrame < 2) {
 		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame];
 		alisa->position.z += alisa->delta.z;
+		mprinter_printf("%d %d\n", CONVERT_2POS(alisa->delta.z), CONVERT_2POS(alisa->position.z));
+		alisa->delta.x = alisa_jumpOffsetX[alisa->faceDirection][0];
+		alisa->position.x += alisa->delta.x;
+		alisa->delta.y = alisa_jumpOffsetY[alisa->faceDirection][0];
+		alisa->position.y += alisa->delta.y;
+	} else {
 		alisa->delta.x = alisa_jumpOffsetX[alisa->faceDirection][0];
 		alisa->position.x += alisa->delta.x;
 		alisa->delta.y = alisa_jumpOffsetY[alisa->faceDirection][0];
@@ -549,6 +557,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	if (alisa->action != alisa->nextAction) {
+		alisa->movementCtrl.maxFrames = 2;
 	}
 	
 	alisa->action = alisa->nextAction;
@@ -557,7 +566,8 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
 
-	commonGravityEffect(alisa, alisa_zOffsetDown);
+	mprinter_printf("%d\n", CONVERT_2POS(-alisa_zOffsetDown[alisa->movementCtrl.currentFrame]));
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame]);
 	/*if (alisa->spriteDisplay.currentAnimationFrame == 0) {
 		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame];
 		alisa->position.z += alisa->delta.z;
@@ -575,7 +585,7 @@ void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
-	commonGravityEffect(alisa, alisa_zOffsetDown);
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	
 	if (commonUpdateAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;

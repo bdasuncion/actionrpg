@@ -173,4 +173,14 @@ extern const unsigned int alisa_jumpwithsword_up_image2[];
 extern const unsigned int alisa_jumpwithsword_up_image3[];
 extern const unsigned int alisa_jumpwithsword_up_image4[];
 extern const unsigned int alisa_jumpwithsword_up_image5[];
+
+extern const unsigned short sword_side_set_pal[];
+extern const unsigned int sword_side_set_image0[];
+extern const unsigned int sword_side_set_image1[];
+extern const unsigned int sword_side_set_image2[];
+
+extern const unsigned short sword_frontback_set_pal[];
+extern const unsigned int sword_frontback_set_image0[];
+extern const unsigned int sword_frontback_set_image1[];
+
 #endif

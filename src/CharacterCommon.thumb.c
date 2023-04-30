@@ -562,6 +562,15 @@ void common_movingLeftDownOffset(CharacterAttr* character,
 	}
 }
 
+void common_adjustOnInit(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
+	
+	if (zoffset1 >= 0) {
+		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+	}
+}
+
 int common_fallingDown(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
