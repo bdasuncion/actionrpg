@@ -22,6 +22,10 @@
 //#define alisa_DASH_MVMNT_CTRL_MAX 3
 #define alisa_DASH_MVMNT_CTRL_MAX 4
 
+#define ALISA_RISING_ANIMATION_FRAME 2
+#define ALISA_JUMP_MOVEMENT 3
+#define ALISA_FALLING_MOVEMENT 3
+
 #define SLASH_STARTSOUND_FRAME 3
 #define DASH_STARTMOVE_FRAME 1
 #define ALISA_NATTACK_ZPOS_OFFSET 16
@@ -73,9 +77,8 @@ const s32 alisa_dashOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
 	{4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG,4*MOVE_DIAG}
 };
 
-const s32 alisa_jumpOffset[] = {1*MOVE_STR, 2*MOVE_STR};
-//const s32 alisa_zOffsetDown =  -2*MOVE_STR;
-const s32 alisa_zOffsetDown[2] =  {-1*MOVE_STR, -2*MOVE_STR};
+const s32 alisa_jumpOffset[] = {1*MOVE_STR, 2*MOVE_STR, 2*MOVE_STR};
+const s32 alisa_zOffsetDown[2] =  {-1*MOVE_STR, -2*MOVE_STR, -2*MOVE_STR};
 
 const s32 alisa_jumpOffsetX[EDirectionsCount][1] = {
 	{0},
@@ -517,7 +520,7 @@ void alisa_actionJump(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	if (alisa->action != alisa->nextAction) {
-		alisa->movementCtrl.maxFrames = 2;
+		alisa->movementCtrl.maxFrames = ALISA_JUMP_MOVEMENT;
 	}
 	
 	alisa->action = alisa->nextAction;
@@ -526,10 +529,9 @@ void alisa_actionJump(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
 
-	if (alisa->spriteDisplay.currentAnimationFrame < 2) {
+	if (alisa->spriteDisplay.currentAnimationFrame < ALISA_RISING_ANIMATION_FRAME) {
 		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame];
 		alisa->position.z += alisa->delta.z;
-		mprinter_printf("%d %d\n", CONVERT_2POS(alisa->delta.z), CONVERT_2POS(alisa->position.z));
 		alisa->delta.x = alisa_jumpOffsetX[alisa->faceDirection][0];
 		alisa->position.x += alisa->delta.x;
 		alisa->delta.y = alisa_jumpOffsetY[alisa->faceDirection][0];
@@ -557,7 +559,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	if (alisa->action != alisa->nextAction) {
-		alisa->movementCtrl.maxFrames = 2;
+		alisa->movementCtrl.maxFrames = ALISA_FALLING_MOVEMENT;
 	}
 	
 	alisa->action = alisa->nextAction;
@@ -566,12 +568,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
 
-	mprinter_printf("%d\n", CONVERT_2POS(-alisa_zOffsetDown[alisa->movementCtrl.currentFrame]));
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame]);
-	/*if (alisa->spriteDisplay.currentAnimationFrame == 0) {
-		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame];
-		alisa->position.z += alisa->delta.z;
-	}*/
 	
 	++alisa->movementCtrl.currentFrame;
 	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection];

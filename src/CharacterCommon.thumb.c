@@ -943,10 +943,10 @@ void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventContr
 }
 
 void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection) {
-   CharacterAttr *targetCharacter = mchar_findCharacterType(charCollection, NAMELESS);
+	//TODO Make this generic
+   CharacterAttr *targetCharacter = mchar_findCharacterType(charCollection, ALISA);
    CharacterEventControl *charControl = (CharacterEventControl*)character->free;
-   //int width = DIVIDE_BY_2(charControl->width);
-   //int height = DIVIDE_BY_2(charControl->height);
+
    int count;
    BoundingBox eventBox, targetBox;
    eventBox.startX = character->position.x - charControl->width;
