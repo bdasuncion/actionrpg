@@ -4,23 +4,23 @@
 #include "ImageAlisa.h"
 
 const SpriteLayer alisa_runwithsword_up_layerSet0[] = {
-    {sword_side_image2,8,10,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,1},
-    {alisa_runwithsword_up_image0,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,4,0}};
+    {alisa_runwithsword_up_image0,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,0},
+    {sword_side_set_image1,9,11,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,8,1}};
 const SpriteLayer alisa_runwithsword_up_layerSet1[] = {
-    {sword_side_image2,8,10,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,1},
-    {alisa_runwithsword_up_image1,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,4,0}};
+    {alisa_runwithsword_up_image1,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,0},
+    {sword_side_set_image1,9,11,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,8,1}};
 const SpriteLayer alisa_runwithsword_up_layerSet2[] = {
-    {sword_side_image2,8,10,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,1},
-    {alisa_runwithsword_up_image2,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,4,0}};
+    {alisa_runwithsword_up_image2,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,0},
+    {sword_side_set_image1,9,11,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,8,1}};
 const SpriteLayer alisa_runwithsword_up_layerSet3[] = {
-    {sword_side_image2,8,11,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,1},
-    {alisa_runwithsword_up_image3,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,4,0}};
+    {alisa_runwithsword_up_image3,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,0},
+    {sword_side_set_image2,8,12,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,8,1}};
 const SpriteLayer alisa_runwithsword_up_layerSet4[] = {
-    {sword_side_image2,8,11,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,1},
-    {alisa_runwithsword_up_image4,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,4,0}};
+    {alisa_runwithsword_up_image4,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,0},
+    {sword_side_set_image2,8,12,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,8,1}};
 const SpriteLayer alisa_runwithsword_up_layerSet5[] = {
-    {sword_side_image2,8,11,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,1},
-    {alisa_runwithsword_up_image5,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,4,0}};
+    {alisa_runwithsword_up_image5,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,0},
+    {sword_side_set_image2,8,12,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,8,1}};
 
 const SpriteLayerSet alisa_runwithsword_up_layerSet[] = {
     {alisa_runwithsword_up_layerSet0,6,2},

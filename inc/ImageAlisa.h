@@ -183,4 +183,8 @@ extern const unsigned short sword_frontback_set_pal[];
 extern const unsigned int sword_frontback_set_image0[];
 extern const unsigned int sword_frontback_set_image1[];
 
+extern const unsigned short sword_vertical_set_pal[];
+extern const unsigned int sword_vertical_set_image0[];
+extern const unsigned int sword_vertical_set_image1[];
+extern const unsigned int sword_vertical_set_image2[];
 #endif

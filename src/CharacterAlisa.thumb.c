@@ -129,7 +129,7 @@ const u8 alisa_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
 extern const SpriteSet maincharacter_stand;
 extern const SpriteSet maincharacter_walk;
 extern const unsigned short alisa_standwithsword_side_pal[16];
-extern const unsigned short sword_side_pal[16];
+extern const unsigned short sword_side_set_pal[16];
 
 void alisa_controller(CharacterAttr* alisa);
 void alisa_doAction(CharacterAttr *alisa, const MapInfo *mapInfo, const void *dummy, 
@@ -256,7 +256,7 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	alisa->spriteDisplay.basePalleteId = sprite_palette_findId(ALISA, ALISA_PAL_CNT);
 	//if (1) {
 	    sprite_palette_copy32_ID(alisa_standwithsword_side_pal, alisa->spriteDisplay.basePalleteId);
-	    sprite_palette_copy32_ID(sword_side_pal, alisa->spriteDisplay.basePalleteId + 1);
+	    sprite_palette_copy32_ID(sword_side_set_pal, alisa->spriteDisplay.basePalleteId + 1);
 	//}
 	//alisa->spriteDisplay.palleteUpdateStatus = EUpdate;	
 	

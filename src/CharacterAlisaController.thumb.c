@@ -300,7 +300,9 @@ void alisa_dashForwardController(CharacterAttr* character) {
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
 	if (isLastFrame) {
+		//character->controller = &alisa_controller;
 		character->controller = &alisa_controller;
+		character->controller(character, NULL, NULL);
 	}
 }
 

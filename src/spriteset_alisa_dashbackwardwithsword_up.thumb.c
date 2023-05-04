@@ -4,11 +4,11 @@
 #include "ImageAlisa.h"
 
 const SpriteLayer alisa_dashbackwardwithsword_up_layerSet0[] = {
-    {alisa_dashbackwardwithsword_up_image1,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,0},
-    {sword_side_image0,10,10,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,8,1}};
+    {sword_side_set_image2,9,11,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,1},
+    {alisa_dashbackwardwithsword_up_image1,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,4,0}};
 const SpriteLayer alisa_dashbackwardwithsword_up_layerSet1[] = {
-    {alisa_dashbackwardwithsword_up_image0,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,0,0},
-    {sword_side_image0,10,12,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,LZSS_COMPRESSION,8,1}};
+    {sword_side_set_image2,9,13,WIDE,SMALL_B,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,0,1},
+    {alisa_dashbackwardwithsword_up_image0,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,4,0}};
 
 const SpriteLayerSet alisa_dashbackwardwithsword_up_layerSet[] = {
     {alisa_dashbackwardwithsword_up_layerSet0,10,2},
