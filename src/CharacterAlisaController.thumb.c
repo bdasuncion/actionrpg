@@ -121,6 +121,7 @@ bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charContr
 	if (character->nextAction != EAlisaFallingDown) {
 		character->controller = &alisa_controller;
 		character->controller(character, NULL, NULL);
+		return true;
 	}
 	return false;
 }
@@ -300,7 +301,6 @@ void alisa_dashForwardController(CharacterAttr* character) {
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
 	if (isLastFrame) {
-		//character->controller = &alisa_controller;
 		character->controller = &alisa_controller;
 		character->controller(character, NULL, NULL);
 	}
@@ -331,7 +331,7 @@ void alisa_dashBackwardController(CharacterAttr* character) {
 	}
 }
 
-void alisa_jumpController(CharacterAttr* character) {
+void alisa_jumpUpController(CharacterAttr* character) {
    //EDirections direction = KEYPRESS_DIRECTION;
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
@@ -342,13 +342,9 @@ void alisa_jumpController(CharacterAttr* character) {
 		return;
 	}
 	
-    if (alisa_hasLanded(character, charControl)) {
-		return;
-	}
-	
 	character->getBounds = &alisa_getBoundingBoxMoving;
 	
-	character->nextAction = EAlisaJump;
+	character->nextAction = EAlisaJumpUp;
 	
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
@@ -358,6 +354,42 @@ void alisa_jumpController(CharacterAttr* character) {
 		character->controller = &alisa_fallingDownController;
 		character->controller(character, NULL, NULL);
 	}
+}
+
+void alisa_jumpForwardController(CharacterAttr* character) {
+   //EDirections direction = KEYPRESS_DIRECTION;
+   int nextScreenFrame, nextAnimationFrame, hold;
+   bool isLastFrame = false;
+   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+    character->distanceFromGround = 1024;
+ 
+	if (alisa_isStunned(character, charControl)) {
+		return;
+	}
+	
+	character->getBounds = &alisa_getBoundingBoxMoving;
+	
+	character->nextAction = EAlisaJumpForward;
+	
+	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	if (isLastFrame) {
+		//mprinter_printf("")
+		character->nextDirection = character->direction;
+		character->nextAction = EAlisaFallingDown;
+		character->controller = &alisa_fallingDownController;
+		character->controller(character, NULL, NULL);
+	}
+}
+
+void alisa_jumpController(CharacterAttr* character) {
+   EDirections direction = KEYPRESS_DIRECTION;
+   if (direction != EUnknown) {
+		character->controller = &alisa_jumpForwardController;
+		character->controller(character, NULL, NULL);
+   } else {
+		character->controller = &alisa_jumpUpController;
+		character->controller(character, NULL, NULL);
+   }
 }
 
 void alisa_fallingDownController(CharacterAttr* character) {
@@ -373,7 +405,7 @@ void alisa_fallingDownController(CharacterAttr* character) {
 	if (alisa_hasLanded(character, charControl)) {
 		return;
 	}
-   
+
 	character->nextAction = EAlisaFallingDown;
 }
 

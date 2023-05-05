@@ -14,7 +14,8 @@ typedef enum AlisaAction
 	EAlisaPrepareDash,
 	EAlisaDashForward,
 	EAlisaDashBackward,
-	EAlisaJump,
+	EAlisaJumpUp,
+	EAlisaJumpForward,
 	EAlisaFallingDown,
 	EAlisaStunned,
 	EAlisaActionCount

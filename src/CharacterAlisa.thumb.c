@@ -78,7 +78,7 @@ const s32 alisa_dashOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
 };
 
 const s32 alisa_jumpOffset[] = {1*MOVE_STR, 2*MOVE_STR, 2*MOVE_STR};
-const s32 alisa_zOffsetDown[2] =  {-1*MOVE_STR, -2*MOVE_STR, -2*MOVE_STR};
+const s32 alisa_zOffsetDown[3] =  {-1*MOVE_STR, -2*MOVE_STR, -2*MOVE_STR};
 
 const s32 alisa_jumpOffsetX[EDirectionsCount][1] = {
 	{0},
@@ -142,14 +142,16 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo); 
 void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo);
 void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo);
-void alisa_actionJump(CharacterAttr* alisa, const MapInfo *mapInfo, 
+void alisa_actionJumpUp(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const void *dummy, CharacterActionCollection *charActionCollection);
+void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection);
 void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection);
 void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection);
 
-void alisa_fallingDownController(CharacterAttr* character);
+//void alisa_fallingDownController(CharacterAttr* character);
 
 int alisa_setPosition(CharacterAttr* alisa, 
 	OBJ_ATTR *oamBuf, 	
@@ -186,7 +188,8 @@ const CharFuncAction alisa_actions[] = {
 	&alisa_actionPrepareDash,
 	&alisa_actionDashForward,
 	&alisa_actionDashBackward,
-	&alisa_actionJump,
+	&alisa_actionJumpUp,
+	&alisa_actionJumpForward,
 	&alisa_actionFallingDown,
 	&alisa_actionStunned
 };
@@ -322,8 +325,9 @@ int alisa_setPosition(CharacterAttr* alisa,
 }
 
 void alisa_actionStand(CharacterAttr* alisa,
-	const MapInfo *mapInfo) {	
+	const MapInfo *mapInfo) {
     bool isLastFrame = false;
+
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonInitializeAction(alisa) == EUpdate) {
@@ -508,10 +512,10 @@ void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	alisa->spriteDisplay.spriteSet = alisaDashBackwardWithSwordSet[alisa->faceDirection];
 }
 
-void alisa_actionJump(CharacterAttr* alisa, const MapInfo *mapInfo, 
+void alisa_actionJumpUp(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection) {
-	
 	bool isLastFrame = false;
+
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateAnimation(alisa) == EUpdate) {
@@ -532,14 +536,44 @@ void alisa_actionJump(CharacterAttr* alisa, const MapInfo *mapInfo,
 	if (alisa->spriteDisplay.currentAnimationFrame < ALISA_RISING_ANIMATION_FRAME) {
 		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame];
 		alisa->position.z += alisa->delta.z;
-		alisa->delta.x = alisa_jumpOffsetX[alisa->faceDirection][0];
+	}
+	
+	++alisa->movementCtrl.currentFrame;
+	alisa->spriteDisplay.spriteSet = alisaJumpWithSwordSet[alisa->faceDirection];
+}
+
+void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const void *dummy, CharacterActionCollection *charActionCollection) {
+	bool isLastFrame = false;
+
+	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateAnimation(alisa) == EUpdate) {
+		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
+		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	if (alisa->action != alisa->nextAction) {
+		alisa->movementCtrl.maxFrames = ALISA_JUMP_MOVEMENT;
+	}
+	
+	alisa->action = alisa->nextAction;
+	alisa->direction = alisa->nextDirection;
+	
+	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
+	    alisa->movementCtrl.currentFrame;
+
+	if (alisa->spriteDisplay.currentAnimationFrame < ALISA_RISING_ANIMATION_FRAME) {
+		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame];
+		alisa->position.z += alisa->delta.z;
+		alisa->delta.x = alisa_jumpOffsetX[alisa->direction][0];
 		alisa->position.x += alisa->delta.x;
-		alisa->delta.y = alisa_jumpOffsetY[alisa->faceDirection][0];
+		alisa->delta.y = alisa_jumpOffsetY[alisa->direction][0];
 		alisa->position.y += alisa->delta.y;
 	} else {
-		alisa->delta.x = alisa_jumpOffsetX[alisa->faceDirection][0];
+		alisa->delta.x = alisa_jumpOffsetX[alisa->direction][0];
 		alisa->position.x += alisa->delta.x;
-		alisa->delta.y = alisa_jumpOffsetY[alisa->faceDirection][0];
+		alisa->delta.y = alisa_jumpOffsetY[alisa->direction][0];
 		alisa->position.y += alisa->delta.y;
 	}
 	
@@ -549,8 +583,8 @@ void alisa_actionJump(CharacterAttr* alisa, const MapInfo *mapInfo,
 
 void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection) {
-	
 	bool isLastFrame = false;
+
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateAnimation(alisa) == EUpdate) {
@@ -569,6 +603,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	    alisa->movementCtrl.currentFrame;
 
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame]);
+	
 	
 	++alisa->movementCtrl.currentFrame;
 	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection];
@@ -678,7 +713,7 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	BoundingBox alisaBoundingBox, otherCharBoundingBox;
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
-		
+	
 	*checkNext = common_checkNext(isOtherCharBelow, &alisaBoundingBox, &otherCharBoundingBox);
 	
 	if (!*checkNext) {
