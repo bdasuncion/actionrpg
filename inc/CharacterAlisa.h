@@ -17,6 +17,7 @@ typedef enum AlisaAction
 	EAlisaJumpUp,
 	EAlisaJumpForward,
 	EAlisaFallingDown,
+	EAlisaFallingDownForward,
 	EAlisaStunned,
 	EAlisaActionCount
 } AlisaAction;

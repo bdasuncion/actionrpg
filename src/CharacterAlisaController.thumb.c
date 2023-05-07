@@ -9,6 +9,7 @@
 #define ALISA_NORMALATTACK_INTERVALMAX 8
 
 #define ALISA_MIN_BACKWARD_DASH 4
+#define ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME 1
 
 void alisa_stunnedController(CharacterAttr* character);
 void alisa_slashController(CharacterAttr* character);
@@ -16,6 +17,8 @@ void alisa_prepareDashController(CharacterAttr* character);
 void alisa_dashForwardController(CharacterAttr* character);
 void alisa_dashBackwardController(CharacterAttr* character);
 void alisa_fallingDownController(CharacterAttr* character);
+void alisa_fallingDownForwardController(CharacterAttr* character);
+void alisa_jumpForwardController(CharacterAttr* character);
 
 const EDirections DEFAULT_DIRECTIONMAP[EDirectionsCount] = {
 	EDown,EDown,ERight,EUp,EUp,EUp,ELeft,EDown
@@ -118,7 +121,8 @@ bool alisa_isFalling(CharacterAttr* character, CharacterPlayerControl *charContr
 }
 
 bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charControl) {
-	if (character->nextAction != EAlisaFallingDown) {
+	if (character->nextAction != EAlisaFallingDown &&  character->nextAction != EAlisaFallingDownForward) {
+		//character->faceDirection = character->direction;
 		character->controller = &alisa_controller;
 		character->controller(character, NULL, NULL);
 		return true;
@@ -332,7 +336,7 @@ void alisa_dashBackwardController(CharacterAttr* character) {
 }
 
 void alisa_jumpUpController(CharacterAttr* character) {
-   //EDirections direction = KEYPRESS_DIRECTION;
+   EDirections direction = KEYPRESS_DIRECTION;
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
@@ -342,10 +346,25 @@ void alisa_jumpUpController(CharacterAttr* character) {
 		return;
 	}
 	
-	character->getBounds = &alisa_getBoundingBoxMoving;
+	character->getBounds = &alisa_getBoundingBoxMoving;	
+	
+	if (character->spriteDisplay.currentAnimationFrame >= ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME && 
+		direction != EUnknown) {
+		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
+		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
+		if (direction == character->faceDirection | 
+			direction == clockwise | direction == counterClockwise) {
+			character->nextAction = EAlisaJumpForward;
+			character->action = EAlisaJumpForward;
+			character->nextDirection = direction;
+			character->controller = &alisa_jumpForwardController;
+			character->controller(character, NULL, NULL);
+			return;
+		}
+	}
 	
 	character->nextAction = EAlisaJumpUp;
-	
+
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
 		//mprinter_printf("")
@@ -373,10 +392,9 @@ void alisa_jumpForwardController(CharacterAttr* character) {
 	
 	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
-		//mprinter_printf("")
 		character->nextDirection = character->direction;
-		character->nextAction = EAlisaFallingDown;
-		character->controller = &alisa_fallingDownController;
+		character->nextAction = EAlisaFallingDownForward;
+		character->controller = &alisa_fallingDownForwardController;
 		character->controller(character, NULL, NULL);
 	}
 }
@@ -390,6 +408,28 @@ void alisa_jumpController(CharacterAttr* character) {
 		character->controller = &alisa_jumpUpController;
 		character->controller(character, NULL, NULL);
    }
+}
+
+void alisa_fallingDownForwardController(CharacterAttr* character) {
+   int nextScreenFrame, nextAnimationFrame, hold;
+   EDirections direction = KEYPRESS_DIRECTION;
+   bool isLastFrame = false;
+   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+   character->distanceFromGround = 1024;
+
+   	if (alisa_isStunned(character, charControl)) {
+		return;
+	}
+   
+	if (alisa_hasLanded(character, charControl)) {
+		return;
+	}
+
+	if (direction == character->nextDirection) {
+		character->nextAction = EAlisaFallingDownForward;
+	} else {
+		character->nextAction = EAlisaFallingDown;
+	}
 }
 
 void alisa_fallingDownController(CharacterAttr* character) {

@@ -148,6 +148,8 @@ void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const void *dummy, CharacterActionCollection *charActionCollection);
 void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection);
+void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const void *dummy, CharacterActionCollection *charActionCollection);
 void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection);
 
@@ -191,6 +193,7 @@ const CharFuncAction alisa_actions[] = {
 	&alisa_actionJumpUp,
 	&alisa_actionJumpForward,
 	&alisa_actionFallingDown,
+	&alisa_actionFallingDownForward,
 	&alisa_actionStunned
 };
 
@@ -294,6 +297,7 @@ void alisa_doAction(CharacterAttr* alisa,
 	const MapInfo *mapInfo, const void *dummy, 
 	CharacterActionCollection *charActionCollection) {
 	
+	mprinter_printf("DO ACTION %d\n", alisa->nextAction);
 	if (alisa->nextAction < EAlisaActionCount) {
 		alisa_actions[alisa->nextAction](alisa, mapInfo, NULL, charActionCollection);
 	}
@@ -346,7 +350,7 @@ void alisa_actionStand(CharacterAttr* alisa,
 	alisa->movementCtrl.maxFrames = 0;
 	alisa->movementCtrl.currentFrame = 0;
 	
-	alisa->spriteDisplay.spriteSet = alisaStandWithSwordSet[alisa->direction];
+	alisa->spriteDisplay.spriteSet = alisaStandWithSwordSet[alisa->faceDirection];
 	//alisa->spriteDisplay.spriteSet = &maincharacter_stand;
 }
 
@@ -609,6 +613,39 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection];
 }
 
+void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const void *dummy, CharacterActionCollection *charActionCollection) {
+	bool isLastFrame = false;
+
+	mprinter_printf("FALL FORWARD\n");
+	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateAnimation(alisa) == EUpdate) {
+		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
+		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	if (alisa->action != alisa->nextAction) {
+		alisa->movementCtrl.maxFrames = ALISA_FALLING_MOVEMENT;
+	}
+	
+	alisa->action = alisa->nextAction;
+	alisa->direction = alisa->nextDirection;
+	
+	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
+	    alisa->movementCtrl.currentFrame;
+
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame]);
+	
+	alisa->delta.x = alisa_jumpOffsetX[alisa->direction][0];
+	alisa->position.x += alisa->delta.x;
+	alisa->delta.y = alisa_jumpOffsetY[alisa->direction][0];
+	alisa->position.y += alisa->delta.y;
+		
+	++alisa->movementCtrl.currentFrame;
+	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection];
+}
+
 void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const void *dummy, CharacterActionCollection *charActionCollection) {
 	BoundingBox position;
@@ -693,7 +730,8 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 		//mprinter_printf("MAP FALLING %d\n", fallingDown);
 		alisa->nextAction = EAlisaFallingDown;
 		commonFallingDownCollision(alisa, mapInfo);
-	} else if (alisa->nextAction == EAlisaFallingDown && fallingDown <= 0) {
+	} else if ((alisa->nextAction == EAlisaFallingDown ||  
+		alisa->nextAction == EAlisaFallingDownForward) && fallingDown <= 0) {
 		//mprinter_printf("MAP STAND\n");
 		alisa->nextAction = EAlisaStand;
 	}
@@ -725,7 +763,8 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 		fallingDistance = common_fallingDownOnChar(alisa, &alisaBoundingBox, &otherCharBoundingBox);
 		if (fallingDistance != 0) {
 			alisa->nextAction = EAlisaFallingDown;
-		} else if (alisa->nextAction == EAlisaFallingDown && fallingDistance == 0) {
+		} else if ((alisa->nextAction == EAlisaFallingDown || 
+			alisa->nextAction == EAlisaFallingDownForward) && fallingDistance == 0) {
 			alisa->nextAction = EAlisaStand;
 		}
 		
