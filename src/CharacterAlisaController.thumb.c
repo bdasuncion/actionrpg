@@ -65,8 +65,9 @@ bool controlButtonCheck(CharacterAttr* character) {
 	}
 	
 	if (isLPressed() && charControl->buttonL_Ready) {
-		//charControl->buttonL_Ready = false;
+		charControl->buttonL_Ready = false;
 		character->controller = charControl->controlMap.buttonL;
+		return true;
 	}
 	
 	/*if (isRPressed() && charControl->buttonR_Ready) {
@@ -82,7 +83,7 @@ bool controlButtonHold(CharacterPlayerControl *control, const CharFuncController
 	if (functionToFind == control->controlMap.buttonB) {
 		if (!isBPressed()) {
 			*holdInterval = control->buttonB_PressInterval;
-			control->buttonB_PressInterval = 0;
+			//control->buttonB_PressInterval = 0;
 			return true;
 		} else if (isBPressed()){
 			control->buttonB_PressInterval += 1*(control->buttonB_PressInterval < MAX_BUTTON_INTERVAL);

@@ -297,7 +297,6 @@ void alisa_doAction(CharacterAttr* alisa,
 	const MapInfo *mapInfo, const void *dummy, 
 	CharacterActionCollection *charActionCollection) {
 	
-	mprinter_printf("DO ACTION %d\n", alisa->nextAction);
 	if (alisa->nextAction < EAlisaActionCount) {
 		alisa_actions[alisa->nextAction](alisa, mapInfo, NULL, charActionCollection);
 	}
