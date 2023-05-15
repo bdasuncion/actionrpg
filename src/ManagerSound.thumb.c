@@ -66,20 +66,17 @@ void msound_init() {
 }
 
 void msound_setUpMono(int quality) {
-	*REG_SOUNDCNT_H = DIRECT_SOUNDA_VOL(1) | DIRECT_SOUNDB_OUTR |
+	*REG_SOUNDCNT_H = DIRECT_SOUNDB_VOL(1) | DIRECT_SOUNDB_OUTR |
 					DIRECT_SOUNDB_OUTL | DIRECT_SOUNDB_TIMER(0)|
 					DIRECT_SOUNDB_RESET;
 	*REG_SOUNDCNT_X = SOUND_ON;
 					
 	soundBuffer.currentBuffer = 0;
-	//soundBuffer.intermediaryBufferA = malloc(SOUNDBUFFERSIZE[quality]*sizeof(s16));
-	//soundBuffer.intermediaryBufferB = malloc(SOUNDBUFFERSIZE[quality]*sizeof(s16));
 	soundBuffer.bufferA = malloc(SOUNDBUFFERSIZE[quality]*2*sizeof(s8));
-	soundBuffer.bufferB = malloc(SOUNDBUFFERSIZE[quality]*2*sizeof(s8));//Why does this crash when I remove this?
 	soundBuffer.soundQuality = quality;
 	soundBuffer.rcpMixFrequency = (1<<(INDEX_FRACTION + RCPMIXFREQFRACTION))/PLAYBACKFREQ[quality];
 	gbatimer_set(GBA_CLOCK_SPEED/PLAYBACKFREQ[quality]);
-	dma1_soundmode(soundBuffer.bufferA);
+	dma2_soundmode(soundBuffer.bufferA);
 }
 
 void msound_setUpStereo(int quality) {
@@ -91,8 +88,6 @@ void msound_setUpStereo(int quality) {
 	*REG_SOUNDCNT_X = SOUND_ON;
 					
 	soundBuffer.currentBuffer = 0;
-	//soundBuffer.intermediaryBufferA = malloc(SOUNDBUFFERSIZE[quality]*sizeof(s16));
-	//soundBuffer.intermediaryBufferB = malloc(SOUNDBUFFERSIZE[quality]*sizeof(s16));
 	soundBuffer.bufferA = malloc(SOUNDBUFFERSIZE[quality]*2*sizeof(s8));
 	soundBuffer.bufferB = malloc(SOUNDBUFFERSIZE[quality]*2*sizeof(s8));
 	soundBuffer.soundQuality = quality;
@@ -384,7 +379,7 @@ ARM_IWRAM void msound_mixMusic(int startingIdx, int bufSize) {
 void msound_changeBuf() {
 	if (!soundBuffer.currentBuffer) {
 		dma2_soundmode(soundBuffer.bufferA);
-		dma1_soundmode(soundBuffer.bufferB);
+		//dma1_soundmode(soundBuffer.bufferA);
 	}
 }
 

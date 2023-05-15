@@ -17,16 +17,11 @@ void mchar_setDraw(CharacterCollection *reference) {
 void mchar_draw() {
 	if (mchar_vreference) {
 		int i;
-		//gbatimer_profileStart();
 		for (i = 0; i < mchar_vreference->currentSize; ++i) {
 			if (mchar_vreference->characters[i]->spriteDisplay.isInScreen) {
 			    commonDrawDisplay(&mchar_vreference->characters[i]->spriteDisplay);
 			}
-			//mchar_vreference->characters[i]->draw(
-			//	mchar_vreference->characters[i]);
 		}
-		//mprinter_printf("STOP:%d", gbatimer_profileStop());
-		//mprinter_number(0);
 	}
 }
 
