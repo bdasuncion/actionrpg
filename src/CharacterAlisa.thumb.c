@@ -34,10 +34,10 @@ extern const EDirections directions[EDirectionsCount];
 extern const Sound soundeffect_slash;
 
 const s32 alisa_runOffsetX[EDirectionsCount][alisa_RUN_MVMNT_CTRL_MAX] = {
-{0,0,0,0,0},
+	{0,0,0,0,0},
     {2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG},
 	{2*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,2*MOVE_STR},
-	{2*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,2*MOVE_STR},
+	{2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG},
 	{0,0,0,0,0},
 	{-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG},
 	{-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR},
@@ -616,7 +616,6 @@ void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo
 	const void *dummy, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 
-	mprinter_printf("FALL FORWARD\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateAnimation(alisa) == EUpdate) {
@@ -748,15 +747,15 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	
 	int count, fallingDistance;
 	BoundingBox alisaBoundingBox, otherCharBoundingBox;
-	alisa->getBounds(alisa, &count, &alisaBoundingBox);
-	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
-	
-	*checkNext = common_checkNext(isOtherCharBelow, &alisaBoundingBox, &otherCharBoundingBox);
-	
+	*checkNext = common_checkNext(isOtherCharBelow, &alisa->position, &otherCharacter->position);
+	mprinter_printf("ALISA\n");
 	if (!*checkNext) {
 		*checkNext = true;
 		return;
 	}
+	
+	alisa->getBounds(alisa, &count, &alisaBoundingBox);
+	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 	
 	if (alisa->distanceFromGround != 0) {
 		fallingDistance = common_fallingDownOnChar(alisa, &alisaBoundingBox, &otherCharBoundingBox);

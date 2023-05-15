@@ -20,15 +20,13 @@
 #define IMG8X32W  32
 #define IMG16X32W  64
 #define IMG32X64W  256
-
+#define COLLISIONCHECKNEXT_DIST_MAX 32
 #define HEIGHT_CONVERSION 8
 
 extern const FuncCharacterInit chacterInit[];
 extern const FuncCharacterSet characterSet[];
 
-//u32 time[3];
 int commonDummy() {
-	//mprinter_print("COMMON\n");
     return 0;
 }
 
@@ -317,15 +315,18 @@ bool commonIsInScreen(int charStartX, int charEndX, int charStartY, int charEndY
 		charEndY >= screenStartY && charEndY <= screenEndY);
 }
 
-bool common_checkNext(bool isOtherCharBelow, const BoundingBox *charBoundingBox, 
-    const BoundingBox *otherCharBoundingBox) {
-	if (isOtherCharBelow && charBoundingBox->endY  < otherCharBoundingBox->startY) {
+bool common_checkNext(bool isOtherCharBelow, const Position *characterPos, 
+    const Position *othercharacterPos) {
+	int distance = CONVERT_2POS(othercharacterPos->y) - CONVERT_2POS(characterPos->y);
+	bool negativeDist = distance < 0;
+	distance *= (negativeDist*(-1)) + ((!negativeDist));
+	/*if (isOtherCharBelow && (CONVERT_2POS(othercharacterPos->y) - CONVERT_2POS(characterPos->y)) > COLLISIONCHECKNEXT_DIST_MAX) {
 		return false;
-	} else if (charBoundingBox->startY  > otherCharBoundingBox->endY) {
+	} else if ((CONVERT_2POS(characterPos->y)  - CONVERT_2POS(othercharacterPos->y)) >  COLLISIONCHECKNEXT_DIST_MAX) {
 		return false;
-	}
+	}*/
 	
-	return true;
+	return (distance <= COLLISIONCHECKNEXT_DIST_MAX);
 }
 
 inline bool inBounds(int value, int min, int max) {
@@ -448,11 +449,12 @@ void common_movingRightUpOffset(CharacterAttr* character,
 	character->collisionCtrl.hasCollision = didCollide;
 	int xOffset = (charBoundingBox->endX - otherCharBoundingBox->startX);
 	int yOffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
-	int deltaX = CONVERT_2POS(character->delta.x);
-	int deltaY = CONVERT_2POS(-character->delta.y);
+	int deltaX = CONVERT_2POS(character->position.x) - CONVERT_2POS(character->position.x - character->delta.x);
+	//int deltaY = CONVERT_2POS(-character->delta.y);
+	int deltaY = CONVERT_2POS(character->position.y - character->delta.y) - CONVERT_2POS(character->position.y);
 	
 	bool doOffsetY = (xOffset > yOffset);
-	bool greaterThanYOffset = yOffset > (CONVERT_2POS(-character->delta.y));
+	bool greaterThanYOffset = yOffset > deltaY;
 	bool greaterThanXOffset = xOffset > deltaX;
 	character->collisionCtrl.hasCollision = didCollide;
 	xOffset *= (charBoundingBox->endX < otherCharBoundingBox->endX);
@@ -462,7 +464,7 @@ void common_movingRightUpOffset(CharacterAttr* character,
 	
 	xOffset *= (!doOffsetY)*didCollide;
 	yOffset *= doOffsetY*didCollide;
-	
+		
 	character->position.y += CONVERT_2MOVE(yOffset);
 	character->position.x -= CONVERT_2MOVE(xOffset);
 	
@@ -478,9 +480,11 @@ void common_movingLeftUpOffset(CharacterAttr* character,
 	character->collisionCtrl.hasCollision = didCollide;
 	int xOffset = (otherCharBoundingBox->endX - charBoundingBox->startX);
 	int yOffset = (otherCharBoundingBox->endY - charBoundingBox->startY);
-	int deltaX = CONVERT_2POS(-character->delta.x);
-	int deltaY = CONVERT_2POS(-character->delta.y);
-	
+	//int deltaX = CONVERT_2POS(-character->delta.x);
+	int deltaX = CONVERT_2POS(character->position.x - character->delta.x) - CONVERT_2POS(character->position.x) ;
+	//int deltaY = CONVERT_2POS(-character->delta.y);
+	int deltaY = CONVERT_2POS(character->position.y - character->delta.y) - CONVERT_2POS(character->position.y);
+		
 	bool doOffsetY = (xOffset > yOffset);
 	bool greaterThanYOffset = yOffset > deltaY;
 	bool greaterThanXOffset = xOffset > deltaX;
@@ -488,10 +492,10 @@ void common_movingLeftUpOffset(CharacterAttr* character,
 	
 	xOffset *= (charBoundingBox->startX > otherCharBoundingBox->startX);
 	yOffset *= (charBoundingBox->startY > otherCharBoundingBox->startY);
-	
+		
 	xOffset = (deltaX*greaterThanXOffset) + (xOffset*(!greaterThanXOffset));
 	yOffset = (deltaY*greaterThanYOffset) + (yOffset*(!greaterThanYOffset));
-	
+		
 	xOffset *= (!doOffsetY)*didCollide;
 	yOffset *= doOffsetY*didCollide;
 	
@@ -510,8 +514,10 @@ void common_movingRightDownOffset(CharacterAttr* character,
 	character->collisionCtrl.hasCollision = didCollide;
 	int xOffset = (charBoundingBox->endX - otherCharBoundingBox->startX);
 	int yOffset = (charBoundingBox->endY - otherCharBoundingBox->startY);
-	int deltaX = CONVERT_2POS(character->delta.x);
-	int deltaY = CONVERT_2POS(character->delta.y);
+	//int deltaX = CONVERT_2POS(character->delta.x);
+	int deltaX = CONVERT_2POS(character->position.x) - CONVERT_2POS(character->position.x - character->delta.x);
+	//int deltaY = CONVERT_2POS(character->delta.y);
+	int deltaY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.y - character->delta.y);
 
 	bool doOffsetY = (xOffset > yOffset);
 	bool greaterThanYOffset = yOffset > deltaY;
@@ -539,8 +545,10 @@ void common_movingLeftDownOffset(CharacterAttr* character,
 	character->collisionCtrl.hasCollision = didCollide;
 	int xOffset = (otherCharBoundingBox->endX - charBoundingBox->startX);
 	int yOffset = (charBoundingBox->endY - otherCharBoundingBox->startY);
-	int deltaX = CONVERT_2POS(-character->delta.x);
-	int deltaY = CONVERT_2POS(character->delta.y);
+	//int deltaX = CONVERT_2POS(-character->delta.x);
+	int deltaX = CONVERT_2POS(character->position.x - character->delta.x) - CONVERT_2POS(character->position.x) ;
+	//int deltaY = CONVERT_2POS(character->delta.y);
+	int deltaY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.y - character->delta.y);
 
 	bool doOffsetY = (xOffset > yOffset);
 	bool greaterThanYOffset = yOffset > deltaY;
@@ -1098,4 +1106,8 @@ const Position* commonFindCharTypePositionByDistance(const CharacterCollection *
 
 bool commonIsFoundPosition(const Position* position) {
 	return (position->x != -1) & (position->y != -1);
+}
+
+EDirections commonReverseDirection(EDirections direction) {
+ return (direction+4)&7;
 }

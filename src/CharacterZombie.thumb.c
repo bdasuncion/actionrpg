@@ -456,13 +456,15 @@ void zombie_checkCollision(const CharacterAttr* character, bool isOtherCharBelow
 	
 	int count;
 	BoundingBox charBoundingBox, otherCharBoundingBox;
-	character->getBounds(character, &count, &charBoundingBox);
-	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 	 
-	*checkNext = common_checkNext(isOtherCharBelow, &charBoundingBox, &otherCharBoundingBox);
+	*checkNext = common_checkNext(isOtherCharBelow, &character->position, &otherCharacter->position);
 	if (!*checkNext) {
 		return;
 	}
+	
+	character->getBounds(character, &count, &charBoundingBox);
+	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
+	
 	common_collisionReactions[charBoundingBox.isMoving][character->direction]
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }

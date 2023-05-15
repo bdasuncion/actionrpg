@@ -24,8 +24,10 @@ bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCh
 bool commonCollissionPointInBounds(const Position *collisionPoint, const BoundingBox *boundingBox);
 bool commonPositionInBounds(const Position *position, const BoundingBox *boundingBox);
 void commonCharacterMapEdgeCheck(CharacterAttr* character, const MapInfo* mapInfo);
-bool common_checkNext(bool isOtherCharBelow, const BoundingBox *charBoundingBox, 
-    const BoundingBox *otherCharBoundingBox);
+//bool common_checkNext(bool isOtherCharBelow, const BoundingBox *charBoundingBox, 
+//    const BoundingBox *otherCharBoundingBox);
+bool common_checkNext(bool isOtherCharBelow, const Position *charBoundingBox, 
+    const Position *otherCharBoundingBox);
 void common_noMovement(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingRightOffset(CharacterAttr* character, 
@@ -92,4 +94,5 @@ void commonReverseDisplayShadow();
 int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf);
 void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo);
 bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+inline EDirections commonReverseDirection(EDirections direction);
 #endif

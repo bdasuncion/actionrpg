@@ -265,6 +265,8 @@ void alisa_prepareDashController(CharacterAttr* character) {
 	
 	character->nextAction = EAlisaPrepareDash;
 	
+	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
 	if (direction != EUnknown) {
 		character->nextDirection = direction;
 		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
@@ -276,14 +278,16 @@ void alisa_prepareDashController(CharacterAttr* character) {
 			character->controller = &alisa_dashBackwardController;
 			character->controller(character, NULL, NULL);
 			return;
+		} else if (isLastFrame) {
+			character->controller = &alisa_dashForwardController;
+			character->controller(character, NULL, NULL);
+			return;
 		}
 	}
-	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
-//	mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
 	if (isLastFrame) {
-		character->controller = &alisa_dashForwardController;
+		character->nextDirection = commonReverseDirection(character->faceDirection);
+		character->controller = &alisa_dashBackwardController;
 		character->controller(character, NULL, NULL);
 	}
 }
