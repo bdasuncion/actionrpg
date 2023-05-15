@@ -281,12 +281,12 @@ const TileSet *tileset_mapheighttest[] = { &tileset_forest_ground_side, &tileset
 const u16 *pallette_mapheighttest[] = {  pallette_forest_ground_side, };
 const u16 *mapentryset_mapheighttest[] = { mapentry_mapheighttest[0], mapentry_mapheighttest[1], };
 const CharacterInit actors_mapheighttest[] = {
-	{ 64, 128, 49, WEREWOLF }, { 234, 234, 1, WEREWOLF }, { 256, 128, 1, WEREWOLF }, { 345, 96, 1, WEREWOLF }, { 345, 256, 1, WEREWOLF }, 
-	{ 64, 154, 49, ZOMBIE }, { 396, 154, 1, ZOMBIE }, { 200, 400, 1, ZOMBIE }, { 400, 400, 1, ZOMBIE }, { 450, 234, 1, ZOMBIE },
+	{ 64, 128, 49, WEREWOLF }, { 234, 234, 1, WEREWOLF }, { 256, 128, 1, WEREWOLF }, { 345, 96, 1, WEREWOLF }, { 345, 256, 1, WEREWOLF }, { 345, 276, 1, WEREWOLF }, /*{ 365, 276, 1, WEREWOLF },*/
+	{ 64, 154, 49, ZOMBIE }, { 396, 154, 1, ZOMBIE }, { 200, 400, 1, ZOMBIE }, { 400, 400, 1, ZOMBIE }, { 450, 234, 1, ZOMBIE },{ 450, 254, 1, ZOMBIE }, /*{ 470, 254, 1, ZOMBIE },*/
 };
 const EventTransfer transfer_mapheighttest[] = {
 };
-const MapInfo mapheighttest = { 512, 512, 2, 5, 1, 0, 10, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
+const MapInfo mapheighttest = { 512, 512, 2, 5, 1, 0, 12, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
 transfer_mapheighttest, heightMap_mapheighttest, actors_mapheighttest, NULL, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };
 
 const EventTransfer startAt = { 400, 400, 128, 128, 49, &mapheighttest, 16, 48, 0, ERight};
