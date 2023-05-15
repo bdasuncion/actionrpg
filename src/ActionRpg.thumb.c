@@ -19,7 +19,7 @@
 
 #define DEFAULT_SCREEN_BOUNDING_BOX 0
 
-#define MAX_CHARCOUNT 15
+#define MAX_CHARCOUNT 20
 #define MAX_CHARACTIONEVENT 20
 
 //extern const char always[1888512];
@@ -52,7 +52,8 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 	//mapInfo->mapFunction = &fadeToBlack;
 	//mapInfo->screenEffect.processScreenEffect = &mapCommon_goDark;
 	commonInitShadow();
-	while(1) {	
+	while(1) {
+		setUpdateGameState(false);
 		mprinter_clear();
 
         mchar_actione_reinit(charActionCollection);
@@ -88,6 +89,7 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		msound_updateTrack(track);
 		msound_mixSound();
 		
+		setUpdateGameState(true);
 		waitForVBlank();
 	}
 }
