@@ -456,7 +456,6 @@ void zombie_checkCollision(const CharacterAttr* character, bool isOtherCharBelow
 	
 	int count;
 	BoundingBox charBoundingBox, otherCharBoundingBox;
-	 
 	*checkNext = common_checkNext(isOtherCharBelow, &character->position, &otherCharacter->position);
 	if (!*checkNext) {
 		return;
