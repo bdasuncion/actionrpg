@@ -29,17 +29,25 @@ void mchar_init(CharacterCollection *charCollection, int size) {
 	if (charCollection) {
 		int i;
 		charCollection->poolSize = size;
+		charCollection->displaySize = 0;
 		charCollection->currentSize = 0;
 		charCollection->characterEventCurrentSize = 0;
 		charCollection->characters = 
-			malloc(sizeof(CharacterAttr*)*size);
+			malloc(sizeof(CharacterAttr*)*charCollection->poolSize);
 		charCollection->charactersDoEvent = 
 			malloc(sizeof(CharacterAttr*)*size);
+			//TODO Fix size
+		charCollection->charactersForDisplay = 
+			malloc(sizeof(CharacterAttr*)*charCollection->poolSize*2);
 		for (i = 0; i < size; ++i) {
 			charCollection->characters[i] = 
 				malloc(sizeof(CharacterAttr));
-			//*charCollection->characters[i] = openSlot;
 			commonRemoveCharacter(charCollection->characters[i]);
+		}
+		for (i = 0; i < size*2; ++i) {
+			charCollection->charactersForDisplay[i] = 
+				malloc(sizeof(CharacterAttr));
+			commonRemoveCharacter(charCollection->charactersForDisplay[i]);
 		}
 	}
 }
@@ -76,6 +84,7 @@ void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1) 
 		    playable = charCollection->characters[i];
 			charCollection->characters[i] = charCollection->characters[0];
 			charCollection->characters[0] = playable;
+			charCollection->charactersForDisplay[0] = playable;
 		} 
 		
 		if (i != 0) {
@@ -85,6 +94,7 @@ void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1) 
 	}
 	
 	charCollection->currentSize = 1;
+	++charCollection->displaySize;
 	*player1 = playable;
 }
 
@@ -109,16 +119,30 @@ void mchar_arrangeCharacters(CharacterCollection *charCollection) {
 	BoundingBox charBB, otherBB;
 	for (charIdx = 0; charIdx < charCollection->currentSize - 1; ++charIdx){
 		cmpIndex = charIdx + 1;
-		charCollection->characters[charIdx]->getBounds(charCollection->characters[charIdx], &count, &charBB);
-		charCollection->characters[cmpIndex]->getBounds(charCollection->characters[cmpIndex], &count, &otherBB);
-		//mprinter_printf("%d %d %d %d %d %d\n", CONVERT_2POS(charCollection->characters[charIdx]->position.y), 
-		//CONVERT_2POS(charCollection->characters[cmpIndex]->position.y), charBB.startZ, charBB.endZ, otherBB.startZ, otherBB.endZ);
-		if ((charCollection->characters[charIdx]->position.y <
-			charCollection->characters[cmpIndex]->position.y &&
-			charBB.startZ <= otherBB.endZ) || (otherBB.startZ > charBB.endZ)) {
+		if (charCollection->characters[charIdx]->position.y <
+			charCollection->characters[cmpIndex]->position.y) {
 			CharacterAttr *charA = charCollection->characters[charIdx];
 			charCollection->characters[charIdx] = charCollection->characters[cmpIndex];
 			charCollection->characters[cmpIndex] = charA;
+		}
+	}
+}
+
+void mchar_arrangeCharactersForDisplay(CharacterCollection *charCollection) {
+	int charIdx, cmpIndex, count;
+	BoundingBox charBB, otherBB;
+	for (charIdx = 0; charIdx < charCollection->displaySize - 1; ++charIdx){
+		cmpIndex = charIdx + 1;
+		charCollection->charactersForDisplay[charIdx]->getBounds(charCollection->charactersForDisplay[charIdx], &count, &charBB);
+		charCollection->charactersForDisplay[cmpIndex]->getBounds(charCollection->charactersForDisplay[cmpIndex], &count, &otherBB);
+
+		if ((charCollection->charactersForDisplay[charIdx]->position.y <
+			charCollection->charactersForDisplay[cmpIndex]->position.y 
+			&& !isOverlap(&otherBB, &charBB)) || 
+			(otherBB.startZ > charBB.endZ && isOverlap(&otherBB, &charBB))) {
+			CharacterAttr *charA = charCollection->charactersForDisplay[charIdx];
+			charCollection->charactersForDisplay[charIdx] = charCollection->charactersForDisplay[cmpIndex];
+			charCollection->charactersForDisplay[cmpIndex] = charA;
 		}
 	}
 }
@@ -159,6 +183,10 @@ inline void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) 
 	if (charCollection->characters[charCollection->currentSize - 1]->type == NONE) {
 		--charCollection->currentSize;
 	}
+	
+	if (charCollection->charactersForDisplay[charCollection->displaySize - 1]->type == NONE) {
+		--charCollection->displaySize;
+	}
 }
 
 void mchar_resolveAction(CharacterCollection *charCollection,
@@ -183,15 +211,15 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 		
 		mchar_resolveMapCollision(charCollection, mapInfo);
 		
-		mchar_resolveCharacterCollision(charCollection);
+		mchar_arrangeCharacters(charCollection);
 		
-		//mchar_resolveMapCollision(charCollection, mapInfo);
+		mchar_resolveCharacterCollision(charCollection);
 		
 		for (i = 0; i < charCollection->currentSize; ++i) {
 			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], charActionCollection);
 		}
 		
-		mchar_arrangeCharacters(charCollection);
+		mchar_arrangeCharactersForDisplay(charCollection);
 		
 		mchar_resolveRemovedCharacters(charCollection);
 	}
@@ -236,10 +264,10 @@ void mchar_setPosition(CharacterCollection *charCollection,
 	if (charCollection) {
 		int charIdx, oamIdx, idxRemoveOam;
 		
-		for (charIdx = 0, oamIdx = 0; charIdx < charCollection->currentSize; ++charIdx) {
+		for (charIdx = 0, oamIdx = 0; charIdx < charCollection->displaySize; ++charIdx) {
 			oamIdx += charCollection->
-				characters[charIdx]->setPosition(
-					charCollection->characters[charIdx], 
+				charactersForDisplay[charIdx]->setPosition(
+					charCollection->charactersForDisplay[charIdx], 
 					&oamBuffer[oamIdx], scr_pos, scr_dim);
 		}
 		

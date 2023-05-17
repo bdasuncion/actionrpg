@@ -227,11 +227,13 @@ typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* col
 typedef void (*FuncCharacterSet)(CharacterAttr *character);
 
 typedef struct CharacterCollection {
-    u32 poolSize:8;
-	u32 currentSize:8;
-	u32 characterEventCurrentSize:8;
+    u32 poolSize:6;
+	u32 currentSize:6;
+	u32 displaySize:6;
+	u32 characterEventCurrentSize:6;
 	u32 countCharacterTransfer:8;
-	CharacterAttr **characters;
+	CharacterAttr **characters;//Collection for all processing
+	CharacterAttr **charactersForDisplay;//Collection for diplay, includes sprite masks
 	CharacterAttr **charactersDoEvent;
 	FuncCharacterInit *characterTransfer;
 } ALIGN4 CharacterCollection;
