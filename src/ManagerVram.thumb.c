@@ -10,7 +10,7 @@
 #define BLOCKSPERCHARACTERLARGE 32 //(1024B) for every large character
 #define BLOCKSPERCHARACTERVLARGE 64 //(1024B) for every large character
 //#define BLOCKSPERCHARACTER 40 //1KB(1024) for every character
-#define MAXNCHARACTER 15
+#define MAXNCHARACTER 20
 #define MAXNCHARACTERSMALL 20
 #define MAXNCHARACTERMEDIUM 5
 #define MAXNCHARACTERLARGE 3
@@ -21,7 +21,7 @@
 u32	sprite_memory_bank = 0;
 u32 BG_memory_bank = 0;
 u32 palette_memory_bank = 0;
-VramIdControl idCollection[MAXNCHARACTER + BLOCKSPERCHARACTERMEDIUM + BLOCKSPERCHARACTERLARGE];
+VramIdControl idCollection[MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM + MAXNCHARACTERLARGE];
 PaletteIdControl paletteIdCollection[MAXNPALETTE];
 
 void sprite_vram_init() {
@@ -116,6 +116,12 @@ u32 sprite_getID(u32 width, u32 height) {
 	u32 id = sprite_memory_bank;
 	sprite_memory_bank += width*height >> 6;
 	return id;
+}
+
+#define SPRITEMASK_BLOCKSTART 256
+void spritemask_vram_copy32_ID(const void* src, u32 count, u32 id) {
+	void *dest = &VRAM->block[5].tile[SPRITEMASK_BLOCKSTART + id];
+	dma3_cpy32(dest, src, count);
 }
 
 void sprite_vram_reset() {

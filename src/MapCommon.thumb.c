@@ -112,6 +112,7 @@ void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterC
 }
 
 void mapCommon_defaultEffect(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
+	setSpriteMasking();
 }
 
 void mapCommon_returnToNormal(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {

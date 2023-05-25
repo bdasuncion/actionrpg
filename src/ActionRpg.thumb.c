@@ -51,6 +51,7 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 	//mapInfo->transferTo =  &mapInfo->tranfers[0];
 	//mapInfo->mapFunction = &fadeToBlack;
 	//mapInfo->screenEffect.processScreenEffect = &mapCommon_goDark;
+	setSpriteMasking();
 	commonInitShadow();
 	while(1) {
 		setUpdateGameState(false);
@@ -107,7 +108,7 @@ int main() {
 	CharacterActionCollection charActionCollection;
 	CharacterAttr *alisa;
 	Track track = {&musickankandara_end,0,0};
-	sprite_vram_init();
+	sprite_vram_init_sections();
 	sprite_palette_init();
 	setWaitState();
 	

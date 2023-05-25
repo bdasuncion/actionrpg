@@ -42,4 +42,9 @@ static void setBlendTest2(u32 blendVal) {
 	*REG_BLDALPHA = blendVal | 8 << 8;
 }
 
+static void setSpriteMasking() {
+	*REG_BLDMOD =  BGB_0 |  BGB_1  | BGF_0 | BGF_1 |BLENDMODE_NORMAL ;
+	*REG_BLDALPHA = (16 << 8);
+}
+
 #endif

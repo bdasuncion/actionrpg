@@ -37,6 +37,9 @@ void mbg_checkCollision(
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,
 	const EDirections direction);
+	
+void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo);
+void mbg_initializeSpriteMasks(const MapInfo *mapInfo, CharacterCollection *characterCollection);
 
 void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollection *characterCollection,
     ControlTypePool *controlPool, CharacterActionCollection *charActionCollection) {
@@ -56,6 +59,8 @@ void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollect
 	    &SCR_ENTRY->entry[ETileMap0], &SCR_ENTRY->entry[ETileMap1]);
 
     mbg_initializeCharacters(mapInfo, characterCollection, controlPool, charActionCollection);
+	mbg_copySpriteMaskImageToVram(mapInfo);
+	mbg_initializeSpriteMasks(mapInfo, characterCollection);
 
 	*REG_BG_CNT0 = BG_PRIO(2)|BG_CBB(0)|BG_SBB(ETileMap0)|BG_SIZE(0);
 	*REG_BG_CNT1 = BG_PRIO(3)|BG_CBB(0)|BG_SBB(ETileMap1)|BG_SIZE(0);
@@ -85,17 +90,35 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
     int i;
 	
 	for ( i = 0; i < mapInfo->characterCount; ++characterCollection->currentSize, ++characterCollection->displaySize,++i) {
-		CharacterAttr *character = characterCollection->characters[characterCollection->currentSize];
+		CharacterAttr *character = characterCollection->charactersForDisplay[characterCollection->displaySize];
 	    chacterInit[mapInfo->characterInit[i].type](character, controlPool);
 		commonCharacterSetPosition(character, mapInfo->characterInit[i].x, mapInfo->characterInit[i].y,
 		mapInfo->characterInit[i].z, EDown);
 		character->doAction(character, mapInfo, characterCollection, charActionCollection);
 		character->checkMapCollision(character, mapInfo);
-		characterCollection->charactersForDisplay[characterCollection->displaySize] = character;
+		characterCollection->characters[characterCollection->currentSize] = character;
 		if (mapInfo->characterInit[i].eventControl) {
 		    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);
 			character->controller = &commonTriggerCharacterEvent;
 		}
+	}
+}
+
+void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo) {
+	int i, id = 0;
+	for ( i = 0; i < mapInfo->spriteMaskImageCount; ++i) {
+		spritemask_vram_copy32_ID(mapInfo->spriteMaskImage[i].image, 
+			spriteMaskImageSize[mapInfo->spriteMaskImage[i].type], id);
+		id += spriteMaskImageSize[mapInfo->spriteMaskImage[i].type] >> 3;
+	}
+}
+
+void mbg_initializeSpriteMasks(const MapInfo *mapInfo, CharacterCollection *characterCollection) {
+    int i;
+	
+	for ( i = 0; i < mapInfo->spriteMaskCount; ++characterCollection->displaySize,++i) {
+		CharacterAttr *character = characterCollection->charactersForDisplay[characterCollection->displaySize];
+		spritemask_init(character, &mapInfo->spriteMaskInit[i]);
 	}
 }
 

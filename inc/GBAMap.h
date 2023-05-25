@@ -5,6 +5,7 @@
 #include "GBACharacter.h"
 #include "GBACharacterType.h"
 #include "GBASound.h"
+#include "CharacterSpriteMask.h"
 
 typedef enum MAPID {
     MapNoneID,
@@ -68,15 +69,18 @@ typedef struct MapInfo {
 	u16 tileSetCount:8;
 	u16 palletteCnt:4;
 	u16 eventTransferCount:6;
-	u16 characterCount:7;
+	u16 characterCount:6;
+	u16 spriteMaskCount:6;
+	u16 spriteMaskImageCount:6;
 	EventTransfer *transferTo;
 	const u16 **mapEntry;
 	const TileSet **tileSet;
 	const u16 **pallette;
 	const EventTransfer *tranfers;
-	//const MapCollision *collisionMap;
 	const u8 *heightMap; 
 	const CharacterInit *characterInit;
+	const SpriteMaskInit *spriteMaskInit;
+	const SpriteMaskImage *spriteMaskImage;
 	FuncMap mapFunction;
 	FuncMap onInitMap;
 	FuncMap onExitMap;

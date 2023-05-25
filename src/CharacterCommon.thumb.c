@@ -194,6 +194,27 @@ void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
 	}
 }
 
+void commonSetToOamBufferAsMask(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf, SPRITESHAPE shape,
+		SPRITESIZE size) {
+    int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
+	
+    for (i = 0; i < 1; ++i) {
+
+        yScreen = (spriteDisplay->baseY) & 0x00FF;
+
+		oamBuf[i].attr0 = ATTR0_SETASMASK(yScreen, shape);
+
+        xScreen = (spriteDisplay->baseX) & 0x01FF;
+		
+		oamBuf[i].attr1 = ATTR1_SET(xScreen, size,0, 0);
+		
+		oamBuf[i].attr2 =  ATTR2_SET(id,
+		    spriteDisplay->basePalleteId, 3);
+			
+		oamBuf[i].fill = 0;
+	}
+}
+
 void commonSetToOamBufferAsObjWindow(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
 	int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
 
