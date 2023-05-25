@@ -36,14 +36,10 @@ void mchar_init(CharacterCollection *charCollection, int size) {
 			malloc(sizeof(CharacterAttr*)*charCollection->poolSize);
 		charCollection->charactersDoEvent = 
 			malloc(sizeof(CharacterAttr*)*size);
-			//TODO Fix size
+		//TODO Fix size
 		charCollection->charactersForDisplay = 
 			malloc(sizeof(CharacterAttr*)*charCollection->poolSize*2);
-		for (i = 0; i < size; ++i) {
-			charCollection->characters[i] = 
-				malloc(sizeof(CharacterAttr));
-			commonRemoveCharacter(charCollection->characters[i]);
-		}
+
 		for (i = 0; i < size*2; ++i) {
 			charCollection->charactersForDisplay[i] = 
 				malloc(sizeof(CharacterAttr));
@@ -69,9 +65,11 @@ void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCh
 
 void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1, 
 	ControlTypePool *controlPool) {
-	alisa_init(charCollection->characters[charCollection->currentSize], controlPool);
-	//nameless_init(charCollection->characters[charCollection->currentSize]);
-	*player1 = charCollection->characters[charCollection->currentSize];
+	
+	alisa_init(charCollection->charactersForDisplay[charCollection->displaySize], controlPool);
+	*player1 = charCollection->charactersForDisplay[charCollection->displaySize];
+	++charCollection->displaySize;
+	charCollection->characters[charCollection->currentSize] = charCollection->charactersForDisplay[charCollection->displaySize];
 	++charCollection->currentSize;
 }
 
@@ -79,22 +77,22 @@ void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr
 void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1) {
     int i;
 	CharacterAttr *playable;
-    for (i = 0; i < charCollection->currentSize; ++i) {
-	    if (charCollection->characters[i]->type <= ENDPLAYABLECHARACTERTYPE) {
-		    playable = charCollection->characters[i];
-			charCollection->characters[i] = charCollection->characters[0];
-			charCollection->characters[0] = playable;
+    
+	for (i = 0; i < charCollection->displaySize; ++i) {
+	    if (charCollection->charactersForDisplay[i]->type <= ENDPLAYABLECHARACTERTYPE) {
+		    playable = charCollection->charactersForDisplay[i];
+			charCollection->charactersForDisplay[i] = charCollection->charactersForDisplay[0];
 			charCollection->charactersForDisplay[0] = playable;
+			charCollection->characters[0] = charCollection->charactersForDisplay[0];
 		} 
 		
 		if (i != 0) {
-		    //*charCollection->characters[i] = openSlot;
-			commonRemoveCharacter(charCollection->characters[i]);
+			commonRemoveCharacter(charCollection->charactersForDisplay[i]);
 		}
 	}
 	
 	charCollection->currentSize = 1;
-	++charCollection->displaySize;
+	charCollection->displaySize = 1;
 	*player1 = playable;
 }
 
@@ -128,6 +126,26 @@ void mchar_arrangeCharacters(CharacterCollection *charCollection) {
 	}
 }
 
+void mchar_checkSameYPosFurther(CharacterCollection *charCollection, int yReferencePos, int cmpIdx, int startIdx) {
+	int charIdx, count;
+	BoundingBox charBB, otherBB;
+	charCollection->charactersForDisplay[cmpIdx]->getBounds(charCollection->charactersForDisplay[cmpIdx], &count, &otherBB);
+			
+	for (charIdx = startIdx; charIdx >= 0; --charIdx){
+		if (charCollection->charactersForDisplay[charIdx]->position.y != yReferencePos) {
+			break;
+		}
+		charCollection->charactersForDisplay[charIdx]->getBounds(charCollection->charactersForDisplay[charIdx], &count, &charBB);
+		if (isOverlap(&otherBB, &charBB)) {
+			CharacterAttr *charA = charCollection->charactersForDisplay[charIdx];
+			charCollection->charactersForDisplay[charIdx] = charCollection->charactersForDisplay[cmpIdx];
+			charCollection->charactersForDisplay[cmpIdx] = charA;
+			
+			break;
+		}
+	}
+}
+
 void mchar_arrangeCharactersForDisplay(CharacterCollection *charCollection) {
 	int charIdx, cmpIndex, count;
 	BoundingBox charBB, otherBB;
@@ -138,11 +156,13 @@ void mchar_arrangeCharactersForDisplay(CharacterCollection *charCollection) {
 
 		if ((charCollection->charactersForDisplay[charIdx]->position.y <
 			charCollection->charactersForDisplay[cmpIndex]->position.y 
-			&& !isOverlap(&otherBB, &charBB)) || 
-			(otherBB.startZ > charBB.endZ && isOverlap(&otherBB, &charBB))) {
+			&& !isOverlap(&otherBB, &charBB))) {
 			CharacterAttr *charA = charCollection->charactersForDisplay[charIdx];
 			charCollection->charactersForDisplay[charIdx] = charCollection->charactersForDisplay[cmpIndex];
 			charCollection->charactersForDisplay[cmpIndex] = charA;
+		} else if (otherBB.startZ > charBB.endZ){
+			mchar_checkSameYPosFurther(charCollection, 
+				charCollection->charactersForDisplay[charIdx]->position.y, cmpIndex, charIdx);
 		}
 	}
 }
@@ -200,7 +220,6 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 			for (i = 0; i < charCollection->currentSize; ++i) {
 				charCollection->characters[i]->doAction(charCollection->characters[i], mapInfo, 
 				    charCollection, charActionCollection);
-				//mapInfo->collisionCheck(mapInfo, charCollection->characters[i]);
 			}
 		} else{
 			for (i = 0; i < charCollection->characterEventCurrentSize; ++i) {
