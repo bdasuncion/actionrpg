@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "GBAMap.h"
-
+/*
 extern const MapInfo mapsnowfield;
 extern const unsigned short pallette_thickgrass[16];
 extern const unsigned short pallette_trees[16];
@@ -191,4 +191,4 @@ const EventTransfer transfer_mapforest[] = {
 	{ 352, 288, 24, 96, 1, &mapsnowfield, 16, 48, 0, ERight},
 };
 const MapInfo mapforest = { 368, 368, 2, 4, 4, 1, 3, NULL , mapentryset_mapforest, tileset_mapforest, pallette_mapforest,
-transfer_mapforest, heightMap_mapforest, actors_mapforest, NULL, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };
+transfer_mapforest, heightMap_mapforest, actors_mapforest, NULL, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };*/
