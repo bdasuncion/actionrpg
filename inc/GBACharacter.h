@@ -36,7 +36,7 @@ typedef struct CharBoundingBox {
 } CharBoundingBox;
 
 typedef struct SpriteLayer {
-    u32 *image;
+    const u32 *image;
 	//u32 *palette; //TODO SHOULD REMOVE THIS
 	s32 offsetX:8;
 	s32 offsetY:8;
@@ -50,7 +50,7 @@ typedef struct SpriteLayer {
 }ALIGN4 SpriteLayer;
 
 typedef struct SpriteLayerSet {
-    SpriteLayer *layers;
+    const SpriteLayer *layers;
     u32 displayForNumFrames:16;
 	u32 numberOflayers:16;
 }ALIGN4 SpriteLayerSet;
@@ -58,7 +58,7 @@ typedef struct SpriteLayerSet {
 typedef struct SpriteSet {
     //u32 *palette; // TODO Palette should be here
 	//u32 paletteCount;
-    SpriteLayerSet *set;
+    const SpriteLayerSet *set;
     u32 numberOfAnimation;
 }ALIGN4 SpriteSet;
 
@@ -194,10 +194,10 @@ typedef struct CharacterAttr {
 	CharFuncActionCollision checkActionCollision;
 	SpriteDisplay spriteDisplay;
 	CharacterStats stats;
-	u8 id;
-	s8 type;
-	s16 distanceFromGround:12;
-	s16 dummy:4;
+	u32 id:8;
+	s32 type:9;
+	s32 distanceFromGround:12;
+	s32 dummy:3;
 	u8 action;
 	EDirections direction:4;
 	EDirections faceDirection:4;

@@ -95,4 +95,5 @@ int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf);
 void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo);
 bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 inline EDirections commonReverseDirection(EDirections direction);
+int commonDummy();
 #endif
