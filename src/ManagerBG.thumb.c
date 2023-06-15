@@ -104,8 +104,13 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 	}
 }
 
+extern const unsigned int spritemask_standard_image0[];
+
 void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo) {
-	int i, id = 0;
+	int i, id = 16;
+	spritemask_vram_copy32_ID(spritemask_standard_image0, 
+			spriteMaskImageSize[EMask32x32], 0);
+			
 	for ( i = 0; i < mapInfo->spriteMaskImageCount; ++i) {
 		spritemask_vram_copy32_ID(mapInfo->spriteMaskImage[i].image, 
 			spriteMaskImageSize[mapInfo->spriteMaskImage[i].type], id);

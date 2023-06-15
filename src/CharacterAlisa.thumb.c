@@ -249,6 +249,17 @@ const OffsetPoints slash_offsetValues[8][2] = {
 	{{0, 16}, {0, 32}},
 };
 
+const BoundingBox alisa_slashCollisionBox[8] = {
+	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+	{ 8, -8, 24, 8, 4, 8, 0,0,0,0},
+	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
+	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
+	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
+	{ -8, -8, -24, 8, 4, 8, 0,0,0,0},
+	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+};
+
 
 void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 {	
@@ -394,7 +405,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const void *dummy, CharacterActionCollection *charActionCollection) {
 	BoundingBox position;
 	Position collisionPoints[2];
-	int attackVal = 1, countPoints = 2;
+	int attackVal = 1;
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
@@ -411,13 +422,14 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->direction = alisa->nextDirection;
 	
 	if (alisa->spriteDisplay.currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION) {
-		collisionPoints[0].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][0].x;
-		collisionPoints[0].y = CONVERT_2POS(alisa->position.y) + slash_offsetValues[alisa->direction][0].y;
-		collisionPoints[0].z = CONVERT_2POS(alisa->position.z) + ALISA_NATTACK_ZPOS_OFFSET;
-		collisionPoints[1].x = CONVERT_2POS(alisa->position.x) + slash_offsetValues[alisa->direction][1].x;
-		collisionPoints[1].y = collisionPoints[0].y + slash_offsetValues[alisa->direction][1].y;
-		collisionPoints[1].z = CONVERT_2POS(alisa->position.z) + ALISA_NATTACK_ZPOS_OFFSET;
-		mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
+		BoundingBox collisionBox;
+		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->direction].startX;
+		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->direction].startY;
+		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->direction].startZ;
+		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->direction].endX;
+		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->direction].endY;
+		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->direction].endZ;
+		mchar_actione_add(charActionCollection, EActionAttack, attackVal, &collisionBox);
 	}
 	
 	if (alisa->spriteDisplay.currentAnimationFrame == SLASH_STARTSOUND_FRAME && alisa->spriteDisplay.numberOfFramesPassed == 0) {
@@ -713,16 +725,28 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 	boundingBox->isMovable = false;
 }
 
+const int alisa_mapCollisionXAdjust[] = {3, -3, 3, -3};
+const int alisa_mapCollisionYAdjust[] = {3, 3, -3, -3};
+
+//int xAdjust[] = {0, 0, 0, 0};
+//int yAdjust[] = {0, 0, 0, 0};
 void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
     commonCharacterMapEdgeCheck(alisa, mapInfo);
 	int count;
 	BoundingBox mapBoundingBox, characterBoundingBox;
 	CharacterPlayerControl *charControl = (CharacterAIControl*)alisa->free;
-	int fallingDown;
+	int fallingDown = 1024;
 	
 	alisa->getBounds(alisa, &count, &characterBoundingBox);
-	commonGetBoundsFromMap(CONVERT_2POS(alisa->position.x), CONVERT_2POS(alisa->position.y), mapInfo, &mapBoundingBox);
-	fallingDown = common_fallingDown(alisa, &characterBoundingBox, &mapBoundingBox);
+	
+	for (int i = 0; i < 4; ++i) {
+		commonGetBoundsFromMap(CONVERT_2POS(alisa->position.x) + alisa_mapCollisionXAdjust[i], 
+			CONVERT_2POS(alisa->position.y) + alisa_mapCollisionYAdjust[i], mapInfo, &mapBoundingBox);
+		int dist = common_fallingDown(alisa, &characterBoundingBox, &mapBoundingBox);
+		if (dist < fallingDown) {
+			fallingDown = dist;
+		}
+	}
 	
 	if (fallingDown > 0 ) {
 		//mprinter_printf("MAP FALLING %d\n", fallingDown);
@@ -787,9 +811,11 @@ void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollec
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
-		for (j = 0; j < charActionEvent->count; ++j) {
-			isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
-		}
+		//for (j = 0; j < charActionEvent->count; ++j) {
+			//isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
+			isHit |= hasCollision(&charActionEvent->collisionBox, &charBoundingBox);
+				
+		//}
 		if (isHit) {
 			alisa->stats.currentLife -= 1;
 			charControl->currentStatus = EAlisaStatusStunned;

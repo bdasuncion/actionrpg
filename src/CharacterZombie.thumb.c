@@ -91,6 +91,17 @@ const OffsetPoints zombie_strike_offsetValues[8][2] = {
 	{{0, 16}, {0, 32}},
 };
 
+const BoundingBox zombie_strikeCollisionBox[8] = {
+	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+	{ 8, -8, 24, 8, 4, 8, 0,0,0,0},
+	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
+	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
+	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
+	{ -8, -8, -24, 8, 4, 8, 0,0,0,0},
+	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+};
+
 const OffsetPoints zombie_scanLastKnownPosition = { 16, 16 };
 
 void zombie_actionWalk(CharacterAttr* character,
@@ -310,17 +321,15 @@ void zombie_actionAttack(CharacterAttr* character,
 	
 	if (character->spriteDisplay.currentAnimationFrame >= ZOMBIE_ATTACK_FRAME_START && 
 		character->spriteDisplay.currentAnimationFrame >= ZOMBIE_ATTACK_FRAME_END) {
-		Position collisionPoints[2];
-		int attackVal = 1, countPoints = 2;
-		
-		collisionPoints[0].x = CONVERT_2POS(character->position.x) + zombie_strike_offsetValues[character->direction][0].x;
-		collisionPoints[0].y = CONVERT_2POS(character->position.y) + zombie_strike_offsetValues[character->direction][0].y;
-		collisionPoints[0].z = CONVERT_2POS(character->position.z) + ZOMBIE_NATTACK_ZPOS_OFFSET;
-		collisionPoints[1].x = CONVERT_2POS(character->position.x) + zombie_strike_offsetValues[character->direction][1].x;
-		collisionPoints[1].y = collisionPoints[0].y + zombie_strike_offsetValues[character->direction][1].y;	
-		collisionPoints[1].z = CONVERT_2POS(character->position.z) + ZOMBIE_NATTACK_ZPOS_OFFSET;
-	
-		mchar_actione_add(charActionCollection, EActionAttack, attackVal, countPoints, &collisionPoints);
+		BoundingBox collisionBox;
+		int attackVal = 1;
+		collisionBox.startX = CONVERT_2POS(character->position.x) + zombie_strikeCollisionBox[character->direction].startX;
+		collisionBox.startY = CONVERT_2POS(character->position.y) + zombie_strikeCollisionBox[character->direction].startY;
+		collisionBox.startZ = CONVERT_2POS(character->position.z) + zombie_strikeCollisionBox[character->direction].startZ;
+		collisionBox.endX = CONVERT_2POS(character->position.x) + zombie_strikeCollisionBox[character->direction].endX;
+		collisionBox.endY = CONVERT_2POS(character->position.y) + zombie_strikeCollisionBox[character->direction].endY;
+		collisionBox.endZ = CONVERT_2POS(character->position.z) + zombie_strikeCollisionBox[character->direction].endZ;
+		mchar_actione_add(charActionCollection, EActionAttack, attackVal, &collisionBox);
 	}
 	
 	if (isLastFrame) {
@@ -481,9 +490,10 @@ void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionC
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
-		for (j = 0; j < charActionEvent->count; ++j) {
-			isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
-		}
+		//for (j = 0; j < charActionEvent->count; ++j) {
+			//isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
+			isHit |= hasCollision(&charActionEvent->collisionBox, &charBoundingBox);
+		//}
 		if (isHit) {
 			character->stats.currentLife -= 1;
 			//character->stats.currentStatus = EStatusNoActionCollision;

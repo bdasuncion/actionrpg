@@ -10,9 +10,12 @@
 typedef enum SpriteMaskType{
 	EMaskTypeStart = 128,
 	EMask16x16 = EMaskTypeStart,
-	EMask32x16,
 	EMask16x32,
+	EMask32x16,
 	EMask32x32,
+	EMask16x16Tall,
+	EMask32x16Tall,
+	EMask16x32Tall,
 	EMaskTypeCount,
 }SpriteMaskType;
 

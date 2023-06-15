@@ -36,11 +36,10 @@ void mchar_init(CharacterCollection *charCollection, int size) {
 			malloc(sizeof(CharacterAttr*)*charCollection->poolSize);
 		charCollection->charactersDoEvent = 
 			malloc(sizeof(CharacterAttr*)*size);
-		//TODO Fix size
 		charCollection->charactersForDisplay = 
 			malloc(sizeof(CharacterAttr*)*charCollection->poolSize*2);
 
-		for (i = 0; i < size*2; ++i) {
+		for (i = 0; i < charCollection->poolSize*2; ++i) {
 			charCollection->charactersForDisplay[i] = 
 				malloc(sizeof(CharacterAttr));
 			commonRemoveCharacter(charCollection->charactersForDisplay[i]);

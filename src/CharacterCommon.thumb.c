@@ -155,7 +155,7 @@ void commonReverseDisplayShadow() {
 int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf){
 	if (shouldSetShadow) {
 		SpriteDisplay shadowDisplay = common_shadowDisplay;
-		shadowDisplay.baseY = y;
+		shadowDisplay.baseY = y - 1;
 		shadowDisplay.baseX = x;
 		shadowDisplay.isInScreen = true;
 

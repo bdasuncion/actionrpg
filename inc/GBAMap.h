@@ -25,6 +25,11 @@ typedef struct MapCollision {
 	u16 height:4;
 } ALIGN2 MapCollision;
 
+typedef struct HeightCollision {
+    u8 type:1;
+	u8 height:7;
+} HeightCollision;
+
 typedef struct TileSet {
     const u32 size:16;
 	const u32 compression:2;

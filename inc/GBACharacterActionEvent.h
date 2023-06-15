@@ -17,6 +17,7 @@ typedef struct CharacterActionEvent {
 	s16 dummy1:5;
 	u16 count:3;
 	Position collisionPoints[5];
+	BoundingBox collisionBox;
 } ALIGN4 CharacterActionEvent;
 
 typedef struct CharacterActionCollection {

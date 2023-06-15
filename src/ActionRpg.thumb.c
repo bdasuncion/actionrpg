@@ -19,7 +19,7 @@
 
 #define DEFAULT_SCREEN_BOUNDING_BOX 0
 
-#define MAX_CHARCOUNT 20
+#define MAX_CHARCOUNT 28
 #define MAX_CHARACTIONEVENT 20
 
 //extern const char always[1888512];

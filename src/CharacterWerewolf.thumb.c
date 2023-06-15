@@ -413,9 +413,10 @@ void werewolf_checkActionEventCollision(CharacterAttr *character, CharacterActio
 	for (i = 0; i < actionEvents->count; ++i) {
 		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
 
-		for (j = 0; j < charActionEvent->count; ++j) {
-			isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
-		}
+		//for (j = 0; j < charActionEvent->count; ++j) {
+			//isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
+			isHit |= hasCollision(&charActionEvent->collisionBox, &charBoundingBox);
+		//}
 		if (isHit) {
 		    character->stats.currentLife -= 1;
 			if (character->stats.currentLife <= 0) {

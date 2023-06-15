@@ -8,5 +8,5 @@ void mchar_actione_reinit(CharacterActionCollection *charActionCollection);
 //void mchar_actione_add(CharacterActionCollection *charActionCollection, 
 //    CharacterActionTypes type, s16 value, BoundingBox *position);
 void mchar_actione_add(CharacterActionCollection *charActionCollection, 
-    CharacterActionTypes type, s16 value, int countPoints, Position *collisionPoints); 
+    CharacterActionTypes type, s16 value, BoundingBox *collisionBox);
 #endif

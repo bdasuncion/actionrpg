@@ -17,17 +17,31 @@
 const u32 spriteMaskImageSize[] = {32, 64, 64, 128};
 
 const u8 mask_boundingBoxMeasurements[][EBBCnvrtMeasurementCount] = {
-	{16,16,24,},
-	{32,16,24,},
-	{16,32,24,},
-	{32,32,24,},
+	{16,16,0},
+	{16,32,0},
+	{32,16,0},
+	{32,32,0},
+	{16,16,24},
+	{16,32,24},
+	{32,16,24},
 };
 
 const u8 spritemask_scrConversionMeasurements[][EScrCnvrtMeasureCount] = {
+	{16,8},
 	{16,16},
+	{32,8},
 	{32,16},
-	{16,32},
-	{32,32}
+	{16,24},
+	{32,8},
+	{16,24},
+};
+
+const SPRITESHAPE maskShape[] = {
+	SQUARE, TALL, WIDE, SQUARE
+};
+
+const SPRITESIZE maskSize[] = {
+	SMALL_B, MEDIUM, MEDIUM, MEDIUM
 };
 
 void spritemask_bounds_8x8(const CharacterAttr* alisa, 
@@ -58,7 +72,7 @@ void spritemask_getBoundingBox(const CharacterAttr* character,
 	boundingBox->endX = x + mask_boundingBoxMeasurements[character->type - EMaskTypeStart][EBBCnvrtLength];
 	boundingBox->endY = y + mask_boundingBoxMeasurements[character->type - EMaskTypeStart][EBBCnvrtWidth];
 	boundingBox->startZ = z;
-	boundingBox->endZ = z + 1;
+	boundingBox->endZ = z + mask_boundingBoxMeasurements[character->type - EMaskTypeStart][EBBCnvrtHeight];;
 	/*if (alisa->position.z < 0)
 		mprinter_printf("ALISA MOV -%d -%d\n", -boundingBox->startZ, -alisa->position.z);
 	else
@@ -148,7 +162,8 @@ int spritemask_setPosition(CharacterAttr* character,
 	charEndY = CONVERT_2POS(character->position.y) - 16;
 	
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
-		commonSetToOamBufferAsMask(&character->spriteDisplay, oamBuf, TALL, MEDIUM);
+		commonSetToOamBufferAsMask(&character->spriteDisplay, oamBuf, 
+			maskShape[character->type - EMaskTypeStart], maskSize[character->type - EMaskTypeStart]);
 		character->spriteDisplay.isInScreen = true;
 		return 1;
 	}
