@@ -65,25 +65,6 @@ const s32 werewolf_runOffsetY[EDirectionsCount][werewolf_RUN_MVMNT_CTRL_MAX] = {
 	{1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG}
 };
 
-const CharFuncCollisionReaction werewolf_collisionReactions[][8] = {
-    {	&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement },
-	{	&common_movingDownOffset,
-		&common_movingRightDownOffset,
-		&common_movingRightOffset,
-		&common_movingRightUpOffset,
-		&common_movingUpOffset,
-		&common_movingLeftUpOffset,
-		&common_movingLeftOffset,
-		&common_movingLeftDownOffset}
-};
-
 const CharFuncCollisionReaction werewolf_mapCollisionReactions[8] = {
 	&common_mapMovingDownOffset,
 	&common_mapMovingRightDownOffset,
@@ -343,9 +324,9 @@ void werewolf_getBoundingBoxMoving(const CharacterAttr* character,
 	boundingBox->startZ = z;
 	boundingBox->endZ = z + WEREWOLF_HEIGHT;
 	//boundingBox->height = werewolf_boundingBoxMeasurements[EBBCnvrtHeight];
-	boundingBox->direction = character->direction;
+	/*boundingBox->direction = character->direction;
 	boundingBox->isMoving = true;
-	boundingBox->isMovable = false;
+	boundingBox->isMovable = false;*/
 }
 
 void werewolf_getBoundingBoxStanding(const CharacterAttr* character, 
@@ -361,9 +342,9 @@ void werewolf_getBoundingBoxStanding(const CharacterAttr* character,
 	//boundingBox->height = werewolf_boundingBoxMeasurements[EBBCnvrtHeight];
 	boundingBox->startZ = z;
 	boundingBox->endZ = z + WEREWOLF_HEIGHT;
-	boundingBox->direction = character->direction;
+	/*boundingBox->direction = character->direction;
 	boundingBox->isMoving = false;
-	boundingBox->isMovable = false;
+	boundingBox->isMovable = false;*/
 }
 
 void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
@@ -401,7 +382,7 @@ void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBel
 	character->getBounds(character, &count, &charBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 	
-	werewolf_collisionReactions[charBoundingBox.isMoving][character->direction]
+	common_collisionReactions[character->direction]
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
 

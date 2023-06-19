@@ -59,8 +59,6 @@ void mchar_actione_add(CharacterActionCollection *charActionCollection,
 	CharacterActionEvent *charAction = &charActionCollection->currentActions[charActionCollection->count];
 	charAction->type = type;
 	charAction->value = value;
-	//charAction->position = *position;
-	charAction->count = 1;
 	charAction->collisionBox = *collisionBox;
 	
 	++charActionCollection->count;

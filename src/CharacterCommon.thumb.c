@@ -95,23 +95,15 @@ void commonCharacterMapEdgeCheck(CharacterAttr* character, const MapInfo *mapInf
 	}	
 }
 
-const CharFuncCollisionReaction common_collisionReactions[2][8] = {
-    {	&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement },
-	{	&common_movingDownOffset,
-		&common_movingRightDownOffset,
-		&common_movingRightOffset,
-		&common_movingRightUpOffset,
-		&common_movingUpOffset,
-		&common_movingLeftUpOffset,
-		&common_movingLeftOffset,
-		&common_movingLeftDownOffset}
+const CharFuncCollisionReaction common_collisionReactions[8] = {
+	&common_movingDownOffset,
+	&common_movingRightDownOffset,
+	&common_movingRightOffset,
+	&common_movingRightUpOffset,
+	&common_movingUpOffset,
+	&common_movingLeftUpOffset,
+	&common_movingLeftOffset,
+	&common_movingLeftDownOffset
 };
 
 const CharFuncCollisionReaction common_mapCollisionReactions[8] = {

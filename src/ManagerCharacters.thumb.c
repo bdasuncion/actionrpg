@@ -243,37 +243,6 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 	}
 }
 
-void mchar_checkCollisionAbove(BoundingBox *boundingBox, BoundingBox *checkWithBoundingBox, int idx) {
-    if (boundingBox->direction == EUnknown) {
-	    return;
-	}
-    if (((boundingBox->startX >= checkWithBoundingBox->startX && 
-	    boundingBox->startX <= checkWithBoundingBox->endX) ||
-		(boundingBox->endX >= checkWithBoundingBox->startX &&
-		boundingBox->endX <= checkWithBoundingBox->endX)) && 
-		((boundingBox->startY >= checkWithBoundingBox->startY && 
-	    boundingBox->startY <= checkWithBoundingBox->endY) ||
-		(boundingBox->endY >= checkWithBoundingBox->startY &&
-		boundingBox->endY <= checkWithBoundingBox->endY))) {
-	}
-}
-
-void mchar_checkCollisionBelow(BoundingBox *boundingBox, BoundingBox *checkWithBoundingBox, int idx) {
-    if (boundingBox->direction == EUnknown) {
-	    return;
-	}
-    if (((boundingBox->startX >= checkWithBoundingBox->startX && 
-	    boundingBox->startX <= checkWithBoundingBox->endX) ||
-		(boundingBox->endX >= checkWithBoundingBox->startX &&
-		boundingBox->endX <= checkWithBoundingBox->endX)) && 
-		((boundingBox->startY >= checkWithBoundingBox->startY && 
-	    boundingBox->startY <= checkWithBoundingBox->endY) ||
-		(boundingBox->endY >= checkWithBoundingBox->startY &&
-		boundingBox->endY <= checkWithBoundingBox->endY))) {
-	}
-}
-
-
 void mchar_setPosition(CharacterCollection *charCollection,
 	OAMCollection *oamCollection,
 	const Position *scr_pos,

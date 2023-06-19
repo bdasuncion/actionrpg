@@ -78,9 +78,9 @@ void spritemask_getBoundingBox(const CharacterAttr* character,
 	else
 		mprinter_printf("ALISA MOV %d %d\n", boundingBox->startZ, alisa->position.z);*/
 	//boundingBox->height = alisa_boundingBoxMeasurements[EBBCnvrtHeight];
-	boundingBox->direction = character->direction;
+	/*boundingBox->direction = character->direction;
 	boundingBox->isMoving = false;
-	boundingBox->isMovable = false;
+	boundingBox->isMovable = false;*/
 }
 
 void spritemask_bounds_32x16(const CharacterAttr* alisa, 

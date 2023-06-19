@@ -197,34 +197,15 @@ const CharFuncAction alisa_actions[] = {
 	&alisa_actionStunned
 };
 
-const CharFuncCollisionReaction alisa_collisionReactions[][8] = {
-    {	&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement,
-		&common_noMovement },
-	{	&common_movingDownOffset,
-		&common_movingRightDownOffset,
-		&common_movingRightOffset,
-		&common_movingRightUpOffset,
-		&common_movingUpOffset,
-		&common_movingLeftUpOffset,
-		&common_movingLeftOffset,
-		&common_movingLeftDownOffset}
-};
-
 const CharFuncCollisionReaction alisa_mapCollisionReactions[8] = {
-    	&common_mapMovingDownOffset,
-		&common_mapMovingRightDownOffset,
-		&common_mapMovingRightOffset,
-		&common_mapMovingRightUpOffset,
-		&common_mapMovingUpOffset,
-		&common_mapMovingLeftUpOffset,
-		&common_mapMovingLeftOffset,
-		&common_mapMovingLeftDownOffset
+	&common_mapMovingDownOffset,
+	&common_mapMovingRightDownOffset,
+	&common_mapMovingRightOffset,
+	&common_mapMovingRightUpOffset,
+	&common_mapMovingUpOffset,
+	&common_mapMovingLeftUpOffset,
+	&common_mapMovingLeftOffset,
+	&common_mapMovingLeftDownOffset
 };
 
 const CommonMapCollision alisa_mapCollision[] = {
@@ -238,26 +219,15 @@ const CommonMapCollision alisa_mapCollision[] = {
 	&commonMovingLeftDownMapCollision
 };
 
-const OffsetPoints slash_offsetValues[8][2] = {
-    {{0, 16}, {0, 32}},
-	{{0, 16}, {0, 32}},
-	{{16, -6}, {32, -6}},
-	{{0, -16}, {0, -16}},
-	{{0, -16}, {0, -16}},
-	{{0, -16}, {0, -16}},
-	{{-16, 6}, {-32, 6}},
-	{{0, 16}, {0, 32}},
-};
-
 const BoundingBox alisa_slashCollisionBox[8] = {
-	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
-	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
-	{ 8, -8, 24, 8, 4, 8, 0,0,0,0},
-	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
-	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
-	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
-	{ -8, -8, -24, 8, 4, 8, 0,0,0,0},
-	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
+	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
+	{ 8, -8, 24, 8, 8, 18, 0,0,0,0},
+	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
+	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
+	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
+	{ -8, -8, -24, 8, 8, 18, 0,0,0,0},
+	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 };
 
 
@@ -415,6 +385,8 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
 	
+	alisa->delta.x = 0;
+	alisa->delta.y = 0;
 	alisa->movementCtrl.maxFrames = 0;
 	alisa->movementCtrl.currentFrame = 0;
 	
@@ -674,6 +646,8 @@ void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->movementCtrl.maxFrames = 0;
 	alisa->movementCtrl.currentFrame = 0;
 	
+	alisa->delta.x = 0;
+	alisa->delta.y = 0;
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
@@ -698,9 +672,9 @@ void alisa_getBoundingBoxMoving(const CharacterAttr* alisa,
 	else
 		mprinter_printf("ALISA MOV %d %d\n", boundingBox->startZ, alisa->position.z);*/
 	//boundingBox->height = alisa_boundingBoxMeasurements[EBBCnvrtHeight];
-	boundingBox->direction = alisa->direction;
+	/*boundingBox->direction = alisa->direction;
 	boundingBox->isMoving = true;
-	boundingBox->isMovable = false;
+	boundingBox->isMovable = false;*/
 }
 
 void alisa_getBoundingBoxStanding(const CharacterAttr* alisa, 
@@ -720,9 +694,9 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 		mprinter_printf("ALISA MOV -%d -%d\n", -boundingBox->startZ, -alisa->position.z);
 	else
 		mprinter_printf("ALISA MOV %d %d\n", boundingBox->startZ, alisa->position.z);*/
-	boundingBox->direction = alisa->direction;
+	/*boundingBox->direction = alisa->direction;
 	boundingBox->isMoving = false;
-	boundingBox->isMovable = false;
+	boundingBox->isMovable = false;*/
 }
 
 const int alisa_mapCollisionXAdjust[] = {3, -3, 3, -3};
@@ -794,7 +768,7 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 		}
 	}
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
-	alisa_collisionReactions[alisaBoundingBox.isMoving][alisa->direction]
+	common_collisionReactions[alisa->direction]
 	    (alisa, &alisaBoundingBox, &otherCharBoundingBox);
 }
 

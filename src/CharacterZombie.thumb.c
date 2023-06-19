@@ -92,14 +92,14 @@ const OffsetPoints zombie_strike_offsetValues[8][2] = {
 };
 
 const BoundingBox zombie_strikeCollisionBox[8] = {
-	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
-	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
-	{ 8, -8, 24, 8, 4, 8, 0,0,0,0},
-	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
-	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
-	{ -8, -8, 8, -24, 4, 8, 0,0,0,0},
-	{ -8, -8, -24, 8, 4, 8, 0,0,0,0},
-	{ -8, 8, 8, 24, 4, 8, 0,0,0,0},
+	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
+	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
+	{ 8, -8, 24, 8, 8, 18, 0,0,0,0},
+	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
+	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
+	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
+	{ -8, -8, -24, 8, 8, 18, 0,0,0,0},
+	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 };
 
 const OffsetPoints zombie_scanLastKnownPosition = { 16, 16 };
@@ -381,9 +381,9 @@ void zombie_getBoundingBoxMoving(const CharacterAttr* character,
 	boundingBox->endY = y + zombie_boundingBoxMeasurements[EBBCnvrtWidth];
 	boundingBox->startZ = z;
 	boundingBox->endZ = z + ZOMBIE_HEIGHT;
-	boundingBox->direction = character->direction;
+	/*boundingBox->direction = character->direction;
 	boundingBox->isMoving = true;
-	boundingBox->isMovable = false;
+	boundingBox->isMovable = false;*/
 }
 
 void zombie_getBoundingBoxStanding(const CharacterAttr* character, 
@@ -398,9 +398,9 @@ void zombie_getBoundingBoxStanding(const CharacterAttr* character,
 	boundingBox->endY = y + zombie_boundingBoxMeasurements[EBBCnvrtWidth];
 	boundingBox->startZ = z;
 	boundingBox->endZ = z + ZOMBIE_HEIGHT;
-	boundingBox->direction = character->direction;
+	/*boundingBox->direction = character->direction;
 	boundingBox->isMoving = false;
-	boundingBox->isMovable = false;
+	boundingBox->isMovable = false;*/
 }
 
 int zombie_setPosition(CharacterAttr* character,
@@ -473,7 +473,7 @@ void zombie_checkCollision(const CharacterAttr* character, bool isOtherCharBelow
 	character->getBounds(character, &count, &charBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 	
-	common_collisionReactions[charBoundingBox.isMoving][character->direction]
+	common_collisionReactions[character->direction]
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
 

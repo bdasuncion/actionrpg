@@ -79,7 +79,7 @@ const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *chara
 const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
 const Position* commonFindCharTypePositionByDistance(const CharacterCollection *characterCollection, 
 	const Position *refPos, int dist, CHARACTERTYPE fromType, CHARACTERTYPE toType);
-extern const CharFuncCollisionReaction common_collisionReactions[2][8];
+extern const CharFuncCollisionReaction common_collisionReactions[8];
 extern const CharFuncCollisionReaction common_mapCollisionReactions[8];
 extern const CommonMapCollision common_mapCollision[8];
 inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);

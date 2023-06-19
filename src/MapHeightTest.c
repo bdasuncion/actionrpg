@@ -292,8 +292,9 @@ const TileSet *tileset_mapheighttest[] = { &tileset_forest_ground_side, &tileset
 const u16 *pallette_mapheighttest[] = {  pallette_forest_ground_side, pallette_grave, };
 const u16 *mapentryset_mapheighttest[] = { mapentry_mapheighttest[0], mapentry_mapheighttest[1], };
 const CharacterInit actors_mapheighttest[] = {
-	{ 64, 128, 49, WEREWOLF }, /*{ 234, 234, 1, WEREWOLF }, { 256, 128, 1, WEREWOLF }, { 345, 96, 1, WEREWOLF }, { 345, 256, 1, WEREWOLF }, { 345, 276, 1, WEREWOLF }, /*{ 365, 276, 1, WEREWOLF },*/
-	{ 64, 154, 49, ZOMBIE }, /*{ 396, 154, 1, ZOMBIE }, { 200, 400, 1, ZOMBIE }, { 400, 400, 1, ZOMBIE }, { 450, 234, 1, ZOMBIE },{ 450, 254, 1, ZOMBIE }, /*{ 470, 254, 1, ZOMBIE },*/
+	/*{ 64, 128, 49, WEREWOLF }, { 234, 234, 1, WEREWOLF }, { 256, 128, 1, WEREWOLF }, { 345, 96, 1, WEREWOLF }, { 345, 256, 1, WEREWOLF }, { 345, 276, 1, WEREWOLF }, /*{ 365, 276, 1, WEREWOLF },*/
+	/*{ 64, 154, 49, ZOMBIE }, { 396, 154, 1, ZOMBIE }, { 200, 400, 1, ZOMBIE }, { 400, 400, 1, ZOMBIE }, { 450, 234, 1, ZOMBIE },{ 450, 254, 1, ZOMBIE }, /*{ 470, 254, 1, ZOMBIE },*/
+	{ 328, 128, 1, WEREWOLF }, 	{ 248, 200, 33, ZOMBIE }, 	{ 56, 104, 49, WEREWOLF }, 	{ 120, 168, 49, ZOMBIE }, 
 };
 
 const EventTransfer transfer_mapheighttest[] = {
@@ -306,7 +307,7 @@ const SpriteMaskInit spritemask_mapheighttest[] = {
 	{ 224, 208, 32, 0,EMask32x32 }, 	{ 248, 208, 32, 0,EMask16x32 }, 	{ 232, 168, 16, 0,EMask16x16 }, 
 };
 
-const MapInfo mapheighttest = { 512, 512, 2, 9, 2, 0, 2, 3, 0, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
+const MapInfo mapheighttest = { 512, 512, 2, 9, 2, 0, 4, 3, 0, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
 transfer_mapheighttest, heightMap_mapheighttest, actors_mapheighttest, spritemask_mapheighttest, spritemaskimage_mapheighttest, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
 
 const EventTransfer startAt = { 400, 400, 128, 128, 49, &mapheighttest, 16, 48, 0, ERight};
