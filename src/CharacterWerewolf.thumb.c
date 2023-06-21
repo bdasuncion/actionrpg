@@ -65,7 +65,7 @@ const s32 werewolf_runOffsetY[EDirectionsCount][werewolf_RUN_MVMNT_CTRL_MAX] = {
 	{1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG}
 };
 
-const CharFuncCollisionReaction werewolf_mapCollisionReactions[8] = {
+const CharFuncCollisionReaction wervvvewolf_mapCollisionReactions[] = {
 	&common_mapMovingDownOffset,
 	&common_mapMovingRightDownOffset,
 	&common_mapMovingRightOffset,
@@ -76,8 +76,7 @@ const CharFuncCollisionReaction werewolf_mapCollisionReactions[8] = {
 	&common_mapMovingLeftDownOffset
 };
 
-
-const CommonMapCollision werewolf_mapCollision[] = {
+const CommonMapCollision werevvvwolf_mapCollision[] = {
     &commonMovingDownMapCollision,
 	&commonMovingRightDownMapCollision,
 	&commonMovingRightMapCollision,
@@ -289,9 +288,9 @@ int werewolf_setPosition(CharacterAttr* character,
 	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
 	
 	charStartX = CONVERT_2POS(character->position.x) - WEREWOLF_SCREENDISPLAYOFFSET_X;
-	charStartY = CONVERT_2POS(character->position.y);
+	charStartY = CONVERT_2POS(character->position.y) - CONVERT_TO_SCRZPOS(character->position.z);
 	charEndX = CONVERT_2POS(character->position.x) + WEREWOLF_SCREENDISPLAYOFFSET_X;
-	charEndY = CONVERT_2POS(character->position.y) - WEREWOLF_SCREENDISPLAYOFFSET_Y;
+	charEndY = charStartY - WEREWOLF_SCREENDISPLAYOFFSET_Y;
 	
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
 		character->spriteDisplay.imageUpdateStatus = ((!character->spriteDisplay.isInScreen)*EUpdate) + 
@@ -364,8 +363,8 @@ void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo
 	} 
 	
     commonCharacterMapEdgeCheck(character, mapInfo);
-	werewolf_mapCollision[character->direction](character, mapInfo, 
-	    werewolf_mapCollisionReactions[character->direction]);
+	common_mapCollision[character->direction](character, mapInfo, 
+	    common_mapCollisionReactions[character->direction]);
 }
 
 void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
@@ -382,6 +381,7 @@ void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBel
 	character->getBounds(character, &count, &charBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 	
+	//werewolf_collisionReactions[charBoundingBox.isMoving][character->direction]
 	common_collisionReactions[character->direction]
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }

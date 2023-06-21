@@ -21,9 +21,9 @@ const u8 mask_boundingBoxMeasurements[][EBBCnvrtMeasurementCount] = {
 	{16,32,0},
 	{32,16,0},
 	{32,32,0},
-	{16,16,24},
-	{16,32,24},
-	{32,16,24},
+	{16,16,16},
+	{16,32,16},
+	{32,16,16},
 };
 
 const u8 spritemask_scrConversionMeasurements[][EScrCnvrtMeasureCount] = {
@@ -31,6 +31,16 @@ const u8 spritemask_scrConversionMeasurements[][EScrCnvrtMeasureCount] = {
 	{16,16},
 	{32,8},
 	{32,16},
+	{16,24},
+	{32,8},
+	{16,24},
+};
+
+const u8 spritemask_inScreenConversionMeasurements[][EScrCnvrtMeasureCount] = {
+	{8,8},
+	{8,16},
+	{16,8},
+	{16,16},
 	{16,24},
 	{32,8},
 	{16,24},
@@ -156,10 +166,10 @@ int spritemask_setPosition(CharacterAttr* character,
 	EMask16x32, EMaskTypeStart,
 	spritemask_scrConversionMeasurements[EMask16x32 - EMaskTypeStart][0],
 	spritemask_scrConversionMeasurements[EMask16x32 - EMaskTypeStart][1]);*/
-	charStartX = CONVERT_2POS(character->position.x) - 8;
-	charStartY = CONVERT_2POS(character->position.y);
-	charEndX = CONVERT_2POS(character->position.x) + 8;
-	charEndY = CONVERT_2POS(character->position.y) - 16;
+	charStartX = CONVERT_2POS(character->position.x) - spritemask_inScreenConversionMeasurements[character->type - EMaskTypeStart][0];
+	charStartY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.z) - spritemask_inScreenConversionMeasurements[character->type - EMaskTypeStart][1];
+	charEndX = CONVERT_2POS(character->position.x) + spritemask_inScreenConversionMeasurements[character->type - EMaskTypeStart][0];
+	charEndY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.z) + spritemask_inScreenConversionMeasurements[character->type - EMaskTypeStart][1];
 	
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
 		commonSetToOamBufferAsMask(&character->spriteDisplay, oamBuf, 

@@ -197,28 +197,6 @@ const CharFuncAction alisa_actions[] = {
 	&alisa_actionStunned
 };
 
-const CharFuncCollisionReaction alisa_mapCollisionReactions[8] = {
-	&common_mapMovingDownOffset,
-	&common_mapMovingRightDownOffset,
-	&common_mapMovingRightOffset,
-	&common_mapMovingRightUpOffset,
-	&common_mapMovingUpOffset,
-	&common_mapMovingLeftUpOffset,
-	&common_mapMovingLeftOffset,
-	&common_mapMovingLeftDownOffset
-};
-
-const CommonMapCollision alisa_mapCollision[] = {
-    &commonMovingDownMapCollision,
-	&commonMovingRightDownMapCollision,
-	&commonMovingRightMapCollision,
-	&commonMovingRightUpMapCollision,
-	&commonMovingUpMapCollision,
-	&commonMovingLeftUpMapCollision,
-	&commonMovingLeftMapCollision,
-	&commonMovingLeftDownMapCollision
-};
-
 const BoundingBox alisa_slashCollisionBox[8] = {
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
@@ -736,8 +714,8 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 		alisa->distanceFromGround = fallingDown;
 	}
 	
-	alisa_mapCollision[alisa->direction](alisa, mapInfo, 
-	    alisa_mapCollisionReactions[alisa->direction]);
+	common_mapCollision[alisa->direction](alisa, mapInfo, 
+	    common_mapCollisionReactions[alisa->direction]);
 }
 
 void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
