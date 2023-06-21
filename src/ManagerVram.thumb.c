@@ -3,6 +3,7 @@
 #include"GBADMA.h"
 #include"GBAObject.h"
 #include "GBACharacterType.h"
+#include "ManagerVram.h"
 
 #define BLOCKSPERCHARACTER 32 //1KB(1024) for every character
 #define BLOCKSPERCHARACTERSMALL 16 //(512B) for every small character
@@ -118,7 +119,6 @@ u32 sprite_getID(u32 width, u32 height) {
 	return id;
 }
 
-#define SPRITEMASK_BLOCKSTART 256
 void spritemask_vram_copy32_ID(const void* src, u32 count, u32 id) {
 	void *dest = &VRAM->block[5].tile[SPRITEMASK_BLOCKSTART + id];
 	dma3_cpy32(dest, src, count);

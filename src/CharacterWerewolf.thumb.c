@@ -288,7 +288,7 @@ int werewolf_setPosition(CharacterAttr* character,
 	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
 	
 	charStartX = CONVERT_2POS(character->position.x) - WEREWOLF_SCREENDISPLAYOFFSET_X;
-	charStartY = CONVERT_2POS(character->position.y) - CONVERT_TO_SCRZPOS(character->position.z);
+	charStartY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.z);
 	charEndX = CONVERT_2POS(character->position.x) + WEREWOLF_SCREENDISPLAYOFFSET_X;
 	charEndY = charStartY - WEREWOLF_SCREENDISPLAYOFFSET_Y;
 	

@@ -112,40 +112,19 @@ void spritemask_init(CharacterAttr* spritemask, SpriteMaskInit *maskInit)
 	spritemask->id = 0;
 	//use enum of character type
 	spritemask->type = maskInit->type;
-	//mprinter_printf("INIT MASK TYPE %d\n", maskInit->type);
 	
-	//set to 0
-	//commonCharacterInit(character, EZombieInitialize, EZombieWalk, EDown);
 	commonCharacterSetPosition(spritemask, maskInit->x, maskInit->y, maskInit->z, EDown);
 	spritemask->controller = &commonDummy;
 	spritemask->doAction = &commonDummy;
 	spritemask->setPosition = &spritemask_setPosition;
-	//spritemask->setPosition = &commonDummy;
 	spritemask->getBounds = &spritemask_getBoundingBox;
-	//spritemask->getBounds = &commonDummy;
 	spritemask->checkCollision = &commonDummy;
 	spritemask->checkMapCollision = &commonDummy;
 	spritemask->checkActionCollision = &commonDummy;
 		
-	//spritemask->spriteDisplay.baseImageId = maskInit->maskId;
-	spritemask->spriteDisplay.baseImageId = 768;
+	spritemask->spriteDisplay.baseImageId = SPRITEMASK_IDSTART + maskInit->maskId;
 	spritemask->spriteDisplay.imageUpdateStatus = EUpdate;
 	spritemask->spriteDisplay.basePalleteId = 15;
-	//sprite_palette_copy32_ID(zombie_walk_side_pal, spritemask->spriteDisplay.basePalleteId);
-	//spritemask->spriteDisplay.palleteUpdateStatus = EUpdate;
-	/*CharacterAIControl *charControl = mchar_getControlType(controlPool);
-	charControl->type = EControlAiType;
-	charControl->countAction = 0;
-	charControl->currentAction = MAXACTIONS;
-	charControl->rightBlocked = false;
-	charControl->leftBlocked = false;
-	charControl->upBlocked = false;
-	charControl->downBlocked = false;
-	spritemask->free = charControl;
-	
-	spritemask->stats.maxLife = 10;
-	spritemask->stats.currentLife = 3;
-	spritemask->stats.currentStatus = EStatusNormal;*/
 }
 
 int spritemask_setPosition(CharacterAttr* character,

@@ -418,10 +418,12 @@ int zombie_setPosition(CharacterAttr* character,
 	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
 	
 	charStartX = CONVERT_2POS(character->position.x) - ZOMBIE_SCREENDISPLAYOFFSET_X;
-	charStartY = CONVERT_2POS(character->position.y) - CONVERT_TO_SCRZPOS(character->position.z);
+	charStartY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.z);
 	charEndX = CONVERT_2POS(character->position.x) + ZOMBIE_SCREENDISPLAYOFFSET_X;
 	charEndY = charStartY - ZOMBIE_SCREENDISPLAYOFFSET_Y;
 	
+	//mprinter_printf("%d %d %d %d\n", charStartX, charStartY, charEndX, charEndY);
+	//mprinter_printf("%d %d\n", CONVERT_2POS(character->position.y), CONVERT_2POS(character->position.z));
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
 		character->spriteDisplay.imageUpdateStatus = ((!character->spriteDisplay.isInScreen)*EUpdate) + 
 		    (character->spriteDisplay.isInScreen*character->spriteDisplay.imageUpdateStatus);

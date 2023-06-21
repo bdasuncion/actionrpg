@@ -53,11 +53,15 @@ typedef struct PALLETTE_BANK { u16 data[16][16]; } PALLETTE_BANK;
 #define SIZE_MAP_BLOCK 2048
 #define COUNT_MAP_BLOCK 32
 #define MAPBLOCK_MAX 16
+#define TILECOUNTPERBLOCK 512
+#define TILECOUNTPERBLOCK8BPP 256
+#define WORDSPERTILE 8
+#define WORDSPERTILE8BPP 16
 
-typedef struct TILE4 {u32 data[8];} TILE4; //8x8 4bpp(1 tile)
-typedef struct TILE8 {u32 data[16];} TILE8; // 8x8 8bpp(1 tile)
-typedef struct BLOCK_4BPP { TILE4 tile[512];} BLOCK_4BPP; //512 4bpp tiles in one block of memory(around 16K)
-typedef struct BLOCK_8BPP { TILE4 tile[256];} BLOCK_8BPP;
+typedef struct TILE4 {u32 data[WORDSPERTILE];} TILE4; //8x8 4bpp(1 tile)
+typedef struct TILE8 {u32 data[WORDSPERTILE8BPP];} TILE8; // 8x8 8bpp(1 tile)
+typedef struct BLOCK_4BPP { TILE4 tile[TILECOUNTPERBLOCK];} BLOCK_4BPP; //512 4bpp tiles in one block of memory(around 16K)
+typedef struct BLOCK_8BPP { TILE4 tile[TILECOUNTPERBLOCK8BPP];} BLOCK_8BPP;
 typedef struct VRAM_MAP { BLOCK_4BPP block[6]; } VRAM_MAP;
 typedef struct VRAM_MAP_8BPP { BLOCK_8BPP block[6]; } VRAM_MAP_8BPP;
 

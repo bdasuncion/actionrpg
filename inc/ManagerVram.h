@@ -20,4 +20,6 @@ void sprite_vram_freeId(u32 id);
 int sprite_palette_findId(CHARACTERTYPE type, int nPalette);
 u16* sprite_get_palette_ID(u32 id);
 u32 sprite_vram_findIdByType(CharacterSizeType type);
+#define SPRITEMASK_BLOCKSTART 384
+#define SPRITEMASK_IDSTART TILECOUNTPERBLOCK + SPRITEMASK_BLOCKSTART
 #endif

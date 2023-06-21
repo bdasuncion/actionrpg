@@ -294,7 +294,7 @@ const u16 *mapentryset_mapheighttest[] = { mapentry_mapheighttest[0], mapentry_m
 const CharacterInit actors_mapheighttest[] = {
 	/*{ 64, 128, 49, WEREWOLF }, { 234, 234, 1, WEREWOLF }, { 256, 128, 1, WEREWOLF }, { 345, 96, 1, WEREWOLF }, { 345, 256, 1, WEREWOLF }, { 345, 276, 1, WEREWOLF }, /*{ 365, 276, 1, WEREWOLF },*/
 	/*{ 64, 154, 49, ZOMBIE }, { 396, 154, 1, ZOMBIE }, { 200, 400, 1, ZOMBIE }, { 400, 400, 1, ZOMBIE }, { 450, 234, 1, ZOMBIE },{ 450, 254, 1, ZOMBIE }, /*{ 470, 254, 1, ZOMBIE },*/
-	{ 328, 128, 1, WEREWOLF }, 	{ 248, 200, 33, ZOMBIE }, 	{ 56, 104, 49, WEREWOLF }, 	{ 120, 168, 49, ZOMBIE }, 
+	{ 328, 128, 1, WEREWOLF },	{ 248, 200, 33, ZOMBIE }, 	{ 56, 104, 49, WEREWOLF }, 	{ 120, 168, 49, ZOMBIE },
 };
 
 const EventTransfer transfer_mapheighttest[] = {
