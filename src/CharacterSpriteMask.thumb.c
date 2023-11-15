@@ -140,11 +140,6 @@ int spritemask_setPosition(CharacterAttr* character,
 		scr_pos->x, spritemask_scrConversionMeasurements[character->type - EMaskTypeStart]);
 	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
 
-	/*mprinter_printf("%d %d %d SCR %d %d %d %d\n", CONVERT_2POS(character->position.x), 
-	CONVERT_2POS(character->position.y), CONVERT_2POS(character->position.z), 
-	EMask16x32, EMaskTypeStart,
-	spritemask_scrConversionMeasurements[EMask16x32 - EMaskTypeStart][0],
-	spritemask_scrConversionMeasurements[EMask16x32 - EMaskTypeStart][1]);*/
 	charStartX = CONVERT_2POS(character->position.x) - spritemask_inScreenConversionMeasurements[character->type - EMaskTypeStart][0];
 	charStartY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.z) - spritemask_inScreenConversionMeasurements[character->type - EMaskTypeStart][1];
 	charEndX = CONVERT_2POS(character->position.x) + spritemask_inScreenConversionMeasurements[character->type - EMaskTypeStart][0];

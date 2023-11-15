@@ -308,6 +308,6 @@ const SpriteMaskInit spritemask_mapheighttest[] = {
 };
 
 const MapInfo mapheighttest = { 512, 512, 2, 9, 2, 0, 4, 3, 0, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
-transfer_mapheighttest, heightMap_mapheighttest, actors_mapheighttest, spritemask_mapheighttest, spritemaskimage_mapheighttest, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
+transfer_mapheighttest, heightMap_mapheighttest, actors_mapheighttest, spritemask_mapheighttest, spritemaskimage_mapheighttest, NULL, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };
 
 const EventTransfer startAt = { 400, 400, 128, 128, 49, &mapheighttest, 16, 48, 0, ERight};

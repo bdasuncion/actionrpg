@@ -33,9 +33,11 @@
 //extern const MapInfo mapsnowfield;
 //extern const MapInfo mapforest;
 extern const MapInfo mapheighttest;
+extern const MapInfo mapdungeonsample;
 extern const EventTransfer transfer_mapforest[];
 extern const MusicTrack musickankandara_end;
 extern const EventTransfer startAt;
+extern const EventTransfer startAt_dungeonSample;
 
 void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo);
 void mapCommon_goDark(void *screenAttribute, void *characterCollection, MapInfo *mapInfo);
@@ -134,7 +136,8 @@ int main() {
 	mscr_initCharMoveRef(&screenAttribute, &mapInfo,
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 	
-	mapInfo.transferTo =  &startAt;
+	//mapInfo.transferTo =  &startAt;
+	mapInfo.transferTo =  &startAt_dungeonSample;
 	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,
 		&charActionCollection, &track);
 	

@@ -765,7 +765,8 @@ void common_mapMovingLeftDownOffset(CharacterAttr* character,
 void commonGetBoundsFromMap(s32 x, s32 y, const MapInfo* mapInfo, BoundingBox *charBoundingBox) {
 	    int blockX = DIVIDE_BY_16(x);
 	    int blockY = DIVIDE_BY_16(y)*DIVIDE_BY_16(mapInfo->width);
-	    u8 height = mapInfo->heightMap[blockX + blockY];
+	    u8 height = mapInfo->heightMap[blockX + blockY].height;
+		//u8 height = mapInfo->heightMap[blockX + blockY].height;
 		int result = 1;
 		charBoundingBox->startX = (x - GET_REMAINDER_16(x));
 		charBoundingBox->endX = (charBoundingBox->startX + 15);

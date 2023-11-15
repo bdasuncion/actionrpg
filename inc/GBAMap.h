@@ -26,8 +26,8 @@ typedef struct MapCollision {
 } ALIGN2 MapCollision;
 
 typedef struct HeightCollision {
-    u8 type:1;
-	u8 height:7;
+    u8 type:2;
+	u8 height:6;
 } HeightCollision;
 
 typedef struct TileSet {
@@ -82,7 +82,8 @@ typedef struct MapInfo {
 	const TileSet **tileSet;
 	const u16 **pallette;
 	const EventTransfer *tranfers;
-	const u8 *heightMap; 
+	//const u8 *heightMap;
+	const HeightCollision *heightMap; 
 	const CharacterInit *characterInit;
 	const SpriteMaskInit *spriteMaskInit;
 	const SpriteMaskImage *spriteMaskImage;
