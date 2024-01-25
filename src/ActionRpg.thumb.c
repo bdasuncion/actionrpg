@@ -52,7 +52,7 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 	
 	//mapInfo->transferTo =  &mapInfo->tranfers[0];
 	//mapInfo->mapFunction = &fadeToBlack;
-	//mapInfo->screenEffect.processScreenEffect = &mapCommon_goDark;
+	mapInfo->screenEffect.processScreenEffect = &mapCommon_goDark;
 	setSpriteMasking();
 	commonInitShadow();
 	while(1) {
