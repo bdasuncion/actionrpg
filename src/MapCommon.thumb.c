@@ -49,6 +49,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	sprite_palette_init();
 	mchar_reinit(characterCollection, &character);
 	
+	controlPool->currentCount = 0;
 	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
 		characterCollection->characterTransfer[i](character, controlPool);
 	}
