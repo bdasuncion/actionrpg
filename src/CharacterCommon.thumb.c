@@ -1053,6 +1053,7 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, Ch
 		if (hasCollision(&characterBoundingBox, &eventBox)) {
 			mapInfo->transferTo = &mapInfo->tranfers[i];
 			mapInfo->mapFunction = &fadeToBlack;
+			mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 			break;
 		}
 	}

@@ -89,6 +89,7 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
     ControlTypePool* controlPool, CharacterActionCollection *charActionCollection) {
     int i;
 	
+	//mprinter_printf("%d\n", characterCollection->currentSize);
 	for ( i = 0; i < mapInfo->characterCount; ++characterCollection->currentSize, ++characterCollection->displaySize,++i) {
 		CharacterAttr *character = characterCollection->charactersForDisplay[characterCollection->displaySize];
 	    chacterInit[mapInfo->characterInit[i].type](character, controlPool);

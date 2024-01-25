@@ -76,7 +76,6 @@ void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr
 void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1) {
     int i;
 	CharacterAttr *playable;
-    
 	for (i = 0; i < charCollection->displaySize; ++i) {
 	    if (charCollection->charactersForDisplay[i]->type <= ENDPLAYABLECHARACTERTYPE) {
 		    playable = charCollection->charactersForDisplay[i];
@@ -89,7 +88,7 @@ void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1) 
 			commonRemoveCharacter(charCollection->charactersForDisplay[i]);
 		}
 	}
-	
+
 	charCollection->currentSize = 1;
 	charCollection->displaySize = 1;
 	*player1 = playable;
