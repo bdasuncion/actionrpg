@@ -23,7 +23,7 @@
 #define COLLISIONCHECKNEXT_DIST_MAX 32
 #define HEIGHT_CONVERSION 8
 
-extern const FuncCharacterInit chacterInit[];
+extern const FuncCharacterInit character_InitFunctionsCollection[];
 extern const FuncCharacterSet characterSet[];
 
 int commonDummy() {
@@ -1117,6 +1117,32 @@ const Position* commonFindCharTypePositionByDistance(const CharacterCollection *
 		}
 	}
 	return &NOT_FOUND_POSITION;
+}
+
+bool commonIsCharTypeInArea(const BoundingBox *area, const CharacterCollection *characterCollection, CHARACTERTYPE findType) {
+	int count, i;
+    BoundingBox characterBoundingBox;
+	for (i = 0; i < characterCollection->currentSize; ++i) {
+		if (characterCollection->characters[i]->type != findType) {
+			continue;
+		}
+		characterCollection->characters[i]->getBounds(characterCollection->characters[i], 
+			&count, &characterBoundingBox);
+		if (hasCollision(area, &characterBoundingBox)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void commonRegenerateCharTypeAt(const Position* position, CHARACTERTYPE type, 
+	CharacterCollection *characterCollection, ControlTypePool* controlPool) {
+	int i;
+	for (i = 0; i < characterCollection->currentSize; ++i) {
+		if (characterCollection->characters[i]->type == NONE) {
+			character_InitFunctionsCollection[type](characterCollection->characters[i], controlPool);
+		}
+	}
 }
 
 bool commonIsFoundPosition(const Position* position) {

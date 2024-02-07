@@ -29,7 +29,7 @@ extern const unsigned short testmap_mapEntry[2][2304];
 extern const unsigned int testmap_width;
 extern const unsigned int testmap_height;*/
 
-extern const FuncCharacterInit chacterInit[];
+extern const FuncCharacterInit character_InitFunctionsCollection[];
 //extern const FuncCharacterSet characterSet[];
 //end test const
 
@@ -92,7 +92,7 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 	//mprinter_printf("%d\n", characterCollection->currentSize);
 	for ( i = 0; i < mapInfo->characterCount; ++characterCollection->currentSize, ++characterCollection->displaySize,++i) {
 		CharacterAttr *character = characterCollection->charactersForDisplay[characterCollection->displaySize];
-	    chacterInit[mapInfo->characterInit[i].type](character, controlPool);
+	    character_InitFunctionsCollection[mapInfo->characterInit[i].type](character, controlPool);
 		commonCharacterSetPosition(character, mapInfo->characterInit[i].x, mapInfo->characterInit[i].y,
 		mapInfo->characterInit[i].z, EDown);
 		character->doAction(character, mapInfo, characterCollection, charActionCollection);
