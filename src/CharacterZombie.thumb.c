@@ -156,7 +156,8 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(ZOMBIE, ZOMBIE_PAL_CNT);
 	sprite_palette_copy32_ID(zombie_walk_side_pal, character->spriteDisplay.basePalleteId);
 	character->spriteDisplay.palleteUpdateStatus = EUpdate;
-	CharacterAIControl *charControl = mchar_getControlType(controlPool);
+	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
+	CharacterAIControl *charControl = mchar_findFreeControlType(controlPool);
 	charControl->type = EControlAiType;
 	charControl->countAction = 0;
 	charControl->currentAction = MAXACTIONS;

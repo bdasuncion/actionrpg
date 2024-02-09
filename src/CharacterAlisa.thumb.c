@@ -236,7 +236,8 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	alisa->checkMapCollision = &alisa_checkMapCollision;
 	alisa->checkActionCollision = &alisa_checkActionEventCollision;
 	//alisa->free = NULL;
-	CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
+	//CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
+	CharacterPlayerControl *charControl = mchar_findFreeControlType(controlPool);
 	charControl->type = EControlControlType;
 	charControl->currentStatus = EAlisaStatusNormal;
 	charControl->buttonB_PressInterval = 0;
