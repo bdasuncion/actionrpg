@@ -169,7 +169,7 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	
 	character->stats.maxLife = 10;
 	character->stats.currentLife = 3;
-	character->stats.currentStatus = EStatusNormal;
+	character->stats.currentStatus = EZombieStatusWalkAround;
 }
 
 void zombie_doAction(CharacterAttr* character,
@@ -330,7 +330,7 @@ void zombie_actionAttack(CharacterAttr* character,
 		collisionBox.endX = CONVERT_2POS(character->position.x) + zombie_strikeCollisionBox[character->direction].endX;
 		collisionBox.endY = CONVERT_2POS(character->position.y) + zombie_strikeCollisionBox[character->direction].endY;
 		collisionBox.endZ = CONVERT_2POS(character->position.z) + zombie_strikeCollisionBox[character->direction].endZ;
-		mchar_actione_add(charActionCollection, EActionAttack, attackVal, &collisionBox);
+		mchar_actione_add(charActionCollection, EActionAttack, attackVal, 1, &collisionBox);
 	}
 	
 	if (isLastFrame) {
