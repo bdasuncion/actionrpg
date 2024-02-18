@@ -236,7 +236,8 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	alisa->checkMapCollision = &alisa_checkMapCollision;
 	alisa->checkActionCollision = &alisa_checkActionEventCollision;
 	//alisa->free = NULL;
-	CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
+	//CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
+	CharacterPlayerControl *charControl = mchar_findFreeControlType(controlPool);
 	charControl->type = EControlControlType;
 	charControl->currentStatus = EAlisaStatusNormal;
 	charControl->buttonB_PressInterval = 0;
@@ -379,7 +380,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->direction].endX;
 		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->direction].endY;
 		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->direction].endZ;
-		mchar_actione_add(charActionCollection, EActionAttack, attackVal, &collisionBox);
+		mchar_actione_add(charActionCollection, EActionAttack, attackVal, 1, &collisionBox);
 	}
 	
 	if (alisa->spriteDisplay.currentAnimationFrame == SLASH_STARTSOUND_FRAME && alisa->spriteDisplay.numberOfFramesPassed == 0) {

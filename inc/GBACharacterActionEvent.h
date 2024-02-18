@@ -14,7 +14,8 @@ typedef struct CharacterActionEvent {
 	CharacterAttr *source;
 	//BoundingBox position;
 	s16 value:8;
-	s16 dummy1:8;
+	s16 dummy1:4;
+	s16 maxHit:4;
 	BoundingBox collisionBox;
 } ALIGN4 CharacterActionEvent;
 

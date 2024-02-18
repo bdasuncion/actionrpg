@@ -23,7 +23,7 @@
 #define COLLISIONCHECKNEXT_DIST_MAX 32
 #define HEIGHT_CONVERSION 8
 
-extern const FuncCharacterInit chacterInit[];
+extern const FuncCharacterInit character_InitFunctionsCollection[];
 extern const FuncCharacterSet characterSet[];
 
 int commonDummy() {
@@ -47,6 +47,7 @@ void commonRemoveCharacter(CharacterAttr *character) {
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.basePalleteId = 0;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	mchar_removeControl(character->free);
 }
 void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection);
 
@@ -1117,6 +1118,68 @@ const Position* commonFindCharTypePositionByDistance(const CharacterCollection *
 		}
 	}
 	return &NOT_FOUND_POSITION;
+}
+
+bool commonIsCharTypeInArea(const BoundingBox *area, const CharacterCollection *characterCollection, CHARACTERTYPE findType) {
+	int count, i;
+    BoundingBox characterBoundingBox;
+	for (i = 0; i < characterCollection->currentSize; ++i) {
+		if (characterCollection->characters[i]->type != findType) {
+			continue;
+		}
+		characterCollection->characters[i]->getBounds(characterCollection->characters[i], 
+			&count, &characterBoundingBox);
+		if (hasCollision(area, &characterBoundingBox)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void commonSetCharType(const Position* position, const MapInfo *mapInfo, 
+	CHARACTERTYPE type, CharacterCollection *characterCollection, 
+	CharacterActionCollection *charActionCollection, CharacterAttr *character,
+	ControlTypePool* controlPool) {
+	
+	character_InitFunctionsCollection[type](character, controlPool);
+	commonCharacterSetPosition(character, position->x, position->y, position->z, EDown);
+	character->doAction(character, mapInfo, characterCollection, charActionCollection);
+	character->checkMapCollision(character, mapInfo);
+}
+
+void createBoundingBoxAtPosition(const Position* position, BoundingBox *boundingBox) {
+	boundingBox->startX = position->x - 16;
+	boundingBox->endX = position->x + 16;
+	boundingBox->startY = position->y - 16;
+	boundingBox->endY = position->y + 16;
+	boundingBox->startZ = position->z - 16;
+	boundingBox->endZ = position->z + 32;
+}
+
+void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const Position* position, const MapInfo *mapInfo, CHARACTERTYPE type, 
+	CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection, 
+	ControlTypePool* controlPool) {
+	BoundingBox charBoundingBox;
+	int countBox, i;
+	for (i = 0; i < characterCollection->currentSize; ++i) {
+		if (characterCollection->characters[i]->type == NONE) {
+			return;
+		}
+		countBox = 0;
+		characterCollection->characters[i]->getBounds(characterCollection->characters[i], 
+			&countBox, &charBoundingBox);
+		if (hasCollision(boundingBoxCheckArea, &charBoundingBox)) {
+			return;
+		}
+	}
+	CharacterAttr *character = characterCollection->charactersForDisplay[characterCollection->displaySize];
+	if (character->type != NONE) {
+		return;
+	}
+	commonSetCharType(position, mapInfo, type, characterCollection, charActionCollection, character, controlPool);
+	characterCollection->characters[characterCollection->currentSize] = character;
+	++characterCollection->currentSize;
+	++characterCollection->displaySize;
 }
 
 bool commonIsFoundPosition(const Position* position) {

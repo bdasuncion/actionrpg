@@ -94,6 +94,10 @@ void commonReverseDisplayShadow();
 int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf);
 void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo);
 bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void commonSetCharType(const Position* position, const MapInfo *mapInfo, 
+	CHARACTERTYPE type, CharacterCollection *characterCollection, 
+	CharacterActionCollection *charActionCollection, CharacterAttr *character,
+	ControlTypePool* controlPool);
 inline EDirections commonReverseDirection(EDirections direction);
 int commonDummy();
 #endif

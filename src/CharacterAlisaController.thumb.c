@@ -406,7 +406,8 @@ void alisa_jumpForwardController(CharacterAttr* character) {
 
 void alisa_jumpController(CharacterAttr* character) {
    EDirections direction = KEYPRESS_DIRECTION;
-   if (direction != EUnknown) {
+   //if (direction != EUnknown) {
+   if (direction == character->direction) {
 		character->controller = &alisa_jumpForwardController;
 		character->controller(character, NULL, NULL);
    } else {

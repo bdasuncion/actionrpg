@@ -287,10 +287,29 @@ void mchar_resetControlType(ControlTypePool *controlPool) {
 	controlPool->currentCount = 0;
 }
 
+void mchar_resetControlTypeAndSetCount(ControlTypePool *controlPool, int setCount) {
+    mchar_resetControlType(controlPool);
+	controlPool->currentCount = setCount;
+}
+
 void mchar_initControlType(ControlTypePool *controlPool) {
     controlPool->count = 32;
 	controlPool->collection = malloc(sizeof(ControlTypeUnion)*controlPool->count);
 	mchar_resetControlType(controlPool);
+}
+
+void mchar_removeControl(CharacterBaseControl *control) {
+	control->type = EControlNone;
+}
+
+ControlTypeUnion* mchar_findFreeControlType(ControlTypePool *controlPool) {
+    int i;
+	for (i = 0; i < controlPool->currentCount; ++i) {
+		if (controlPool->collection[i].baseControl.type == EControlNone) {
+			return &controlPool->collection[i];
+		}
+	}
+	return NULL;
 }
 
 ControlTypeUnion* mchar_getControlType(ControlTypePool *controlPool) {
