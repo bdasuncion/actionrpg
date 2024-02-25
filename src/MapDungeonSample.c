@@ -280,7 +280,7 @@ const TileSet *tileset_mapdungeonsample[] = { &tileset_tile_dungeonsample_floor1
 const u16 *pallette_mapdungeonsample[] = {  pallette_tile_dungeonsample_floor1, pallette_tile_dungeonsample_wallside1, pallette_tile_dungeonsample_wallseethrough, pallette_tile_dungeonsample_walledge, };
 const u16 *mapentryset_mapdungeonsample[] = { mapentry_mapdungeonsample[0], mapentry_mapdungeonsample[1], };
 const CharacterInit actors_mapdungeonsample[] = {
-	{ 296, 376, 33, ZOMBIE }, { 296, 355, 33, ZOMBIE }, 
+	{ 296, 376, 33, ZOMBIE }
 };
 extern const MapInfo mapdungeonsample2;
 
@@ -305,7 +305,7 @@ void mapDungeonSampleFunction(void *screenAttribute, CharacterCollection *charac
 	}
 }
 
-const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 2, 2, 0, NULL , mapentryset_mapdungeonsample, tileset_mapdungeonsample, pallette_mapdungeonsample,
+const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 1, 2, 0, NULL , mapentryset_mapdungeonsample, tileset_mapdungeonsample, pallette_mapdungeonsample,
 transfer_mapdungeonsample, heightMap_mapdungeonsample, actors_mapdungeonsample, spritemask_mapdungeonsample, spritemaskimage_mapdungeonsample, &mapDungeonSampleFunction, NULL, NULL, NULL, {0,0,0,0,0} };
 
 const EventTransfer startAt_dungeonSample = { 400, 400, 72, 480, 81, &mapdungeonsample, 16, 48, 0, EUp};
