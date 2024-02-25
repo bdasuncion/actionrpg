@@ -161,10 +161,12 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->type = EControlAiType;
 	charControl->countAction = 0;
 	charControl->currentAction = MAXACTIONS;
+	character->nextAction = EZombieWalk;
 	charControl->rightBlocked = false;
 	charControl->leftBlocked = false;
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
+	charControl->currentStatus = EZombieStatusWalkAround;
 	character->free = charControl;
 	
 	character->stats.maxLife = 10;

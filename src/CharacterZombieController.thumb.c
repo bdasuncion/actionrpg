@@ -61,7 +61,6 @@ void zombie_walkAroundController(CharacterAttr* character) {
 	
 	if (charControl->currentStatus == EZombieStatusStunned) {
 		charControl->currentAction = MAXACTIONS;
-		mprinter_printf("STUNNED!\n");
 		character->controller = &zombie_isStunnedController;
 		zombie_isStunnedController(character);
 		return;
