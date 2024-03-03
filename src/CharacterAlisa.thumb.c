@@ -678,8 +678,8 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 	boundingBox->isMovable = false;*/
 }
 
-const int alisa_mapCollisionXAdjust[] = {3, -3, 3, -3};
-const int alisa_mapCollisionYAdjust[] = {3, 3, -3, -3};
+const int alisa_mapCollisionXAdjust[] = { (ALISA_LENGTH >> 1), -(ALISA_LENGTH >> 1), (ALISA_LENGTH >> 1), -(ALISA_LENGTH >> 1)};
+const int alisa_mapCollisionYAdjust[] = {(ALISA_WIDTH >> 1), (ALISA_WIDTH >> 1), -(ALISA_WIDTH >> 1), -(ALISA_WIDTH >> 1)};
 
 //int xAdjust[] = {0, 0, 0, 0};
 //int yAdjust[] = {0, 0, 0, 0};
@@ -696,15 +696,14 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 		commonGetBoundsFromMap(CONVERT_2POS(alisa->position.x) + alisa_mapCollisionXAdjust[i], 
 			CONVERT_2POS(alisa->position.y) + alisa_mapCollisionYAdjust[i], mapInfo, &mapBoundingBox);
 		int dist = common_fallingDown(alisa, &characterBoundingBox, &mapBoundingBox);
-		if (dist < fallingDown) {
+		if (dist < fallingDown && dist >= 0) {
 			fallingDown = dist;
 		}
 	}
 	
 	if (fallingDown > 0 ) {
-		//mprinter_printf("MAP FALLING %d\n", fallingDown);
 		alisa->nextAction = EAlisaFallingDown;
-		commonFallingDownCollision(alisa, mapInfo);
+		//commonFallingDownCollision(alisa, mapInfo);
 	} else if ((alisa->nextAction == EAlisaFallingDown ||  
 		alisa->nextAction == EAlisaFallingDownForward) && fallingDown <= 0) {
 		//mprinter_printf("MAP STAND\n");
@@ -734,7 +733,7 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 	
 	if (alisa->distanceFromGround != 0) {
-		fallingDistance = common_fallingDownOnChar(alisa, &alisaBoundingBox, &otherCharBoundingBox);
+		fallingDistance = common_fallingDownOnBoundingBox(alisa, &alisaBoundingBox, &otherCharBoundingBox);
 		if (fallingDistance != 0) {
 			alisa->nextAction = EAlisaFallingDown;
 		} else if ((alisa->nextAction == EAlisaFallingDown || 

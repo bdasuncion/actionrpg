@@ -606,7 +606,7 @@ int common_fallingDown(CharacterAttr* character,
 	return -zoffset1;
 }
 
-int common_fallingDownOnChar(CharacterAttr* character, 
+int common_fallingDownOnBoundingBox(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didOverlap = isOverlap(charBoundingBox, otherCharBoundingBox);
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
