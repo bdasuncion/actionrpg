@@ -28,6 +28,22 @@ typedef enum StatusType {
 	EStatusNoActionCollision
 } StatusType;
 
+typedef enum AttackType {
+	EAttackNone = -1,
+    EAttackHorizontalRight,
+	EAttackHorizontalLeft
+} AttackType;
+
+typedef struct AttackEffect {
+	Position pos;
+	AttackType type;
+}ALIGN4 AttackEffect;
+
+typedef struct AttackEffectCollection {
+	u32 count:6;
+	AttackEffect collection[32];
+}ALIGN4 AttackEffectCollection;
+
 typedef struct CharBoundingBox {
 	Position upperLeftPt;
 	u16 width; //y

@@ -48,7 +48,7 @@ inline void waitForVBlank() {
 
 void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
  OAMCollection *oamCollection, ControlTypePool *controlPool, ScreenAttr *screenAttribute, 
-    CharacterActionCollection *charActionCollection, Track *track) {
+    CharacterActionCollection *charActionCollection, Track *track, AttackEffectCollection *attackEffects) {
 	
 	//mapInfo->transferTo =  &mapInfo->tranfers[0];
 	//mapInfo->mapFunction = &fadeToBlack;
@@ -108,7 +108,10 @@ int main() {
 	MapInfo mapInfo;
 	ScreenAttr screenAttribute;
 	CharacterActionCollection charActionCollection;
+	AttackEffectCollection *attackEffects;
 	CharacterAttr *alisa;
+	
+	attackEffects = malloc(sizeof(AttackEffectCollection));
 	Track track = {&musickankandara_end,0,0};
 	sprite_vram_init_sections();
 	sprite_palette_init();
@@ -150,7 +153,7 @@ int main() {
 
 	mprinter_init();
 	gameloop(&mapInfo, &characterCollection, &oamCollection, &controlPool, 
-	   &screenAttribute, &charActionCollection, &track);
+	   &screenAttribute, &charActionCollection, attackEffects, &track);
 	
 	return 0;
 }
