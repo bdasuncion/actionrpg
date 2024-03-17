@@ -63,7 +63,7 @@ void werewolf_goAroundObstacleController(CharacterAttr* character) {
 	int nextScreenFrame, nextAnimationFrame;
 	bool isLastFrame = false;
    
-   commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+   commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (charControl->currentAction >= MAXACTIONS || charControl->currentAction >= charControl->countAction) {
 		charControl->currentAction = 0;
 		charControl->countAction = 1;

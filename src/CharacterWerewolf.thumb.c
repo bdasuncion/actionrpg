@@ -117,7 +117,8 @@ void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo
 void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 
-void werewolf_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents);
+void werewolf_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents,
+	AttackEffectCollection *attackEffects);
 
 CharFuncAction werewolf_actions[] = {
 	NULL,
@@ -192,7 +193,7 @@ void werewolf_actionWalk(CharacterAttr* character,
 	
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(character) == EUpdate) {
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -261,7 +262,7 @@ void werewolf_actionFindTarget(CharacterAttr* character,
 	
 	character->delta.x = 0;
 	character->delta.y = 0;
-	if (commonUpdateAnimation(character) == EUpdate) {
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -387,7 +388,8 @@ void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBel
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
 
-void werewolf_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents) {
+void werewolf_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents,
+	AttackEffectCollection *attackEffects) {
     int i, j, count;
 	bool isHit;
 	BoundingBox charBoundingBox;

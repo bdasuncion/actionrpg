@@ -176,7 +176,8 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo *mapInfo);
 void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 
-void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents);
+void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents, 
+	AttackEffectCollection *attackEffects);
 
 void transferToBoundingBox(const EventTransfer *transfer, BoundingBox *boundingBox);
 
@@ -317,7 +318,7 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo) {
     bool isLastFrame = false;
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -359,7 +360,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -380,7 +381,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->direction].endX;
 		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->direction].endY;
 		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->direction].endZ;
-		mchar_actione_add(charActionCollection, EActionAttack, attackVal, 1, &collisionBox);
+		mchar_actione_add(charActionCollection, EAttackHorizontalLeft, attackVal, 1, &collisionBox);
 	}
 	
 	if (alisa->spriteDisplay.currentAnimationFrame == SLASH_STARTSOUND_FRAME && alisa->spriteDisplay.numberOfFramesPassed == 0) {
@@ -396,7 +397,7 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo) {
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -417,7 +418,7 @@ void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo) {
     bool isLastFrame = false;
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -450,7 +451,7 @@ void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo) {
     bool isLastFrame = false;
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -484,7 +485,7 @@ void alisa_actionJumpUp(CharacterAttr* alisa, const MapInfo *mapInfo,
 
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -514,7 +515,7 @@ void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -553,7 +554,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -581,7 +582,7 @@ void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo
 
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -617,7 +618,7 @@ void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo,
 	
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	
-	if (commonUpdateAnimation(alisa) == EUpdate) {
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -750,7 +751,8 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	    (alisa, &alisaBoundingBox, &otherCharBoundingBox);
 }
 
-void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents) {
+void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents,
+	AttackEffectCollection *attackEffects) {
     int i, j, count;
 	BoundingBox charBoundingBox;
 	bool isHit = false;

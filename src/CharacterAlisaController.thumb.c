@@ -181,7 +181,7 @@ void alisa_normalSlashController(CharacterAttr* character) {
 		return;
 	}
 	character->nextAction = EAlisaNormalSwordSlash;
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
 		character->controller = &alisa_controller;
 		character->controller(character, NULL, NULL);
@@ -203,7 +203,7 @@ void alisa_strongSlashController(CharacterAttr* character) {
 		return;
 	}
 	character->nextAction = EAlisaStrongSwordSlash;
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
 		character->controller = &alisa_controller;
 		character->controller(character, NULL, NULL);
@@ -265,7 +265,7 @@ void alisa_prepareDashController(CharacterAttr* character) {
 	
 	character->nextAction = EAlisaPrepareDash;
 	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	if (direction != EUnknown) {
 		character->nextDirection = direction;
@@ -307,7 +307,7 @@ void alisa_dashForwardController(CharacterAttr* character) {
 	
 	character->nextAction = EAlisaDashForward;
 	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
 	if (isLastFrame) {
 		character->controller = &alisa_controller;
@@ -330,7 +330,7 @@ void alisa_dashBackwardController(CharacterAttr* character) {
 	
 	character->nextAction = EAlisaDashBackward;
 	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
 	//mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
 	if (isLastFrame) {
@@ -370,7 +370,7 @@ void alisa_jumpUpController(CharacterAttr* character) {
 	
 	character->nextAction = EAlisaJumpUp;
 
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
 		//mprinter_printf("")
 		character->nextDirection = character->direction;
@@ -395,7 +395,7 @@ void alisa_jumpForwardController(CharacterAttr* character) {
 	
 	character->nextAction = EAlisaJumpForward;
 	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
 		character->nextDirection = character->direction;
 		character->nextAction = EAlisaFallingDownForward;
@@ -461,7 +461,7 @@ void alisa_stunnedController(CharacterAttr* character) {
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	
 	//mprinter_printf("ACTIONS %d %d\n", character->nextAction, character->action);
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	//mprinter_printf("SCREEN %d %d\n", nextScreenFrame, MAX_STUN_ANIMATION);
 	if (nextScreenFrame > MAX_STUN_ANIMATION) {
