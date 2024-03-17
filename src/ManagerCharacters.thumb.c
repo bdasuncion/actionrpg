@@ -207,8 +207,8 @@ inline void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) 
 	}
 }
 
-void mchar_resolveAction(CharacterCollection *charCollection,
-	const MapInfo *mapInfo, CharacterActionCollection *charActionCollection) {
+void mchar_resolveAction(CharacterCollection *charCollection, const MapInfo *mapInfo, 
+	CharacterActionCollection *charActionCollection, AttackEffectCollection *attackEffects) {
 
 	//TODO put priority on actions
 	if (charCollection) {
@@ -233,7 +233,8 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 		mchar_resolveCharacterCollision(charCollection);
 		
 		for (i = 0; i < charCollection->currentSize; ++i) {
-			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], charActionCollection);
+			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], 
+				charActionCollection, attackEffects);
 		}
 		
 		mchar_arrangeCharactersForDisplay(charCollection);

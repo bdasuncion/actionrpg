@@ -3,6 +3,7 @@
 
 #include "GBATypes.h"
 #include "GBACharacterType.h"
+#include "GBAVideo.h"
 
 void sprite_vram_copy32_ID(const void* src, u32 count, u32 id);
 u32 sprite_getID(u32 width, u32 height);
@@ -22,4 +23,13 @@ u16* sprite_get_palette_ID(u32 id);
 u32 sprite_vram_findIdByType(CharacterSizeType type);
 #define SPRITEMASK_BLOCKSTART 384
 #define SPRITEMASK_IDSTART TILECOUNTPERBLOCK + SPRITEMASK_BLOCKSTART
+#define SHARED_PALETTEID 15
+typedef enum EVramMapId{
+	EVramMapIdChar = 0,
+	EVramMapIdShadow = TILECOUNTPERBLOCK + SPRITEMASK_BLOCKSTART - 4,
+	EVramMapIdMaskStandard = EVramMapIdShadow + 4,
+	EVramMapIdMaskCustom = EVramMapIdMaskStandard + 4,
+	EVramMapIdAttackEffects = EVramMapIdMaskCustom + 24
+}EVramMapId;
+
 #endif

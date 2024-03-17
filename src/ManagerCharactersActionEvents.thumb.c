@@ -29,7 +29,7 @@ void mchar_actione_reinit(CharacterActionCollection *charActionCollection) {
 }
 
 /*void mchar_actione_add(CharacterActionCollection *charActionCollection, 
-    CharacterActionTypes type, s16 value, BoundingBox *position) {
+    CharacterActionType type, s16 value, BoundingBox *position) {
 	CharacterActionEvent *charAction = &charActionCollection->currentActions[charActionCollection->count];
 	charAction->type = type;
 	charAction->value = value;
@@ -39,7 +39,7 @@ void mchar_actione_reinit(CharacterActionCollection *charActionCollection) {
 }*/
 
 /*void mchar_actione_add(CharacterActionCollection *charActionCollection, 
-    CharacterActionTypes type, s16 value, int countPoints, Position *collisionPoints) {
+    CharacterActionType type, s16 value, int countPoints, Position *collisionPoints) {
 	int i;
 	CharacterActionEvent *charAction = &charActionCollection->currentActions[charActionCollection->count];
 	charAction->type = type;
@@ -54,7 +54,7 @@ void mchar_actione_reinit(CharacterActionCollection *charActionCollection) {
 }*/
 
 void mchar_actione_add(CharacterActionCollection *charActionCollection, 
-    CharacterActionTypes type, s16 value, s16 maxHit, BoundingBox *collisionBox) {
+    CharacterActionType type, s16 value, s16 maxHit, BoundingBox *collisionBox) {
 	int i;
 	CharacterActionEvent *charAction = &charActionCollection->currentActions[charActionCollection->count];
 	charAction->type = type;
