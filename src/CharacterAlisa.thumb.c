@@ -102,6 +102,17 @@ const s32 alisa_jumpOffsetY[EDirectionsCount][1] = {
 	{1*MOVE_DIAG}
 };
 
+const CharacterActionType alisa_NormalAttack[EDirectionsCount] = {
+	EAttackHorizontalRight,
+	EAttackHorizontalRight,
+	EAttackHorizontalRight,
+	EAttackHorizontalLeft,
+	EAttackHorizontalLeft,
+	EAttackHorizontalLeft,
+	EAttackHorizontalLeft,
+	EAttackHorizontalRight
+};
+
 #define ALISA_SCRCNVRTWIDTH 16
 #define ALISA_SCRCNVRTHEIGHT 26
 
@@ -381,7 +392,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->direction].endX;
 		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->direction].endY;
 		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->direction].endZ;
-		mchar_actione_add(charActionCollection, EAttackHorizontalLeft, attackVal, 1, &collisionBox);
+		mchar_actione_add(charActionCollection, alisa_NormalAttack[alisa->direction], attackVal, 1, &collisionBox);
 	}
 	
 	if (alisa->spriteDisplay.currentAnimationFrame == SLASH_STARTSOUND_FRAME && alisa->spriteDisplay.numberOfFramesPassed == 0) {
