@@ -273,7 +273,7 @@ UpdateStatus commonInitializeAction(CharacterAttr* character) {
 	return ENoUpdate;
 }
 
-inline UpdateStatus updateAnimation(SpriteDisplay *spriteDisplay) {
+UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay) {
 	int frameCount = spriteDisplay->spriteSet->numberOfAnimation;
 	
 	++spriteDisplay->numberOfFramesPassed;
@@ -294,7 +294,15 @@ UpdateStatus commonUpdateCharacterAnimation(CharacterAttr* character) {
 	    return EUpdate;
 	}
 	
-	return updateAnimation(&character->spriteDisplay);
+	return commonUpdateAnimation(&character->spriteDisplay);
+}
+
+bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay) {
+	int animationframeCount = spriteDisplay->spriteSet->numberOfAnimation;
+	int displayCurrentAnimationForNumberOfFrames = spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].displayForNumFrames;
+	return (spriteDisplay->currentAnimationFrame + 1) >= animationframeCount && 
+		(spriteDisplay->numberOfFramesPassed + 1) >= displayCurrentAnimationForNumberOfFrames;
+	
 }
 
 inline void getNextFrame(const SpriteDisplay* spriteDisplay, int *nextScreenFrame, 
@@ -947,6 +955,27 @@ void commonFallingDownDown(CharacterAttr *character, const BoundingBox *charBoun
 const CharFuncFallingCollision fallingDownReaction[] = {
 	&commonFallingDownRight, &commonFallingDownLeft, &commonFallingDownUp, &commonFallingDownDown
 };
+
+int commonCharacterSetToOAMBuffer(CharacterCollection *charCollection,
+	OAMCollection *oamCollection,
+	int currentOAMIdx,
+	const Position *scr_pos,
+	const ScreenDimension *scr_dim) {
+	if (charCollection) {
+		int charIdx, oamIdx, idxRemoveOam;
+		OBJ_ATTR *oamBuffer = oamCollection->data;
+		
+		for (charIdx = 0, oamIdx = currentOAMIdx; charIdx < charCollection->displaySize; ++charIdx) {
+			oamIdx += charCollection->
+				charactersForDisplay[charIdx]->setPosition(
+					charCollection->charactersForDisplay[charIdx], 
+					&oamBuffer[oamIdx], scr_pos, scr_dim);
+		}
+		return oamIdx;
+	}
+
+	return 0;
+}
 
 void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo) {
 	BoundingBox characterBoundingBox, mapBoundingBox;

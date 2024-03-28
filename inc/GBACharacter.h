@@ -97,8 +97,8 @@ typedef struct AttackEffect {
 }ALIGN4 AttackEffect;
 
 typedef struct AttackEffectCollection {
-	u32 count:6;
-	AttackEffect collection[32];
+	u32 count:4;
+	AttackEffect **collection;
 }ALIGN4 AttackEffectCollection;
 
 typedef struct MovementControl {
