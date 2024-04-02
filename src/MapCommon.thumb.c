@@ -112,11 +112,11 @@ void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterC
 	
 	if (blendVal <= 0) {
 		mapInfo->mapFunction = ((MapInfo*)mapInfo->transferTo->mapInfo)->mapFunction;
-		mapInfo->screenEffect.processScreenEffect = &mapCommon_effectSpriteMasking;
+		mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 	    mapInfo->transferTo = NULL;
 		blendBlack(0);
+		mapCommon_effectSpriteMasking(screenAttribute, characterCollection, mapInfo);
 	}
-	//blendBlack(blendVal);
 }
 
 void mapCommon_effectSpriteMasking(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
@@ -124,7 +124,6 @@ void mapCommon_effectSpriteMasking(void *screenAttribute, void *characterCollect
 }
 
 void mapCommon_defaultEffect(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
-	//setSpriteMasking();
 }
 
 void mapCommon_returnToNormal(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
