@@ -1,6 +1,7 @@
 #include "GBATypes.h"
 #include "GBAObject.h"
 #include "GBACharacter.h"
+#include "ManagerVram.h"
 
 extern const unsigned int shadow_image0[];
 
@@ -13,7 +14,7 @@ const SpriteLayerSet shadow_layerSet[] = {
 
 const SpriteSet shadow = {shadow_layerSet,1};
 
-const int shadow_palletteId = 15;
-const int shadow_imageId = 512;
+//const int shadow_palletteId = SHARED_PALETTEID;
+//const int shadow_imageId = EVramMapIdShadow;
 
-const SpriteDisplay common_shadowDisplay = { &shadow, shadow_imageId, EUpdate, shadow_palletteId, EUpdate,0,0,1,0,0,0 };
+const SpriteDisplay common_shadowDisplay = { &shadow, EVramMapIdShadow, EUpdate, SHARED_PALETTEID, EUpdate,0,0,1,0,0,0 };

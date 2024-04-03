@@ -122,9 +122,9 @@ void spritemask_init(CharacterAttr* spritemask, SpriteMaskInit *maskInit)
 	spritemask->checkMapCollision = &commonDummy;
 	spritemask->checkActionCollision = &commonDummy;
 		
-	spritemask->spriteDisplay.baseImageId = SPRITEMASK_IDSTART + maskInit->maskId;
+	spritemask->spriteDisplay.baseImageId = EVramMapIdMaskStandard;
 	spritemask->spriteDisplay.imageUpdateStatus = EUpdate;
-	spritemask->spriteDisplay.basePalleteId = 15;
+	spritemask->spriteDisplay.basePalleteId = SHARED_PALETTEID;
 }
 
 int spritemask_setPosition(CharacterAttr* character,

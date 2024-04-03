@@ -276,9 +276,14 @@ void mprinter_convertIntToString(char *converted, int num) {
 
 void mprinter_number(int num)
 {
-	char numbers[20];
+	char numbers[22], startIdx = 0;;
 	//sprintf(numbers,"%d",num);
-	mprinter_convertIntToString(numbers, num);
+	if (num < 0) {
+		num *= -1;
+		numbers[0] = '-';
+		startIdx = 1;
+	}
+	mprinter_convertIntToString(&numbers[startIdx], num);
 	mprinter_string(numbers);	
 }
 

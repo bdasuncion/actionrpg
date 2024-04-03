@@ -131,7 +131,8 @@ int zombie_setPosition(CharacterAttr* character, OBJ_ATTR *oamBuf,
 void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo);
 void zombie_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
-void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents);
+void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents,
+	AttackEffectCollection *attackEffects);
 	
 void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 
@@ -196,7 +197,7 @@ void zombie_actionWalk(CharacterAttr* character,
 	
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(character) == EUpdate) {
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -252,7 +253,7 @@ void zombie_actionChaseTarget(CharacterAttr* character,
 	
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	if (commonUpdateAnimation(character) == EUpdate) {
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -310,7 +311,7 @@ void zombie_actionAttack(CharacterAttr* character,
 	
 	commonGravityEffect(character, common_zOffsetDown);
 	
-	if (commonUpdateAnimation(character) == EUpdate) {
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -320,7 +321,7 @@ void zombie_actionAttack(CharacterAttr* character,
 	
 	character->spriteDisplay.spriteSet = zombieAttack[character->direction];
 	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	if (character->spriteDisplay.currentAnimationFrame >= ZOMBIE_ATTACK_FRAME_START && 
 		character->spriteDisplay.currentAnimationFrame >= ZOMBIE_ATTACK_FRAME_END) {
@@ -332,7 +333,7 @@ void zombie_actionAttack(CharacterAttr* character,
 		collisionBox.endX = CONVERT_2POS(character->position.x) + zombie_strikeCollisionBox[character->direction].endX;
 		collisionBox.endY = CONVERT_2POS(character->position.y) + zombie_strikeCollisionBox[character->direction].endY;
 		collisionBox.endZ = CONVERT_2POS(character->position.z) + zombie_strikeCollisionBox[character->direction].endZ;
-		mchar_actione_add(charActionCollection, EActionAttack, attackVal, 1, &collisionBox);
+		mchar_actione_add(charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
 	}
 	
 	if (isLastFrame) {
@@ -361,7 +362,7 @@ void zombie_actionStunned(CharacterAttr* character,
 	
 	commonGravityEffect(character, common_zOffsetDown);
 	
-	if (commonUpdateAnimation(character) == EUpdate) {
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
@@ -482,7 +483,8 @@ void zombie_checkCollision(const CharacterAttr* character, bool isOtherCharBelow
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
 
-void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents) {
+void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents,
+	AttackEffectCollection *attackEffects) {
     int i, j, count;
 	bool isHit;
 	BoundingBox charBoundingBox;
@@ -503,6 +505,10 @@ void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionC
 			character->stats.currentLife -= 1;
 			//character->stats.currentStatus = EStatusNoActionCollision;
 			charControl->currentStatus = EZombieStatusStunned;
+			//add hit animation
+			Position pos;
+			charAttackEffect_getPosition(&charActionEvent->collisionBox, &charBoundingBox, &pos);
+			charAttackEffect_Add(&pos, charActionEvent->type, attackEffects);
 			if (character->stats.currentLife <= 0) {
 				commonRemoveCharacter(character);
 			}

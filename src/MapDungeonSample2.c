@@ -5,7 +5,7 @@ extern const unsigned short pallette_tile_dungeonsample_floor1[16];
 extern const unsigned short pallette_tile_dungeonsample_walledge[16];
 extern const unsigned short pallette_tile_dungeonsample_wallside1[16];
 extern const unsigned int tile_tile_dungeonsample_floor1[192];
-extern const unsigned int tile_tile_dungeonsample_walledge[128];
+extern const unsigned int tile_tile_dungeonsample_walledge[160];
 extern const unsigned int tile_tile_dungeonsample_wallside1[160];
 const unsigned short mapentry_mapdungeonsample2[2][9216] = {
 	{

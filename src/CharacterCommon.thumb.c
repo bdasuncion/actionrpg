@@ -273,29 +273,58 @@ UpdateStatus commonInitializeAction(CharacterAttr* character) {
 	return ENoUpdate;
 }
 
-UpdateStatus commonUpdateAnimation(CharacterAttr* character) {
-	int frameCount = character->spriteDisplay.spriteSet->numberOfAnimation;
+UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay) {
+	int frameCount = spriteDisplay->spriteSet->numberOfAnimation;
 	
-	if(commonInitializeAction(character) != ENoUpdate) {
-	    return EUpdate;
-	}
-	
-	++character->spriteDisplay.numberOfFramesPassed;
-	if (character->spriteDisplay.numberOfFramesPassed >= 
-	    character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].displayForNumFrames) {
-		character->spriteDisplay.numberOfFramesPassed = 0;
-		++character->spriteDisplay.currentAnimationFrame;
-		if (character->spriteDisplay.currentAnimationFrame >= frameCount) {
-			character->spriteDisplay.currentAnimationFrame = 0;
+	++spriteDisplay->numberOfFramesPassed;
+	if (spriteDisplay->numberOfFramesPassed >= 
+	    spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].displayForNumFrames) {
+		spriteDisplay->numberOfFramesPassed = 0;
+		++spriteDisplay->currentAnimationFrame;
+		if (spriteDisplay->currentAnimationFrame >= frameCount) {
+			spriteDisplay->currentAnimationFrame = 0;
 		}
 		return EUpdate;
 	}
 	return ENoUpdate;
 }
 
-void commonGetNextFrame(const CharacterAttr* character, int *nextScreenFrame, 
+UpdateStatus commonUpdateCharacterAnimation(CharacterAttr* character) {
+	if(commonInitializeAction(character) != ENoUpdate) {
+	    return EUpdate;
+	}
+	
+	return commonUpdateAnimation(&character->spriteDisplay);
+}
+
+bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay) {
+	int animationframeCount = spriteDisplay->spriteSet->numberOfAnimation;
+	int displayCurrentAnimationForNumberOfFrames = spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].displayForNumFrames;
+	return (spriteDisplay->currentAnimationFrame + 1) >= animationframeCount && 
+		(spriteDisplay->numberOfFramesPassed + 1) >= displayCurrentAnimationForNumberOfFrames;
+	
+}
+
+inline void getNextFrame(const SpriteDisplay* spriteDisplay, int *nextScreenFrame, 
     int *nextAnimationFrame, bool *isLastFrame) {
-	int frameCount = character->spriteDisplay.spriteSet->numberOfAnimation;
+	int frameCount = spriteDisplay->spriteSet->numberOfAnimation;
+	
+	*isLastFrame = false;
+	*nextAnimationFrame = spriteDisplay->currentAnimationFrame;
+	*nextScreenFrame = spriteDisplay->numberOfFramesPassed + 1;
+	if (*nextScreenFrame >= 
+	    spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].displayForNumFrames) {
+		*nextScreenFrame = 0;
+		*nextAnimationFrame += 1;
+		if (*nextAnimationFrame >= frameCount) {
+		    *isLastFrame = true;
+			*nextAnimationFrame = 0;
+		}
+	}
+}
+
+void commonGetCharacterNextFrame(const CharacterAttr* character, int *nextScreenFrame, 
+    int *nextAnimationFrame, bool *isLastFrame) {	
 	
 	if (character->nextDirection != character->direction || character->nextAction != character->action) {
 	    *nextScreenFrame = 0;
@@ -304,18 +333,7 @@ void commonGetNextFrame(const CharacterAttr* character, int *nextScreenFrame,
 		return;
 	}
 	
-	*isLastFrame = false;
-	*nextAnimationFrame = character->spriteDisplay.currentAnimationFrame;
-	*nextScreenFrame = character->spriteDisplay.numberOfFramesPassed + 1;
-	if (*nextScreenFrame >= 
-	    character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].displayForNumFrames) {
-		*nextScreenFrame = 0;
-		*nextAnimationFrame += 1;
-		if (*nextAnimationFrame >= frameCount) {
-		    *isLastFrame = true;
-			*nextAnimationFrame = 0;
-		}
-	}
+	getNextFrame(&character->spriteDisplay, nextScreenFrame, nextAnimationFrame, isLastFrame);
 }
 
 bool commonIsInScreen(int charStartX, int charEndX, int charStartY, int charEndY, 
@@ -606,7 +624,7 @@ int common_fallingDown(CharacterAttr* character,
 	return -zoffset1;
 }
 
-int common_fallingDownOnChar(CharacterAttr* character, 
+int common_fallingDownOnBoundingBox(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didOverlap = isOverlap(charBoundingBox, otherCharBoundingBox);
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
@@ -938,6 +956,27 @@ const CharFuncFallingCollision fallingDownReaction[] = {
 	&commonFallingDownRight, &commonFallingDownLeft, &commonFallingDownUp, &commonFallingDownDown
 };
 
+int commonCharacterSetToOAMBuffer(CharacterCollection *charCollection,
+	OAMCollection *oamCollection,
+	int currentOAMIdx,
+	const Position *scr_pos,
+	const ScreenDimension *scr_dim) {
+	if (charCollection) {
+		int charIdx, oamIdx, idxRemoveOam;
+		OBJ_ATTR *oamBuffer = oamCollection->data;
+		
+		for (charIdx = 0, oamIdx = currentOAMIdx; charIdx < charCollection->displaySize; ++charIdx) {
+			oamIdx += charCollection->
+				charactersForDisplay[charIdx]->setPosition(
+					charCollection->charactersForDisplay[charIdx], 
+					&oamBuffer[oamIdx], scr_pos, scr_dim);
+		}
+		return oamIdx;
+	}
+
+	return 0;
+}
+
 void commonFallingDownCollision(CharacterAttr *character, MapInfo *mapInfo) {
 	BoundingBox characterBoundingBox, mapBoundingBox;
 	int count, i;
@@ -1000,7 +1039,7 @@ void commonDoActionOneCycle(CharacterAttr *character, const MapInfo *mapInfo,
 	character->nextDirection = actionControl.direction;
 	character->nextAction = actionControl.action;
 	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	if (isLastFrame) {
 	    ++eventControl->currentAction;
@@ -1027,7 +1066,7 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, Ch
 	character->nextDirection = actionControl.direction;
 	character->nextAction = actionControl.action;
 	
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	if (isLastFrame) {
 	    character->controller = eventControl->returnControl;
@@ -1073,7 +1112,7 @@ bool commonDoNextAction(CharacterAttr* character) {
 	bool isLastFrame = false;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 		
-	commonGetNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 
 	return (charControl->actions[charControl->currentAction].doForNumFrames == DOACTIONUNTILEND & isLastFrame) ||
 		(charControl->actions[charControl->currentAction].doForNumFrames != DOACTIONUNTILEND & 

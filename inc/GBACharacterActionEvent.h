@@ -3,14 +3,8 @@
 #include "GBAObject.h"
 #include "GBACharacter.h"
 
-typedef enum CharacterActionTypes {
-    EActionNone,
-	EActionAttack,
-	EActionCount
-}CharacterActionTypes;
-
 typedef struct CharacterActionEvent {
-    CharacterActionTypes type;
+    CharacterActionType type;
 	CharacterAttr *source;
 	//BoundingBox position;
 	s16 value:8;

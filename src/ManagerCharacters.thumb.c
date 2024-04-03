@@ -9,9 +9,11 @@
 #include "GBATimer.h"
 
 CharacterCollection *mchar_vreference = NULL;
+AttackEffectCollection *mattackeffect_vreference = NULL;
 
-void mchar_setDraw(CharacterCollection *reference) {
+void mchar_setDraw(CharacterCollection *reference, AttackEffectCollection *attackEffectCollection) {
 	mchar_vreference = reference;
+	mattackeffect_vreference = attackEffectCollection;
 }
 
 void mchar_draw() {
@@ -21,6 +23,9 @@ void mchar_draw() {
 			if (mchar_vreference->characters[i]->spriteDisplay.isInScreen) {
 			    commonDrawDisplay(&mchar_vreference->characters[i]->spriteDisplay);
 			}
+		}
+		for (i = 0; i < mattackeffect_vreference->count; ++i) {
+			commonDrawDisplay(&mattackeffect_vreference->collection[i]->display);
 		}
 	}
 }
@@ -207,8 +212,8 @@ inline void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) 
 	}
 }
 
-void mchar_resolveAction(CharacterCollection *charCollection,
-	const MapInfo *mapInfo, CharacterActionCollection *charActionCollection) {
+void mchar_resolveAction(CharacterCollection *charCollection, const MapInfo *mapInfo, 
+	CharacterActionCollection *charActionCollection, AttackEffectCollection *attackEffects) {
 
 	//TODO put priority on actions
 	if (charCollection) {
@@ -233,7 +238,8 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 		mchar_resolveCharacterCollision(charCollection);
 		
 		for (i = 0; i < charCollection->currentSize; ++i) {
-			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], charActionCollection);
+			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], 
+				charActionCollection, attackEffects);
 		}
 		
 		mchar_arrangeCharactersForDisplay(charCollection);
@@ -242,27 +248,28 @@ void mchar_resolveAction(CharacterCollection *charCollection,
 	}
 }
 
+void mchar_removeOAMExcess(OAMCollection *oamCollection, int currentIdx) {
+	OBJ_ATTR *oamBuffer = oamCollection->data;
+	int idxRemoveOam;
+	for (idxRemoveOam = currentIdx; idxRemoveOam < oamCollection->previousSize; ++idxRemoveOam) {
+		oamBuffer[idxRemoveOam] = *((OBJ_ATTR*)&moam_removeObj);
+	}
+		
+	oamCollection->previousSize = currentIdx;
+}
+
 void mchar_setPosition(CharacterCollection *charCollection,
+	AttackEffectCollection* attackEffectCollection,
 	OAMCollection *oamCollection,
 	const Position *scr_pos,
 	const ScreenDimension *scr_dim) {
 	OBJ_ATTR *oamBuffer = oamCollection->data;
-	if (charCollection) {
-		int charIdx, oamIdx, idxRemoveOam;
-		
-		for (charIdx = 0, oamIdx = 0; charIdx < charCollection->displaySize; ++charIdx) {
-			oamIdx += charCollection->
-				charactersForDisplay[charIdx]->setPosition(
-					charCollection->charactersForDisplay[charIdx], 
-					&oamBuffer[oamIdx], scr_pos, scr_dim);
-		}
-		
-		for (idxRemoveOam = oamIdx; idxRemoveOam < oamCollection->previousSize; ++idxRemoveOam) {
-			oamBuffer[idxRemoveOam] = *((OBJ_ATTR*)&moam_removeObj);
-		}
-		
-		oamCollection->previousSize = oamIdx;
-	}
+	int currentOAMIdx = 0;
+	currentOAMIdx = charAttackEffect_setToOAMBuffer(attackEffectCollection, oamCollection, currentOAMIdx,
+		scr_pos, scr_dim);
+	currentOAMIdx = commonCharacterSetToOAMBuffer(charCollection, oamCollection, currentOAMIdx,
+		scr_pos, scr_dim); 
+	mchar_removeOAMExcess(oamCollection, currentOAMIdx);
 }
 
 CharacterAttr* mchar_findCharacterType(CharacterCollection *charCollection, int type) {

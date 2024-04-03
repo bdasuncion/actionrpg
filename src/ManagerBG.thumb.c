@@ -68,7 +68,7 @@ void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollect
 
 void mbg_initializeMapOnScreen(const ScreenAttr *scrAtt, const MapInfo *mapInfo, 
     u16 *screntryBG0, u16 *screntryBG1) {
-	int i, j, bgIdx, mapIdx, mapStartXIdx = DIVIDE_BY_TILE_WIDTH(scrAtt->position.x);
+	int i, j, bgIdx, mapIdx, mapIdx2, mapStartXIdx = DIVIDE_BY_TILE_WIDTH(scrAtt->position.x);
     int mapStartYIdx = DIVIDE_BY_TILE_HEIGHT(scrAtt->position.y);
 	int bgStartXIdx = mapStartXIdx & MAPBLOCK_WIDTH_MAXIDX;
 	int bgStartYIdx = mapStartYIdx & MAPBLOCK_HEIGHT_MAXIDX;
@@ -79,8 +79,9 @@ void mbg_initializeMapOnScreen(const ScreenAttr *scrAtt, const MapInfo *mapInfo,
 			bgIdx = ((j + bgStartXIdx) & MAPBLOCK_WIDTH_MAXIDX) + 
 			    (((bgStartYIdx + i) & MAPBLOCK_WIDTH_MAXIDX)*MAPBLOCK_WIDTH);
 			mapIdx = (mapStartXIdx + j) + ((mapStartYIdx + i)*widthInTiles);
+			mapIdx2 = mapIdx + widthInTiles*DIVIDE_BY_TILE_HEIGHT(mapInfo->height);
 			screntryBG0[bgIdx] = mapInfo->mapEntry[0][mapIdx];
-			screntryBG1[bgIdx] = mapInfo->mapEntry[1][mapIdx];
+			screntryBG1[bgIdx] = mapInfo->mapEntry[0][mapIdx2];
 		}
 	}
 }
@@ -140,16 +141,18 @@ void mbg_setVerticalTiles(const MapInfo *mapInfo,
 	u16 mapblock_xidx = bg_tile_x_idx & MAPBLOCK_WIDTH_MAXIDX;
 	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;
 	u16 bg_width_tile_count = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
+	u16 layeroffset = DIVIDE_BY_TILE_HEIGHT(mapInfo->height)*bg_width_tile_count;
 	
 	s32 i,layeridx;
+	
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
 		u16 *mapblock = &SCR_ENTRY->entry[mapblock_id + layeridx];
 		for (i = 0; i < count; ++i) {
 			mapblock[mapblock_xidx + 
 				((mapblock_yidx + i)&MAPBLOCK_HEIGHT_MAXIDX)*
 				(mapblock_width)] =
-			mapInfo->mapEntry[layeridx]
-					[(bg_width_tile_count*(bg_tile_y_idx + i)) + bg_tile_x_idx];
+			mapInfo->mapEntry[0]
+					[(layeridx*layeroffset) + (bg_width_tile_count*(bg_tile_y_idx + i)) + bg_tile_x_idx];
 		}
 	}
 }
@@ -168,14 +171,16 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 	u16 mapblock_xidx = bg_tile_x_idx & MAPBLOCK_WIDTH_MAXIDX;
 	u16 mapblock_yidx = bg_tile_y_idx & MAPBLOCK_HEIGHT_MAXIDX;
 	u16 bg_width_tile_count = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
+	u16 layeroffset = DIVIDE_BY_TILE_HEIGHT(mapInfo->height)*bg_width_tile_count;
 	s32 i,layeridx;
+	
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
 		u16 *mapblock = &SCR_ENTRY->entry[mapblock_id + layeridx];
 		for (i = 0; i < count; ++i) {
 			mapblock[((mapblock_xidx + i)&MAPBLOCK_WIDTH_MAXIDX) +
 				(mapblock_yidx*mapblock_width)] =
-			mapInfo->mapEntry[layeridx]
-					[bg_width_tile_count*(bg_tile_y_idx) + 
+			mapInfo->mapEntry[0]
+					[(layeridx*layeroffset) + bg_width_tile_count*(bg_tile_y_idx) + 
 					bg_tile_x_idx + i];
 		}
 	}

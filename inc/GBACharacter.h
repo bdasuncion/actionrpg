@@ -1,5 +1,3 @@
-
-
 #ifndef GBACharacter
 #define GBACharacter
 
@@ -27,6 +25,21 @@ typedef enum StatusType {
     EStatusNormal,
 	EStatusNoActionCollision
 } StatusType;
+
+/*typedef enum AttackType {
+	EAttackNone = -1,
+    EAttackHorizontalRight,
+	EAttackHorizontalLeft
+} AttackType;*/
+
+typedef enum CharacterActionType {
+    EActionNone = -1,
+	EAttackHorizontalRight,
+	EAttackHorizontalLeft,
+	EAttackClawRight,
+	EAttackClawLeft,
+	EActionCount
+}CharacterActionType;
 
 typedef struct CharBoundingBox {
 	Position upperLeftPt;
@@ -77,6 +90,17 @@ typedef struct SpriteDisplay {
 	u32 dummy:7;
 }ALIGN4 SpriteDisplay;
 
+typedef struct AttackEffect {
+	SpriteDisplay display;
+	Position position;
+	CharacterActionType type;
+}ALIGN4 AttackEffect;
+
+typedef struct AttackEffectCollection {
+	u32 count:4;
+	AttackEffect **collection;
+}ALIGN4 AttackEffectCollection;
+
 typedef struct MovementControl {
     u8 maxFrames;
 	u8 currentFrame;
@@ -102,7 +126,7 @@ typedef void (*CharFuncCollisionCheck)(void* charAtt, bool isOtherCharBelow,
 	
 typedef void (*CharFuncMapCollisionCheck)(void* charAtt, void* mapInfo);
 
-typedef void (*CharFuncActionCollision)(void *charAtt, void *actionEvents);
+typedef void (*CharFuncActionCollision)(void *charAtt, void *actionEvents, void *attackEffects);
 
 typedef void (*CharFuncFallingCollision)(void *charAtt, const void *boundingBox, const void *otherBoundingBox);
 

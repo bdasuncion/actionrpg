@@ -5,6 +5,7 @@
 #include "GBACharacter.h"
 #include "GBACharacterType.h"
 #include "GBAMap.h"
+#include "GBACharacterActionEvent.h"
 #include <stdbool.h>
 
 extern const CharacterAttr openSlot;
@@ -12,9 +13,9 @@ extern const s32 common_zOffsetDown;
 void commonRemoveCharacter(CharacterAttr *character);
 void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf);
 void commonDrawDisplay(SpriteDisplay *spriteDisplay);
-UpdateStatus commonUpdateAnimation(CharacterAttr* character);
+UpdateStatus commonUpdateCharacterAnimation(CharacterAttr* character);
 UpdateStatus commonInitializeAction(CharacterAttr* character);
-void commonGetNextFrame(const CharacterAttr* character, int *nextScreenFrame, 
+void commonGetCharacterNextFrame(const CharacterAttr* character, int *nextScreenFrame, 
     int *nextAnimationFrame, bool *isLastFrame);
 void commonCharacterSetPosition(CharacterAttr* character, int x, int y, int z, EDirections direction);
 void commonCharacterInit(CharacterAttr* character, int initialize, int action, EDirections direction);
@@ -87,6 +88,8 @@ inline int commonGetCurrentScreenFrame(const CharacterAttr* character);
 inline bool commonDoIntializeActions(CharacterAttr* character);
 inline bool commonIsFoundPosition(const Position* position);
 int common_fallingDown(CharacterAttr* character, const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+int common_fallingDownOnBoundingBox(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void commonGravityEffect(CharacterAttr *character, int zOffsetDown);
 int commonConvertBoundingBoxZ(int zPos);
 void commonInitShadow();
@@ -99,5 +102,12 @@ void commonSetCharType(const Position* position, const MapInfo *mapInfo,
 	CharacterActionCollection *charActionCollection, CharacterAttr *character,
 	ControlTypePool* controlPool);
 inline EDirections commonReverseDirection(EDirections direction);
+inline UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay);
+int commonCharacterSetToOAMBuffer(CharacterCollection *charCollection,
+	OAMCollection *oamCollection,
+	int currentOAMIdx,
+	const Position *scr_pos,
+	const ScreenDimension *scr_dim);
+bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay);
 int commonDummy();
 #endif
