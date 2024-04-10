@@ -23,7 +23,7 @@ void zombie_getBoundingBoxMoving(const CharacterAttr* character, int *count, Bou
 void zombie_getBoundingBoxStanding(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
 
 void changeDirection(CharacterAIControl *charControl, EDirections *goDirection) {
-	if (goDirection == EUnknown) {
+	if (*goDirection == EUnknown) {
 		return;
 	}
 	if(charControl->leftBlocked) {
