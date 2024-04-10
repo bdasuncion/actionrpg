@@ -56,6 +56,14 @@ const s32 zombie_walkOffsetX[EDirectionsCount][zombie_WALK_MVMNT_CTRL_MAX] = {
 	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
 	{-1*MOVE_STR,0,-1*MOVE_STR,0,-1*MOVE_STR},
 	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG}
+	/* {0,0,0,0,0},
+	 {0,0,0,0,0},
+	 {0,0,0,0,0},
+	 {0,0,0,0,0},
+	 {0,0,0,0,0},
+	 {0,0,0,0,0},
+	 {0,0,0,0,0},
+	 {0,0,0,0,0},*/
 };
 
 const s32 zombie_walkOffsetY[EDirectionsCount][zombie_WALK_MVMNT_CTRL_MAX] = {
@@ -67,6 +75,14 @@ const s32 zombie_walkOffsetY[EDirectionsCount][zombie_WALK_MVMNT_CTRL_MAX] = {
 	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
 	{0,0,0,0,0},
 	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG}
+	/*{0,0,0,0,0},
+	{0,0,0,0,0},
+	{0,0,0,0,0},
+	{0,0,0,0,0},
+	{0,0,0,0,0},
+	{0,0,0,0,0},
+	{0,0,0,0,0},
+	{0,0,0,0,0},*/
 };
 
 const OffsetPoints zombie_scanSurroundingOffset[8][2] = {
@@ -94,11 +110,11 @@ const OffsetPoints zombie_strike_offsetValues[8][2] = {
 const BoundingBox zombie_strikeCollisionBox[8] = {
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
-	{ 8, -8, 24, 8, 8, 18, 0,0,0,0},
-	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
-	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
-	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
-	{ -8, -8, -24, 8, 8, 18, 0,0,0,0},
+	{ 8, 24, -8, 8, 8, 18, 0,0,0,0},
+	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
+	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
+	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
+	{ -24, -8, -8, 8, 8, 18, 0,0,0,0},
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 };
 

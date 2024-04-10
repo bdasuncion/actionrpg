@@ -80,7 +80,7 @@ const s32 alisa_dashOffsetY[EDirectionsCount][alisa_DASH_MVMNT_CTRL_MAX] = {
 const s32 alisa_jumpOffset[] = {1*MOVE_STR, 2*MOVE_STR, 2*MOVE_STR};
 const s32 alisa_zOffsetDown[3] =  {-1*MOVE_STR, -2*MOVE_STR, -2*MOVE_STR};
 
-const s32 alisa_jumpOffsetX[EDirectionsCount][1] = {
+const s32 alisa_jumpOffsetX[EDirectionsCount] = {
 	{0},
 	{1*MOVE_DIAG},
 	{1*MOVE_STR},
@@ -91,7 +91,7 @@ const s32 alisa_jumpOffsetX[EDirectionsCount][1] = {
 	{-1*MOVE_DIAG}
 };
 
-const s32 alisa_jumpOffsetY[EDirectionsCount][1] = {
+const s32 alisa_jumpOffsetY[EDirectionsCount] = {
 	{1*MOVE_STR},
 	{1*MOVE_DIAG},
 	{0},
@@ -101,7 +101,6 @@ const s32 alisa_jumpOffsetY[EDirectionsCount][1] = {
 	{0},
 	{1*MOVE_DIAG}
 };
-
 const CharacterActionType alisa_NormalAttack[EDirectionsCount] = {
 	EAttackHorizontalRight,
 	EAttackHorizontalRight,
@@ -125,6 +124,28 @@ const CharacterActionType alisa_NormalAttack[EDirectionsCount] = {
 #define ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION 2
 #define ALISA_NORMALSLASH_ANIMATIONFRAME_END_COLLISION 3
 #define ALISA_NORMALSLASH_FRAME_END_COLLISION 5
+
+const s32 alisa_normalSlashOffsetX[EDirectionsCount][2] = {
+	{-6, 4},
+	{-6, 4},
+	{0, 0},
+	{0, 0},
+	{6, -4},
+	{6, -4},
+	{0, 0},
+	{0, 0}
+};
+
+const s32 alisa_normalSlashOffsetY[EDirectionsCount][2] = {
+	{0, 0},
+	{0, 0},
+	{6, -4},
+	{6, -4},
+	{0, 0},
+	{0, 0},
+	{6, -4},
+	{6, -4}
+};
 
 const u8 alisa_scrConversionMeasurements[EScrCnvrtMeasureCount] = {
 	ALISA_SCRCNVRTWIDTH,
@@ -212,11 +233,11 @@ const CharFuncAction alisa_actions[] = {
 const BoundingBox alisa_slashCollisionBox[8] = {
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
-	{ 8, -8, 24, 8, 8, 18, 0,0,0,0},
-	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
-	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
-	{ -8, -8, 8, -24, 8, 18, 0,0,0,0},
-	{ -8, -8, -24, 8, 8, 18, 0,0,0,0},
+	{ 8, 24, -8, 8, 8, 18, 0,0,0,0},
+	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
+	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
+	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
+	{ -24, -8, -8, 8, 8, 18, 0,0,0,0},
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 };
 
@@ -384,14 +405,19 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection;
 	
-	if (alisa->spriteDisplay.currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION) {
+	int currentAnimationFrame = alisa->spriteDisplay.currentAnimationFrame;
+	if (currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION) {
 		BoundingBox collisionBox;
-		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->direction].startX;
-		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->direction].startY;
-		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->direction].startZ;
-		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->direction].endX;
-		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->direction].endY;
-		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->direction].endZ;
+		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection].startX + 
+			alisa_normalSlashOffsetX[alisa->faceDirection][currentAnimationFrame - alisa->spriteDisplay.currentAnimationFrame];
+		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection].startY + 
+			alisa_normalSlashOffsetY[alisa->faceDirection][currentAnimationFrame - alisa->spriteDisplay.currentAnimationFrame];
+		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection].startZ;
+		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection].endX +
+			alisa_normalSlashOffsetX[alisa->faceDirection][currentAnimationFrame - alisa->spriteDisplay.currentAnimationFrame];
+		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection].endY +
+			alisa_normalSlashOffsetY[alisa->faceDirection][currentAnimationFrame - alisa->spriteDisplay.currentAnimationFrame];
+		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection].endZ;
 		mchar_actione_add(charActionCollection, alisa_NormalAttack[alisa->direction], attackVal, 1, &collisionBox);
 	}
 	
@@ -544,14 +570,14 @@ void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	if (alisa->spriteDisplay.currentAnimationFrame < ALISA_RISING_ANIMATION_FRAME) {
 		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame];
 		alisa->position.z += alisa->delta.z;
-		alisa->delta.x = alisa_jumpOffsetX[alisa->direction][0];
+		alisa->delta.x = alisa_jumpOffsetX[alisa->direction];
 		alisa->position.x += alisa->delta.x;
-		alisa->delta.y = alisa_jumpOffsetY[alisa->direction][0];
+		alisa->delta.y = alisa_jumpOffsetY[alisa->direction];
 		alisa->position.y += alisa->delta.y;
 	} else {
-		alisa->delta.x = alisa_jumpOffsetX[alisa->direction][0];
+		alisa->delta.x = alisa_jumpOffsetX[alisa->direction];
 		alisa->position.x += alisa->delta.x;
-		alisa->delta.y = alisa_jumpOffsetY[alisa->direction][0];
+		alisa->delta.y = alisa_jumpOffsetY[alisa->direction];
 		alisa->position.y += alisa->delta.y;
 	}
 	
@@ -610,9 +636,9 @@ void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo
 
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame]);
 	
-	alisa->delta.x = alisa_jumpOffsetX[alisa->direction][0];
+	alisa->delta.x = alisa_jumpOffsetX[alisa->direction];
 	alisa->position.x += alisa->delta.x;
-	alisa->delta.y = alisa_jumpOffsetY[alisa->direction][0];
+	alisa->delta.y = alisa_jumpOffsetY[alisa->direction];
 	alisa->position.y += alisa->delta.y;
 		
 	++alisa->movementCtrl.currentFrame;

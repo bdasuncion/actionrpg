@@ -218,8 +218,8 @@ typedef struct OAMCollection {
 
 typedef struct BoundingBox {
 	s16 startX;
-	s16 startY;
 	s16 endX;
+	s16 startY;
 	s16 endY;
 	s16 startZ;
 	s16 endZ;
