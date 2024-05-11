@@ -59,7 +59,8 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		setUpdateGameState(false);
 		mprinter_clear();
 
-        mchar_actione_reinit(charActionCollection);
+		//mprinter_printf("action %d\n", charActionCollection->count);
+        //mchar_actione_reinit(charActionCollection);
 		//quicksort_oam();
 		
 		if (!mapInfo->transferTo) {

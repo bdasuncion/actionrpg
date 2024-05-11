@@ -84,8 +84,9 @@ extern const CharFuncCollisionReaction common_collisionReactions[8];
 extern const CharFuncCollisionReaction common_mapCollisionReactions[8];
 extern const CommonMapCollision common_mapCollision[8];
 inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);
-inline int commonGetCurrentScreenFrame(const CharacterAttr* character);
+inline int commonGetCurrentDisplayFrame(const CharacterAttr* character);
 inline bool commonDoIntializeActions(CharacterAttr* character);
+inline void commonRemoveActionOnInit(CharacterAttr* character, CharacterActionCollection *charActionCollection);
 inline bool commonIsFoundPosition(const Position* position);
 int common_fallingDown(CharacterAttr* character, const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 int common_fallingDownOnBoundingBox(CharacterAttr* character, 

@@ -1103,7 +1103,7 @@ int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.currentAnimationFrame;
 }
 
-int commonGetCurrentScreenFrame(const CharacterAttr* character) {
+int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.numberOfFramesPassed;
 }
 
@@ -1221,6 +1221,11 @@ void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const P
 	++characterCollection->displaySize;
 }
 
+void commonRemoveActionOnInit(CharacterAttr* character, CharacterActionCollection *charActionCollection) {
+	if (commonGetCurrentAnimationFrame(character) == 0 && commonGetCurrentDisplayFrame(character) == 0) {
+		mchar_actione_remove(character, charActionCollection);
+	}
+}
 bool commonIsFoundPosition(const Position* position) {
 	return (position->x != -1) & (position->y != -1);
 }
