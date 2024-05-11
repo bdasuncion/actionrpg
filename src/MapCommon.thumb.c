@@ -39,6 +39,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	EventTransfer *eventTransfer = mapInfo->transferTo;
 	int i;
 
+	mchar_actione_reinit(charActionCollection);
 	if (mapInfo->onExitMap) {
 		mapInfo->onExitMap(screenAttribute, characterCollection, 
         mapInfo, controlPool, charActionCollection, track);
