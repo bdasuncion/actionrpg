@@ -131,6 +131,7 @@ void zombie_actionAttack(CharacterAttr* character,const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void zombie_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+bool zombie_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent);
 	
 CharFuncAction zombie_actions[] = {
 	&zombie_actionWalk,
@@ -171,6 +172,7 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->checkCollision = &zombie_checkCollision;
 	character->checkMapCollision = &zombie_checkMapCollision;
 	character->checkActionCollision = &zombie_checkActionEventCollision;
+	character->isHit = &zombie_isHit;
 		
 	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
@@ -542,4 +544,19 @@ void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionC
 			break;
 		}
 	}
+}
+
+bool zombie_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	if (character->stats.currentStatus == EStatusNoActionCollision) {
+		return false;
+	}
+	character->stats.currentLife -= 1;
+	//character->stats.currentStatus = EStatusNoActionCollision;
+	charControl->currentStatus = EZombieStatusStunned;
+	//add hit animation
+	if (character->stats.currentLife <= 0) {
+		commonRemoveCharacter(character);
+	}
+	return true;
 }

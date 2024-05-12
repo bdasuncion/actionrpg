@@ -218,6 +218,8 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents, 
 	AttackEffectCollection *attackEffects);
 
+bool alisa_isHit(CharacterAttr *alisa, CharacterActionEvent *actionEvent);
+
 void transferToBoundingBox(const EventTransfer *transfer, BoundingBox *boundingBox);
 
 
@@ -275,6 +277,7 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	alisa->checkCollision = &alisa_checkCollision;
 	alisa->checkMapCollision = &alisa_checkMapCollision;
 	alisa->checkActionCollision = &alisa_checkActionEventCollision;
+	alisa->isHit = &alisa_isHit;
 	//alisa->free = NULL;
 	//CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)mchar_findFreeControlType(controlPool);
@@ -838,4 +841,17 @@ void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollec
 			//break;
 		}
 	}
+}
+
+bool alisa_isHit(CharacterAttr *alisa, CharacterActionEvent *actionEvent) {
+	CharacterPlayerControl *charControl = (CharacterAIControl*)alisa->free;
+	if (alisa->stats.currentStatus == EStatusNoActionCollision) {
+		return false;
+	}
+	alisa->stats.currentLife -= 1;
+	charControl->currentStatus = EAlisaStatusStunned;
+	if (alisa->stats.currentLife <= 0) {
+		//gameover
+	}
+	return true;
 }
