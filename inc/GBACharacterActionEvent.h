@@ -3,9 +3,13 @@
 #include "GBAObject.h"
 #include "GBACharacter.h"
 
+typedef void (*ActionEventResolve)(void *actionEvent, CharacterCollection *charCollection,
+		AttackEffectCollection *attackEffects);
+
 typedef struct CharacterActionEvent {
-    CharacterActionType type;
+	ActionEventResolve resolve;
 	CharacterAttr *source;
+	CharacterActionType type;
 	//BoundingBox position;
 	s16 value:8;
 	s16 dummy1:4;
