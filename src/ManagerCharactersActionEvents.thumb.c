@@ -73,3 +73,15 @@ void mchar_actione_remove(CharacterAttr *source, CharacterActionCollection *char
 		}
 	}
 }
+
+void mchar_actione_onetarget(CharacterActionEvent *actionEvent, CharacterCollection *charCollection) {
+	if (actionEvent->maxHit > 0) {
+		int i, count;
+		BoundingBox charBoundingBox;
+		bool isHit = false;
+		for (i = 0; i < charCollection->currentSize; ++i) {
+			CharacterAttr *character = charCollection->characters[i];
+			character->getBounds(character, &count, &charBoundingBox);
+		}
+	}
+}
