@@ -130,6 +130,8 @@ typedef void (*CharFuncActionCollision)(void *charAtt, void *actionEvents, void 
 
 typedef void (*CharFuncFallingCollision)(void *charAtt, const void *boundingBox, const void *otherBoundingBox);
 
+typedef bool (*CharFuncIsHit)(void* charAtt, void *actionEvent); //TODO: Put screen position it its own header
+
 typedef struct ActionControl {
 	u8 doForNumFrames;
 	u8 currentFrame;
@@ -216,6 +218,7 @@ typedef struct CharacterAttr {
 	CharFuncCollisionCheck checkCollision;
 	CharFuncMapCollisionCheck checkMapCollision;
 	CharFuncActionCollision checkActionCollision;
+	CharFuncIsHit isHit;
 	SpriteDisplay spriteDisplay;
 	CharacterStats stats;
 	u32 id:8;
