@@ -208,9 +208,6 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo *mapInfo);
 void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 
-void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents, 
-	AttackEffectCollection *attackEffects);
-
 bool alisa_isHit(CharacterAttr *alisa, CharacterActionEvent *actionEvent);
 
 void transferToBoundingBox(const EventTransfer *transfer, BoundingBox *boundingBox);
@@ -269,7 +266,6 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
 	alisa->getBounds = &alisa_getBoundingBoxStanding;
 	alisa->checkCollision = &alisa_checkCollision;
 	alisa->checkMapCollision = &alisa_checkMapCollision;
-	alisa->checkActionCollision = &alisa_checkActionEventCollision;
 	alisa->isHit = &alisa_isHit;
 	//alisa->free = NULL;
 	//CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
@@ -798,37 +794,6 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	common_collisionReactions[alisa->direction]
 	    (alisa, &alisaBoundingBox, &otherCharBoundingBox);
-}
-
-void alisa_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents,
-	AttackEffectCollection *attackEffects) {
-    int i, j, count;
-	BoundingBox charBoundingBox;
-	bool isHit = false;
-	CharacterPlayerControl *charControl = (CharacterAIControl*)alisa->free;
-	if (alisa->stats.currentStatus == EStatusNoActionCollision) {
-		return;
-	}
-	
-	alisa->getBounds(alisa, &count, &charBoundingBox);
-	for (i = 0; i < actionEvents->count; ++i) {
-		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
-		isHit = false;
-		//for (j = 0; j < charActionEvent->count; ++j) {
-			//isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
-			isHit = hasCollision(&charActionEvent->collisionBox, &charBoundingBox) & (charActionEvent->maxHit > 0);
-		//}
-		
-		if (isHit) {
-			--charActionEvent->maxHit;
-			alisa->stats.currentLife -= 1;
-			charControl->currentStatus = EAlisaStatusStunned;
-			if (alisa->stats.currentLife <= 0) {
-				//gameover
-			}
-			//break;
-		}
-	}
 }
 
 bool alisa_isHit(CharacterAttr *alisa, CharacterActionEvent *actionEvent) {
