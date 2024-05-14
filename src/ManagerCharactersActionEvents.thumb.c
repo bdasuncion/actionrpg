@@ -77,9 +77,10 @@ void mchar_actione_resolveonetarget(CharacterActionEvent *actionEvent, Character
 		if (characterTarget) {
 			Position pos;
 			actionEvent->maxHit = 0;
-			characterTarget->isHit(characterTarget, actionEvent);
-			charAttackEffect_getPosition(&actionEvent->collisionBox, &charBoundingBox, &pos);
-			charAttackEffect_Add(&pos, actionEvent->type, attackEffects);
+			if (characterTarget->isHit(characterTarget, actionEvent)) {
+				charAttackEffect_getPosition(&actionEvent->collisionBox, &charBoundingBox, &pos);
+				charAttackEffect_Add(&pos, actionEvent->type, attackEffects);
+			}
 		}
 	}
 	
