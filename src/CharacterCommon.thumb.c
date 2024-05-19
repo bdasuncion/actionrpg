@@ -1132,11 +1132,11 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 	}
 }
 
-int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
+extern inline int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.currentAnimationFrame;
 }
 
-int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
+extern inline int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.numberOfFramesPassed;
 }
 
