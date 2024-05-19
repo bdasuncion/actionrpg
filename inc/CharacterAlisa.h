@@ -41,4 +41,6 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 	int *count, BoundingBox *boundingBox);
 void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 
 	int *count, BoundingBox *boundingBox);
+	
+#define ALISA_DASH_STARTMOVE_FRAME 1
 #endif

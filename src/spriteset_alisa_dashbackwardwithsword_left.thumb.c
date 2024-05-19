@@ -11,7 +11,7 @@ const SpriteLayer alisa_dashbackwardwithsword_left_layerSet1[] = {
     {alisa_dashbackwardwithsword_side_image0,0,0,TALL,MEDIUM,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,4,0}};
 
 const SpriteLayerSet alisa_dashbackwardwithsword_left_layerSet[] = {
-    {alisa_dashbackwardwithsword_left_layerSet0,10,2},
+    {alisa_dashbackwardwithsword_left_layerSet0,7,2},
     {alisa_dashbackwardwithsword_left_layerSet1,5,2},
 };
 

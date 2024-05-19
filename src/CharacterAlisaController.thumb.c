@@ -286,6 +286,9 @@ void alisa_prepareDashController(CharacterAttr* character) {
 	}
 
 	if (isLastFrame) {
+		if (alisa_isFalling(character, charControl)) {
+			return;
+		}
 		character->nextDirection = commonReverseDirection(character->faceDirection);
 		character->controller = &alisa_dashBackwardController;
 		character->controller(character, NULL, NULL);
@@ -299,6 +302,11 @@ void alisa_dashForwardController(CharacterAttr* character) {
     character->distanceFromGround = 1024;
 	
    	if (alisa_isStunned(character, charControl)) {
+		return;
+	}
+	
+	if (commonGetCurrentAnimationFrame(character) > ALISA_DASH_STARTMOVE_FRAME &&
+		alisa_isFalling(character, charControl)) {
 		return;
 	}
 	
@@ -323,6 +331,11 @@ void alisa_dashBackwardController(CharacterAttr* character) {
       
     if (alisa_isStunned(character, charControl)) {
 		return;
+	}
+	
+	if (commonGetCurrentAnimationFrame(character) > 0 && 
+		alisa_isFalling(character, charControl)) {
+			return;
 	}
 	
 	character->stats.currentStatus = EStatusNormal;
