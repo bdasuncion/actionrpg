@@ -386,7 +386,7 @@ void alisa_jumpUpController(CharacterAttr* character, const MapInfo *mapInfo,
 	
 	character->getBounds = &alisa_getBoundingBoxMoving;	
 	
-	if (character->spriteDisplay.currentAnimationFrame >= ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME && 
+	if (commonGetCurrentAnimationFrame(character) >= ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME && 
 		direction != EUnknown) {
 		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
 		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
