@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include "GBAMap.h"
+//#include "GBASound.h"
+#include "CharacterCommon.h"
 extern const unsigned short pallette_tile_dungeonsample_floor1[16];
 extern const unsigned short pallette_tile_dungeonsample_wallside1[16];
 extern const unsigned short pallette_tile_dungeonsample_wallseethrough[16];
@@ -279,6 +281,7 @@ const CharacterInit actors_mapdungeonsample[] = {
 	{ 296, 376, 33, ZOMBIE }
 };
 extern const MapInfo mapdungeonsample2;
+extern const MusicTrack musickankandara_end;
 
 const EventTransfer transfer_mapdungeonsample[] = {
 	{ 480, 416, 40, 760, 1, &mapdungeonsample2, 16, 16, 80, ERight},
@@ -291,8 +294,8 @@ const SpriteMaskInit spritemask_mapdungeonsample[] = {
 	{ 464, 344, 64, 0, EMask32x16 }, 	{ 464, 392, 80, 0,EMask32x16 }, 
 };
 
-void mapDungeonSampleFunction(void *screenAttribute, CharacterCollection *characterCollection, 
-	void *mapInfo, ControlTypePool *controlPool, void *charActionCollection, void *track) {
+void mapDungeonSampleFunction(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+	MapInfo *mapInfo, ControlTypePool *controlPool, CharacterActionCollection *charActionCollection, Track *track) {
 	BoundingBox checkArea = {252, 330, 324, 402, 32, 64};
 	if (!commonIsCharTypeInArea(&checkArea, characterCollection, ZOMBIE)) {
 		Position regenerateAt = {298, 348, 33};
@@ -304,6 +307,6 @@ void mapDungeonSampleFunction(void *screenAttribute, CharacterCollection *charac
 const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 1, 2, 0, NULL , mapentryset_mapdungeonsample, tileset_mapdungeonsample, pallette_mapdungeonsample,
 //const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 0, 2, 0, NULL , mapentryset_mapdungeonsample, tileset_mapdungeonsample, pallette_mapdungeonsample,
 transfer_mapdungeonsample, heightMap_mapdungeonsample, actors_mapdungeonsample, spritemask_mapdungeonsample, spritemaskimage_mapdungeonsample, &mapDungeonSampleFunction, NULL, NULL, NULL, {0,0,0,0,0} };
-//transfer_mapdungeonsample, heightMap_mapdungeonsample, actors_mapdungeonsample, spritemask_mapdungeonsample, spritemaskimage_mapdungeonsample, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
+//transfer_mapdungeonsample, heightMap_mapdungeonsample, actors_mapdungeonsample, spritemask_mapdungeonsample, spritemaskimage_mapdungeonsample, NULL, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };
 
 const EventTransfer startAt_dungeonSample = { 400, 400, 72, 480, 81, &mapdungeonsample, 16, 48, 0, EUp};

@@ -6,6 +6,8 @@
 #include "ManagerOAM.h"
 #include "ManagerPrinter.h"
 #include "CharacterCommon.h"
+#include "CharacterAttackEffects.h"
+#include "CharacterAlisa.h"
 #include "GBATimer.h"
 
 CharacterCollection *mchar_vreference = NULL;
@@ -60,7 +62,7 @@ void mchar_initTransferableCharacters(CharacterCollection *charCollection, int s
 	}
 }
 
-void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit *charInitFunc) {
+void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc) {
 	if (charCollection) {
 		charCollection->characterTransfer[charCollection->countCharacterTransfer] = charInitFunc;
 		++charCollection->countCharacterTransfer;

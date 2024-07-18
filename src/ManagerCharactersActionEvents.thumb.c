@@ -7,7 +7,7 @@
 #include "CharacterCommon.h"
 #include "GBATimer.h"
 
-const CharacterActionEvent defaultCharacterActionEvent = {EActionNone, 0, NULL, {0, 0, 0, 0, 0, 0, 0}};
+const CharacterActionEvent defaultCharacterActionEvent = {EActionNone, NULL, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0}};
 
 void mchar_actione_init(CharacterActionCollection *charActionCollection, int maxActions) {
     int i;

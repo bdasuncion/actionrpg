@@ -21,6 +21,9 @@ void sprite_vram_freeId(u32 id);
 int sprite_palette_findId(CHARACTERTYPE type, int nPalette);
 u16* sprite_get_palette_ID(u32 id);
 u32 sprite_vram_findIdByType(CharacterSizeType type);
+void spritemask_vram_copy32_ID(const void* src, u32 count, u32 id);
+void memFill16(const void* src, void* dst, u32 count);
+void sprite_palette_init();
 #define SPRITEMASK_BLOCKSTART 384
 #define SPRITEMASK_IDSTART TILECOUNTPERBLOCK + SPRITEMASK_BLOCKSTART
 #define SHARED_PALETTEID 15

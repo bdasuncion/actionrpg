@@ -1,9 +1,9 @@
 #ifndef GBAMap
 #define  GBAMap
 
+#include "GBAStructDeclarations.h"
 #include "GBAObject.h"
 #include "GBACharacter.h"
-#include "GBACharacterType.h"
 #include "GBASound.h"
 #include "CharacterSpriteMask.h"
 
@@ -42,21 +42,24 @@ typedef struct EventTransfer {
 	u16 transferToX;
 	u16 transferToY;
 	u16 transferToZ;
-	const void *mapInfo;
+	//const void *mapInfo;
+	const struct MapInfo *mapInfo;
 	u16 width:8;
 	u16 length:8;
 	u16 zOffset:8;
 	u16 directionOnTransfer:3;
 } ALIGN4 EventTransfer;
 
-typedef void (*FuncMap)(void *screenAttribute, void *characterCollection, void *mapInfo, void *controlPool, void *charActionCollection, void *track);
-
+//typedef void (*FuncMap)(void *screenAttribute, void *characterCollection, void *mapInfo, void *controlPool, void *charActionCollection, void *track);
+typedef void (*FuncMap)(struct ScreenAttr *screenAttribute, struct CharacterCollection *characterCollection, 
+	struct MapInfo *mapInfo, struct ControlTypePool* controlPool, struct CharacterActionCollection *charActionCollection, 
+	struct Track *track);
 typedef struct CharacterInit {
     u16 x;
 	u16 y;
 	u16 z;
 	CHARACTERTYPE type;
-	const CharacterEventControl *eventControl;
+	const struct CharacterEventControl *eventControl;
 } CharacterInit;
 
 typedef struct ScreenEffect {

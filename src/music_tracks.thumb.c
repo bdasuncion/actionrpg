@@ -71,7 +71,8 @@ const PatternData columnhorror_3[] = {
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 };
-const MusicTrack musichorror = {{columnhorror_0,columnhorror_1,columnhorror_2,columnhorror_3},64};
+const PatternData *columnhorror[] = {columnhorror_0,columnhorror_1,columnhorror_2,columnhorror_3};
+const MusicTrack musichorror = {columnhorror,64};
 
 const PatternData columntest2_0[] = {
 	{&instrument_Flute,9943,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{&instrument_Flute,11852,63,0},

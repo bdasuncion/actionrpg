@@ -24,7 +24,8 @@ static inline void gbaint_ctrl(ERegStatus isEnabled)
 
 static inline void gbaint_setRequestHandler(void (*intHndlr)(void))
 {
-	*INTERRUPT_REG = intHndlr;
+	*INTERRUPT_REG = ((u32)intHndlr);
+	//*INTERRUPT_REG = intHndlr;
 }
 
 typedef struct InterruptReceiver

@@ -34,7 +34,8 @@ typedef struct SpriteMaskImage {
 
 extern const u32 spriteMaskImageSize[];
 
-typedef void (*SpriteMaskFuncInit)(CharacterAttr* spritemask, SpriteMaskType type, int maskId, 
-	const Position *position); 
+typedef void (*SpriteMaskFuncInit)(struct CharacterAttr* spritemask, SpriteMaskType type, int maskId, 
+	const Position *position);
 
+void spritemask_init(struct CharacterAttr* spritemask, SpriteMaskInit *maskInit);
 #endif

@@ -5,6 +5,7 @@
 #define DOACTIONUNTILEND 0
  
 #include "GBAObject.h"
+#include "GBAStructDeclarations.h"
 
 typedef enum UpdateStatus {
 	ENoUpdate,
@@ -39,7 +40,7 @@ typedef enum CharacterActionType {
 	EAttackClawRight,
 	EAttackClawLeft,
 	EActionCount
-}CharacterActionType;
+} CharacterActionType;
 
 typedef struct CharBoundingBox {
 	Position upperLeftPt;
@@ -111,7 +112,7 @@ typedef struct CollisionControl {
 	u8 countDown;
 } ALIGN2 CollisionControl;
 
-typedef void (*CharFuncController)(void* charAtt, const void *mapInfo, const void *characterCollection);
+/*typedef void (*CharFuncController)(void* charAtt, const void *mapInfo, const void *characterCollection);
 typedef void (*CharFuncAction)(void* charAtt, 
 	const void *mapInfo, const void *characterCollection, void *charActionCollection);
 typedef int (*CharFuncSetPos)(void* charAtt, void *oamBuf,
@@ -129,6 +130,29 @@ typedef void (*CharFuncMapCollisionCheck)(void* charAtt, void* mapInfo);
 typedef void (*CharFuncActionCollision)(void *charAtt, void *actionEvents, void *attackEffects);
 
 typedef void (*CharFuncFallingCollision)(void *charAtt, const void *boundingBox, const void *otherBoundingBox);
+*/
+//CharacterAttr MapInfo CharacterCollection BoundingBox CharacterActionCollection AttackEffectCollection
+typedef void (*CharFuncController)(struct CharacterAttr* charAtt, const struct MapInfo *mapInfo, 
+	const struct CharacterCollection *characterCollection);
+typedef void (*CharFuncAction)(struct CharacterAttr* charAtt, const struct MapInfo *mapInfo, 
+	const struct CharacterCollection *characterCollection, struct CharacterActionCollection *charActionCollection);
+typedef int (*CharFuncSetPos)(struct CharacterAttr* charAtt, struct OBJ_ATTR *oamBuf, 
+	const struct Position *scr_pos,
+	const struct ScreenDimension *scr_dim); //TODO: Put screen position it its own header
+
+typedef void (*CharFuncGetBounds)(const struct CharacterAttr* charAtt,
+	int *count, struct BoundingBox *collisionBox);
+	
+typedef void (*CharFuncCollisionCheck)(struct CharacterAttr *charAtt, bool isOtherCharBelow,
+	bool *checkNext, const struct CharacterAttr *checkWithCharAtt);
+	
+typedef void (*CharFuncMapCollisionCheck)(struct CharacterAttr* charAtt, const struct MapInfo* mapInfo);
+
+typedef void (*CharFuncActionCollision)(struct CharacterAttr *charAtt, 
+	struct CharacterActionCollection *actionEvents, struct AttackEffectCollection *attackEffects);
+
+typedef void (*CharFuncFallingCollision)(struct CharacterAttr *charAtt, const struct BoundingBox *boundingBox, 
+	const struct BoundingBox *otherBoundingBox);
 
 typedef struct ActionControl {
 	u8 doForNumFrames;
@@ -236,11 +260,11 @@ typedef struct CharacterAttr {
 } ALIGN4 CharacterAttr;
 
 typedef void (*CharFuncCollisionReaction)(CharacterAttr* character, 
-      const void* charBoundingBox, const void* otherCharBoundingBox);
+      const struct BoundingBox *charBoundingBox, const struct BoundingBox *otherCharBoundingBox);
 	  
-typedef void (*CommonMapCollision)(CharacterAttr *character, const void* mapInfo, 
-    CharFuncCollisionReaction *reaction);
-
+typedef void (*CommonMapCollision)(struct CharacterAttr *character, const struct MapInfo *mapInfo, 
+    CharFuncCollisionReaction reaction);
+ 
 typedef struct ControlTypePool {
   u32 count:6;
   u32 currentCount:6;

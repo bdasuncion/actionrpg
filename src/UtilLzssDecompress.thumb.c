@@ -61,7 +61,7 @@ typedef struct LzssDataHeader
 void lzssDecompress(u16	*dest, const u32* src)
 {
 	u32 count = ((src[HEADER_IDX])>>8);;
-	u16	*srcData = src + DATA_IDX;
+	u16	*srcData = (u16*)(src + DATA_IDX);
 	u32 destIdx = 0;
 	u32	dataType = 0;
 	u32 lengthUncompressed = 0;
@@ -107,7 +107,7 @@ void lzssDecompress(u16	*dest, const u32* src)
 		if(compressedData)
 		{
 			u32 length, copyFromIndex;
-			LzssDataHeader *header = &srcData[srcIdx];
+			LzssDataHeader *header = (LzssDataHeader*)&srcData[srcIdx];
 			length = header->copyLength;
 			length += COMPRESSED_DATA_MIN_LEN;
 			copyFromIndex = destIdx - header->lookbackOffset - 1;
@@ -121,7 +121,7 @@ void lzssDecompress(u16	*dest, const u32* src)
 
 u32 lzss2vram(const void* src, u32 id)
 {
-	u16	*dest = &VRAM->block[SPRITE_BLOCK].tile[id];
+	u16	*dest = (u16*)&VRAM->block[SPRITE_BLOCK].tile[id];
 	lzssDecompress(dest, src);
 	return 0;
 }

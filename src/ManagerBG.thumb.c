@@ -4,8 +4,11 @@
 #include "GBACharacterActionEvent.h"
 #include "ManagerOAM.h"
 #include "ManagerPrinter.h"
+#include "ManagerBG.h"
+#include "ManagerVram.h"
 #include "UtilCommonValues.h"
 #include "CharacterCommon.h"
+#include "CharacterSpriteMask.h"
 
 #define MAP_BLOCK_WIDTH 256
 #define MAP_BLOCK_HEIGHT 256
@@ -33,11 +36,11 @@ extern const FuncCharacterInit character_InitFunctionsCollection[];
 //extern const FuncCharacterSet characterSet[];
 //end test const
 
-void mbg_checkCollision(
+/*void mbg_checkCollision(
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,
 	const EDirections direction);
-	
+*/	
 void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo);
 void mbg_initializeSpriteMasks(const MapInfo *mapInfo, CharacterCollection *characterCollection);
 
@@ -56,7 +59,7 @@ void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollect
 	}
 	
 	mbg_initializeMapOnScreen(scrAtt, mapInfo, 
-	    &SCR_ENTRY->entry[ETileMap0], &SCR_ENTRY->entry[ETileMap1]);
+	    (u16*)&SCR_ENTRY->entry[ETileMap0], (u16*)&SCR_ENTRY->entry[ETileMap1]);
 
     mbg_initializeCharacters(mapInfo, characterCollection, controlPool, charActionCollection);
 	mbg_copySpriteMaskImageToVram(mapInfo);
@@ -146,7 +149,7 @@ void mbg_setVerticalTiles(const MapInfo *mapInfo,
 	s32 i,layeridx;
 	
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
-		u16 *mapblock = &SCR_ENTRY->entry[mapblock_id + layeridx];
+		u16 *mapblock = (u16*)&SCR_ENTRY->entry[mapblock_id + layeridx];
 		for (i = 0; i < count; ++i) {
 			mapblock[mapblock_xidx + 
 				((mapblock_yidx + i)&MAPBLOCK_HEIGHT_MAXIDX)*
@@ -175,7 +178,7 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 	s32 i,layeridx;
 	
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
-		u16 *mapblock = &SCR_ENTRY->entry[mapblock_id + layeridx];
+		u16 *mapblock = (u16*)&SCR_ENTRY->entry[mapblock_id + layeridx];
 		for (i = 0; i < count; ++i) {
 			mapblock[((mapblock_xidx + i)&MAPBLOCK_WIDTH_MAXIDX) +
 				(mapblock_yidx*mapblock_width)] =
@@ -185,7 +188,7 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 		}
 	}
 }
-
+/*
 ECollisionStatus mbg_checkBoundary(
 	const MapInfo *mapInfo,
 	const CharacterAttr *charAttr)
@@ -198,9 +201,9 @@ ECollisionStatus mbg_checkBoundary(
 	charAttr->getBounds(charAttr, &boundBoxCount, boundingBox);
 	
 	return ENoCollide;
-}
+}*/
 //TODO Remove?
-void mbg_checkCollision(
+/*void mbg_checkCollision(
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,
 	const EDirections direction)
@@ -225,7 +228,7 @@ void mbg_checkCollision(
 	}
 	//mbg_collisionAtPosition(mapInfo, &centerPt, &collisionValueOnPosition);
 	
-}
+})*/
 
 #define BITS_PER_COLLISION_ENTRY 4
 /*/8 bits per entry

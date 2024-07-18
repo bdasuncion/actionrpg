@@ -103,7 +103,8 @@ void sprite_vram_freeId(u32 id) {
     int i;
     for (i = 0; i < MAXNCHARACTER; ++i) {
         if (idCollection[i].id == id) {
-		    return idCollection[i].status = VRAM_FREE;
+		    idCollection[i].status = VRAM_FREE;
+			break;
 		}
 	}
 }
@@ -215,5 +216,5 @@ void memFill16(const void* src, void* dst, u32 count)
 }
 
 u16* sprite_get_palette_ID(u32 id) {
-	return &PALETTE_OBJMAP->palette[id];
+	return (u16*)&PALETTE_OBJMAP->palette[id];
 }

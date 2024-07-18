@@ -8,6 +8,7 @@
 #include "UtilCommonValues.h"
 #include "SpriteSetWerewolf.h"
 #include "ManagerVram.h"
+#include "ManagerCharacters.h"
 #include "CharacterWerewolf.h"
 
 #include "CharacterCommon.h"
@@ -98,11 +99,12 @@ const OffsetPoints werewolf_scanSurroundingOffset[8][2] = {
 	{{-24,0},{24,64}}
 };
 
-void werewolf_scanSurroundingsController(CharacterAttr* character);
+void werewolf_scanSurroundingsController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 void werewolf_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
-    const CharacterCollection *characterCollection);
+    const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void werewolf_actionFindTarget(CharacterAttr* character, const MapInfo *mapInfo, 
-    const CharacterCollection *characterCollection);
+    const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void werewolf_getBounds(const CharacterAttr* character, int *count, CharBoundingBox *boundingBox);
 int werewolf_setPosition(CharacterAttr* character, OBJ_ATTR *oamBuf, 
     const Position *scr_pos, const ScreenDimension *scr_dim);
@@ -114,7 +116,7 @@ void werewolf_getBoundingBoxMoving(const CharacterAttr* character,
 
 void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo);
 	
-void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
+void werewolf_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 
 void werewolf_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents,
@@ -154,7 +156,7 @@ void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	sprite_palette_copy32_ID(werewolfupperbody_run_down_pal, character->spriteDisplay.basePalleteId);
 	character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
-	CharacterAIControl *charControl = mchar_findFreeControlType(controlPool);
+	CharacterAIControl *charControl = (CharacterAIControl*)mchar_findFreeControlType(controlPool);
 	charControl->type = EControlAiType;
 	charControl->countAction = 0;
 	charControl->currentAction = MAXACTIONS;
@@ -162,7 +164,7 @@ void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->leftBlocked = false;
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
-	character->free = charControl;
+	character->free = (ControlTypeUnion*)charControl;
 	character->stats.maxLife = 10;
 	character->stats.currentLife = 5;
 }
@@ -184,8 +186,8 @@ void werewolf_doAction(CharacterAttr* character,
 	//mapInfo->collisionCheck(mapInfo, &boundingBox, character->direction);
 }
 
-void werewolf_actionWalk(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
+void werewolf_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 	Position *position = &character->position;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
@@ -234,8 +236,8 @@ void werewolf_actionWalk(CharacterAttr* character,
 	}
 }
 
-void werewolf_actionFindTarget(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
+void werewolf_actionFindTarget(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 	int i;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
@@ -351,7 +353,7 @@ void werewolf_getBoundingBoxStanding(const CharacterAttr* character,
 void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
 	int count;
 	BoundingBox mapBoundingBox, characterBoundingBox;
-	CharacterPlayerControl *charControl = (CharacterAIControl*)character->free;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int fallingDown;
 
 	character->getBounds(character, &count, &characterBoundingBox);
@@ -369,7 +371,7 @@ void werewolf_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo
 	    common_mapCollisionReactions[character->direction]);
 }
 
-void werewolf_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
+void werewolf_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter) {
 	
 	int count;

@@ -114,13 +114,13 @@ void spritemask_init(CharacterAttr* spritemask, SpriteMaskInit *maskInit)
 	spritemask->type = maskInit->type;
 	
 	commonCharacterSetPosition(spritemask, maskInit->x, maskInit->y, maskInit->z, EDown);
-	spritemask->controller = &commonDummy;
-	spritemask->doAction = &commonDummy;
+	spritemask->controller = &commonControllerDummy;
+	spritemask->doAction = &commonActionDummy;
 	spritemask->setPosition = &spritemask_setPosition;
 	spritemask->getBounds = &spritemask_getBoundingBox;
-	spritemask->checkCollision = &commonDummy;
-	spritemask->checkMapCollision = &commonDummy;
-	spritemask->checkActionCollision = &commonDummy;
+	spritemask->checkCollision = &commonCollisionCheckDummy;
+	spritemask->checkMapCollision = &commonMapCollisionDummy;
+	spritemask->checkActionCollision = &commonActionCollisionDummy;
 		
 	spritemask->spriteDisplay.baseImageId = EVramMapIdMaskStandard;
 	spritemask->spriteDisplay.imageUpdateStatus = EUpdate;

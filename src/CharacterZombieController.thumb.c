@@ -1,8 +1,10 @@
 #include "GBAObject.h"
 #include "GBACharacter.h"
 #include "GBAMap.h"
+#include "CharacterCommon.h"
 #include "CharacterZombie.h"
 #include  <stdbool.h>
+#include  <stdlib.h>
 
 #define DIST_OFFSET 80
 
@@ -11,9 +13,12 @@ const EDirections zombie_walkDirections[] = {
 	EUp, EUpleft, ELeft, EDownleft
 };
 
-void zombie_walkAroundController(CharacterAttr* character);
-void zombie_huntController(CharacterAttr* character);
-void zombie_isStunnedController(CharacterAttr* character);
+void zombie_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void zombie_huntController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void zombie_isStunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 
 void zombie_setCharacter(CharacterAttr* character) {
     character->controller = &zombie_walkAroundController; 
@@ -47,7 +52,8 @@ void resetBlockedDirection(CharacterAIControl *charControl) {
 	charControl->downBlocked = false;
 }
 
-void zombie_walkAroundController(CharacterAttr* character) {
+void zombie_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int i;
 	EDirections goDirection;
@@ -55,14 +61,14 @@ void zombie_walkAroundController(CharacterAttr* character) {
 	if (charControl->currentStatus == EZombieStatusHuntTarget) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &zombie_huntController;
-		zombie_huntController(character);
+		zombie_huntController(character, mapInfo, characterCollection);
 		return;
 	}
 	
 	if (charControl->currentStatus == EZombieStatusStunned) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &zombie_isStunnedController;
-		zombie_isStunnedController(character);
+		zombie_isStunnedController(character, mapInfo, characterCollection);
 		return;
 	}
 	
@@ -128,21 +134,22 @@ void findAttackDirection(const Position *charPosition, const Position *target, E
 	*direction = (xDist > yDist)*xDirection + (!(xDist > yDist))*yDirection; 
 }
 
-void zombie_huntController(CharacterAttr* character) {
+void zombie_huntController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int distanceX, distanceY, i;
 	
 	if (charControl->currentStatus == EZombieStatusWalkAround) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &zombie_walkAroundController;
-		zombie_walkAroundController(character);
+		zombie_walkAroundController(character, mapInfo, characterCollection);
 		return;
 	}
 	
 	if (charControl->currentStatus == EZombieStatusStunned) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &zombie_isStunnedController;
-		zombie_isStunnedController(character);
+		zombie_isStunnedController(character, mapInfo, characterCollection);
 		return;
 	}
 	
@@ -193,7 +200,8 @@ void zombie_huntController(CharacterAttr* character) {
 	++charControl->actions[charControl->currentAction].currentFrame;
 }
 
-void zombie_isStunnedController(CharacterAttr* character) {
+void zombie_isStunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int distanceX, distanceY, i;
 	
@@ -214,7 +222,7 @@ void zombie_isStunnedController(CharacterAttr* character) {
 		character->controller = &zombie_huntController;
 		character->stats.currentStatus = EStatusNormal;
 		charControl->currentStatus = EZombieStatusHuntTarget;
-		zombie_huntController(character);
+		zombie_huntController(character, mapInfo, characterCollection);
 		return;
 	}
 }

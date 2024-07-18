@@ -2,7 +2,7 @@
 #include "GBAMap.h"
 
 extern const unsigned short pallette_forest_ground_side[16];
-extern const const unsigned short pallette_grave[16]; 
+extern const unsigned short pallette_grave[16]; 
 extern const unsigned int tile_forest_ground_side[64];
 extern const unsigned int tile_forest_ground[128];
 extern const unsigned int tile_forest_ground_sideedge[64];
@@ -307,7 +307,8 @@ const SpriteMaskInit spritemask_mapheighttest[] = {
 	{ 224, 208, 32, 0,EMask32x32 }, 	{ 248, 208, 32, 0,EMask16x32 }, 	{ 232, 168, 16, 0,EMask16x16 }, 
 };
 
-const MapInfo mapheighttest = { 512, 512, 2, 9, 2, 0, 4, 3, 0, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
+/*const MapInfo mapheighttest = { 512, 512, 2, 9, 2, 0, 4, 3, 0, NULL , mapentryset_mapheighttest, tileset_mapheighttest, pallette_mapheighttest,
 transfer_mapheighttest, heightMap_mapheighttest, actors_mapheighttest, spritemask_mapheighttest, spritemaskimage_mapheighttest, NULL, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };
 
 const EventTransfer startAt = { 400, 400, 128, 128, 49, &mapheighttest, 16, 48, 0, ERight};
+*/

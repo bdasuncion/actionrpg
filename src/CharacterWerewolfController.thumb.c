@@ -1,10 +1,16 @@
 #include "GBAObject.h"
+#include "ManagerPrinter.h"
+#include "CharacterCommon.h"
 #include "CharacterWerewolf.h"
 #include  <stdbool.h>
+#include  <stdlib.h>
 
-void werewolf_scanSurroundingsController(CharacterAttr* character);
-void werewolf_huntTargetController(CharacterAttr* character);
-void werewolf_goAroundObstacleController(CharacterAttr* character);
+void werewolf_scanSurroundingsController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void werewolf_huntTargetController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void werewolf_goAroundObstacleController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 
 const EDirections werewolf_patrolDirections[] = {
     EDown, EDownright, ERight, EUpright,
@@ -15,8 +21,8 @@ void werewolf_setCharacter(CharacterAttr* character) {
     character->controller = &werewolf_scanSurroundingsController; 
 }
 
-void werewolf_scanSurroundingsController(CharacterAttr* character/*, 
-    const MapInfo *mapInfo, CharacterCollection *charCollection*/) {
+void werewolf_scanSurroundingsController(CharacterAttr* character, 
+    const MapInfo *mapInfo, const CharacterCollection *charCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int i;
    
@@ -58,7 +64,8 @@ void werewolf_scanSurroundingsController(CharacterAttr* character/*,
 	++charControl->actions[charControl->currentAction].currentFrame;
 }
 
-void werewolf_goAroundObstacleController(CharacterAttr* character) {
+void werewolf_goAroundObstacleController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int nextScreenFrame, nextAnimationFrame;
 	bool isLastFrame = false;
@@ -101,7 +108,8 @@ void werewolf_goAroundObstacleController(CharacterAttr* character) {
 	++charControl->actions[charControl->currentAction].currentFrame;
 }
 
-void werewolf_huntTargetController(CharacterAttr* character) {
+void werewolf_huntTargetController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
    int nextScreenFrame, nextAnimationFrame;
    bool isLastFrame = false;
    CharacterAIControl *charControl = (CharacterAIControl*)character->free;

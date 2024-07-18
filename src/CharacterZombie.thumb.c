@@ -8,9 +8,12 @@
 #include "UtilCommonValues.h"
 #include "SpriteSetZombie.h"
 #include "ManagerVram.h"
+#include "ManagerCharacters.h"
+#include "ManagerCharacterActionEvents.h"
 #include "CharacterZombie.h"
 #include "ImageZombie.h"
 #include "CharacterCommon.h"
+#include "CharacterAttackEffects.h"
 #include "ManagerPrinter.h"
 
 extern const EDirections directions[EDirectionsCount];
@@ -120,10 +123,10 @@ const BoundingBox zombie_strikeCollisionBox[8] = {
 
 const OffsetPoints zombie_scanLastKnownPosition = { 16, 16 };
 
-void zombie_actionWalk(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
-void zombie_actionChaseTarget(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection);
+void zombie_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void zombie_actionChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void zombie_actionAttack(CharacterAttr* character,const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void zombie_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -137,7 +140,8 @@ CharFuncAction zombie_actions[] = {
 };
 
 
-void zombie_walkAroundController(CharacterAttr* character);
+void zombie_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 void zombie_doAction(CharacterAttr* character, const MapInfo *mapInfo, 
     const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void zombie_getBoundingBoxMoving(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
@@ -145,7 +149,7 @@ void zombie_getBoundingBoxStanding(const CharacterAttr* character, int *count, B
 int zombie_setPosition(CharacterAttr* character, OBJ_ATTR *oamBuf, 
 	const Position *scr_pos, const ScreenDimension *scr_dim);
 void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo);
-void zombie_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
+void zombie_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents,
 	AttackEffectCollection *attackEffects);
@@ -174,7 +178,7 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	sprite_palette_copy32_ID(zombie_walk_side_pal, character->spriteDisplay.basePalleteId);
 	character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
-	CharacterAIControl *charControl = mchar_findFreeControlType(controlPool);
+	CharacterAIControl *charControl = (CharacterAIControl*)mchar_findFreeControlType(controlPool);
 	charControl->type = EControlAiType;
 	charControl->countAction = 0;
 	charControl->currentAction = MAXACTIONS;
@@ -184,7 +188,7 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
 	charControl->currentStatus = EZombieStatusWalkAround;
-	character->free = charControl;
+	character->free = (ControlTypeUnion*)charControl;
 	
 	character->stats.maxLife = 10;
 	character->stats.currentLife = 3;
@@ -203,8 +207,8 @@ void zombie_doAction(CharacterAttr* character,
 	}
 }
 
-void zombie_actionWalk(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
+void zombie_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 	int nextScreenFrame, nextAnimationFrame;
 	Position *position = &character->position;
@@ -259,8 +263,8 @@ void zombie_actionWalk(CharacterAttr* character,
 	}
 }
 
-void zombie_actionChaseTarget(CharacterAttr* character,
-	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
+void zombie_actionChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
 	Position *position = &character->position;
@@ -470,7 +474,7 @@ int zombie_setPosition(CharacterAttr* character,
 void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
 	int count;
 	BoundingBox mapBoundingBox, characterBoundingBox;
-	CharacterPlayerControl *charControl = (CharacterAIControl*)character->free;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int fallingDown;
 
 	character->getBounds(character, &count, &characterBoundingBox);
@@ -488,7 +492,7 @@ void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) 
 	    common_mapCollisionReactions[character->direction]);
 }
 
-void zombie_checkCollision(const CharacterAttr* character, bool isOtherCharBelow,
+void zombie_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter) {
 	
 	int count;
