@@ -7,7 +7,7 @@
 #include "CharacterCommon.h"
 #include "GBATimer.h"
 
-const CharacterActionEvent defaultCharacterActionEvent = {EActionNone, NULL, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0}};
+const CharacterActionEvent defaultCharacterActionEvent = {NULL, NULL, EActionNone, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0}};
 
 void mchar_actione_init(CharacterActionCollection *charActionCollection, int maxActions) {
     int i;
@@ -26,6 +26,28 @@ void mchar_actione_reinit(CharacterActionCollection *charActionCollection) {
 	}
 	
 	charActionCollection->count = 0;
+}
+
+void mchar_actione_resolveonetarget(CharacterActionEvent *actionEvent, CharacterCollection *charCollection,
+		AttackEffectCollection *attackEffects) {
+	if (actionEvent->maxHit > 0) {
+		int i, count;
+		BoundingBox charBoundingBox;
+		bool isHit = false;
+		for (i = 0; i < charCollection->currentSize; ++i) {
+			CharacterAttr *character = charCollection->characters[i];
+			character->getBounds(character, &count, &charBoundingBox);
+			isHit = hasCollision(&actionEvent->collisionBox, &charBoundingBox);
+			if (isHit) {
+				Position pos;
+				--actionEvent->maxHit;
+				character->isHit(character, actionEvent);
+				charAttackEffect_getPosition(&actionEvent->collisionBox, &charBoundingBox, &pos);
+				charAttackEffect_Add(&pos, actionEvent->type, attackEffects);
+				break;
+			}
+		}
+	}
 }
 
 bool mchar_actione_update(CharacterAttr *source, CharacterActionCollection *charActionCollection, 
@@ -56,6 +78,9 @@ void mchar_actione_add(CharacterAttr *source, CharacterActionCollection *charAct
 	charAction->maxHit = maxHit;
 	charAction->collisionBox = *collisionBox;
 	charAction->source = source;
+	if (maxHit == 1) {
+		charAction->resolve = &mchar_actione_resolveonetarget;
+	}
 	
 	++charActionCollection->count;
 }
@@ -70,18 +95,6 @@ void mchar_actione_remove(CharacterAttr *source, CharacterActionCollection *char
 			charActionCollection->currentActions[charActionCollection->count] = defaultCharacterActionEvent;
 			
 			break;
-		}
-	}
-}
-
-void mchar_actione_onetarget(CharacterActionEvent *actionEvent, CharacterCollection *charCollection) {
-	if (actionEvent->maxHit > 0) {
-		int i, count;
-		BoundingBox charBoundingBox;
-		bool isHit = false;
-		for (i = 0; i < charCollection->currentSize; ++i) {
-			CharacterAttr *character = charCollection->characters[i];
-			character->getBounds(character, &count, &charBoundingBox);
 		}
 	}
 }
