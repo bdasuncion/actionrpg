@@ -328,6 +328,11 @@ void alisa_dashForwardController(CharacterAttr* character, const MapInfo *mapInf
 		return;
 	}
 	
+	if (commonGetCurrentAnimationFrame(character) > ALISA_DASH_STARTMOVE_FRAME &&
+		alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+	
 	character->stats.currentStatus = EStatusNormal;
 	character->getBounds = &alisa_getBoundingBoxMoving;
 	

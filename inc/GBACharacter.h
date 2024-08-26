@@ -156,6 +156,8 @@ typedef void (*CharFuncFallingCollision)(struct CharacterAttr *charAtt, const st
 
 typedef bool (*CharFuncIsHit)(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent); //TODO: Put screen position it its own header
 
+typedef bool (*CharFuncIsHit)(void* charAtt, void *actionEvent); //TODO: Put screen position it its own header
+
 typedef struct ActionControl {
 	u8 doForNumFrames;
 	u8 currentFrame;

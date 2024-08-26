@@ -8,7 +8,6 @@
 #include "CharacterAttackEffects.h"
 #include "GBATimer.h"
 
-
 const CharacterActionEvent defaultCharacterActionEvent = {NULL, NULL, EActionNone, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0}};
 
 void mchar_actione_init(CharacterActionCollection *charActionCollection, int maxActions) {

@@ -820,6 +820,7 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 }
 
 bool alisa_isHit(CharacterAttr *alisa, CharacterActionEvent *actionEvent) {
+
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)(CharacterAIControl*)alisa->free;
 	if (alisa->stats.currentStatus == EStatusNoActionCollision) {
 		return false;

@@ -60,19 +60,25 @@ void commonActionCollisionDummy(CharacterAttr *charAtt,
 	CharacterActionCollection *actionEvents, AttackEffectCollection *attackEffects) {
 }
 
+bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent) {
+	return false;
+}
+
 //const CharacterAttr openSlot = {&commonControllerDummy, &commonActionDummy, &commonSetPositionDummy, &commonGetBoundsDummy, 
  //   &funcCollisionCheckDummy, &funcMapCollisionDummy, &funcActionCollisionDummy, NULL, 0, NONE,0,0,0,0,0, NULL, {0, -1, 0}, NULL, NULL };
 
 void commonRemoveCharacter(CharacterAttr *character) {
     character->type = NONE;
     commonCharacterSetPosition(character, 0, -1, 0, EDown);
-	
+
 	character->controller = &commonControllerDummy;
 	character->doAction = &commonActionDummy;
 	character->setPosition = &commonSetPositionDummy;
 	character->getBounds = &commonGetBoundsDummy;
 	character->checkCollision = &commonCollisionCheckDummy;
 	character->checkMapCollision = &commonMapCollisionDummy;
+	character->isHit = &commonIsHitDummy;
+
 	character->spriteDisplay.baseImageId = 0;
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.basePalleteId = 0;
