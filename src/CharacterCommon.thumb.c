@@ -66,6 +66,7 @@ void commonActionCollisionDummy(CharacterAttr *charAtt,
 void commonRemoveCharacter(CharacterAttr *character) {
     character->type = NONE;
     commonCharacterSetPosition(character, 0, -1, 0, EDown);
+	
 	character->controller = &commonControllerDummy;
 	character->doAction = &commonActionDummy;
 	character->setPosition = &commonSetPositionDummy;

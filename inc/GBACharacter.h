@@ -241,7 +241,6 @@ typedef struct CharacterAttr {
 	CharFuncGetBounds getBounds; //Do we still need this here?
 	CharFuncCollisionCheck checkCollision;
 	CharFuncMapCollisionCheck checkMapCollision;
-	CharFuncActionCollision checkActionCollision;
 	CharFuncIsHit isHit;
 	SpriteDisplay spriteDisplay;
 	CharacterStats stats;

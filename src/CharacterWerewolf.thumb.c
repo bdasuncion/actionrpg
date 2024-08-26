@@ -148,7 +148,6 @@ void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->getBounds = &werewolf_getBoundingBoxStanding;
 	character->checkCollision = &werewolf_checkCollision;
 	character->checkMapCollision = &werewolf_checkMapCollision;
-	character->checkActionCollision = &werewolf_checkActionEventCollision;
 		
 	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
