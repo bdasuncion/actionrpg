@@ -120,7 +120,6 @@ void spritemask_init(CharacterAttr* spritemask, SpriteMaskInit *maskInit)
 	spritemask->getBounds = &spritemask_getBoundingBox;
 	spritemask->checkCollision = &commonCollisionCheckDummy;
 	spritemask->checkMapCollision = &commonMapCollisionDummy;
-	spritemask->checkActionCollision = &commonActionCollisionDummy;
 		
 	spritemask->spriteDisplay.baseImageId = EVramMapIdMaskStandard;
 	spritemask->spriteDisplay.imageUpdateStatus = EUpdate;

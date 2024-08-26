@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "GBATypes.h"
 #include "GBAObject.h"
-#include "GBACharacterActionEvent.h"
+#include "GBACharacterActionEvent.h"	
 #include "ManagerOAM.h"
 #include "ManagerPrinter.h"
 #include "CharacterCommon.h"

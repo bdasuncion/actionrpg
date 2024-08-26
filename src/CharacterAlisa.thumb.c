@@ -15,6 +15,7 @@
 #include "MapCommon.h"
 #include "GBAMap.h"
 #include "ManagerCharacters.h"
+#include "ManagerPrinter.h"
 
 #define ALISA_RUN_MVMNT_CTRL_MAX 5
 #define ALISA_DASH_MVMNT_CTRL_MAX 4
@@ -819,7 +820,7 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 }
 
 bool alisa_isHit(CharacterAttr *alisa, CharacterActionEvent *actionEvent) {
-	CharacterPlayerControl *charControl = (CharacterAIControl*)alisa->free;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)(CharacterAIControl*)alisa->free;
 	if (alisa->stats.currentStatus == EStatusNoActionCollision) {
 		return false;
 	}

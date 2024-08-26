@@ -5,7 +5,7 @@
 #include "GBAObject.h"
 #include "GBACharacter.h"
 
-typedef void (*ActionEventResolve)(void *actionEvent, CharacterCollection *charCollection,
+typedef void (*ActionEventResolve)(struct CharacterActionEvent *actionEvent, CharacterCollection *charCollection,
 		AttackEffectCollection *attackEffects);
 
 typedef struct CharacterActionEvent {

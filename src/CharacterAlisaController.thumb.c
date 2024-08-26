@@ -303,7 +303,7 @@ void alisa_prepareDashController(CharacterAttr* character, const MapInfo *mapInf
 	}
 
 	if (isLastFrame) {
-		if (alisa_isFalling(character, charControl)) {
+		if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 			return;
 		}
 		character->nextDirection = commonReverseDirection(character->faceDirection);
@@ -324,7 +324,7 @@ void alisa_dashForwardController(CharacterAttr* character, const MapInfo *mapInf
 	}
 	
 	if (commonGetCurrentAnimationFrame(character) > ALISA_DASH_STARTMOVE_FRAME &&
-		alisa_isFalling(character, charControl)) {
+		alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -353,7 +353,7 @@ void alisa_dashBackwardController(CharacterAttr* character, const MapInfo *mapIn
 	}
 	
 	if (commonGetCurrentAnimationFrame(character) > 0 && 
-		alisa_isFalling(character, charControl)) {
+		alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 			return;
 	}
 	

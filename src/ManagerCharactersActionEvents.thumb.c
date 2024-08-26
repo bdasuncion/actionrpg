@@ -5,7 +5,9 @@
 #include "GBACharacterActionEvent.h"
 #include "ManagerPrinter.h"
 #include "CharacterCommon.h"
+#include "CharacterAttackEffects.h"
 #include "GBATimer.h"
+
 
 const CharacterActionEvent defaultCharacterActionEvent = {NULL, NULL, EActionNone, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0}};
 

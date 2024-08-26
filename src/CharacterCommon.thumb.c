@@ -73,7 +73,6 @@ void commonRemoveCharacter(CharacterAttr *character) {
 	character->getBounds = &commonGetBoundsDummy;
 	character->checkCollision = &commonCollisionCheckDummy;
 	character->checkMapCollision = &commonMapCollisionDummy;
-	character->checkActionCollision = &commonActionCollisionDummy;
 	character->spriteDisplay.baseImageId = 0;
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.basePalleteId = 0;
