@@ -110,7 +110,7 @@ typedef struct PatternData {
 
 typedef struct MusicTrack {
 	//PatternData *columns[4];
-	PatternData **columns;
+	const PatternData **columns;
 	int length;
 }ALIGN4 MusicTrack;
 

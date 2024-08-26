@@ -7,6 +7,7 @@
 
 #include "GBAInterrupt.h"
 #include "ManagerBG.h"
+#include "ManagerScrDisplay.h"
 
 #define OFFSET_X 100
 #define OFFSET_Y 60

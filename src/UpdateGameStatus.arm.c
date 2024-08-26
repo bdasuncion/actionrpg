@@ -7,6 +7,9 @@
 #include "ManagerSound.h"
 #include "ManagerCharacters.h"
 #include "ManagerGame.h"
+#include "ManagerScrDisplay.h"
+#include "ManagerPrinter.h"
+#include "ManagerOAM.h"
 
 #include "GBATimer.h"
 #include "UtilCommonValues.h"

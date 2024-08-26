@@ -9,9 +9,13 @@
 #include "ManagerScrDisplay.h"
 #include "ManagerBG.h"
 #include "ManagerVram.h"
+#include "ManagerCharacters.h"
+#include "ManagerCharacterActionEvents.h"
 
+#include "MapCommon.h"
 //#include "CharacterAlisa.h"
 //#include "CharacterNameless.h"
+#include "CharacterCommon.h"
 
 #define DEFAULT_SCREEN_BOUNDING_BOX 0
 //#define DELAY 2
@@ -24,10 +28,16 @@ bool update = true;
 
 //extern const MapInfo mapTest;
 
-void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo);
-void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo);
-void mapCommon_defaultEffect(void *screenAttribute, void *characterCollection, MapInfo *mapInfo);
-void mapCommon_effectSpriteMasking(void *screenAttribute, void *characterCollection, MapInfo *mapInfo);
+//void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
+//	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+//	Track *track);
+void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
+	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track);
+//void mapCommon_defaultEffect(void *screenAttribute, void *characterCollection, void *mapInfo, 
+//	void *dummy1, void *dummy2, void *dummy3);
+void mapCommon_effectSpriteMasking(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo, 
+	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection, Track *track);
 
 void map_nofunction(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo) {
 }
@@ -83,14 +93,16 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
         mapInfo, controlPool, charActionCollection, track);
 	}
 
-	mbg_init(screenAttribute, mapInfo, characterCollection, controlPool);
+	mbg_init(screenAttribute, mapInfo, characterCollection, controlPool, charActionCollection);
 	
 	mapInfo->mapFunction = &returnToScreen;
 	
 	mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 }
 
-void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo) {
+void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
+	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track) {
     ++current;
 	if (current >= DELAY) {
 	    current = 0;
@@ -103,7 +115,9 @@ void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterColl
 	blendBlack(BLENDVAL_MAX);
 }
 
-void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo) {
+void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
+	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track) {
     
 	++current;
 	if (current >= DELAY) {
@@ -116,18 +130,24 @@ void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterC
 		mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 	    mapInfo->transferTo = NULL;
 		blendBlack(0);
-		mapCommon_effectSpriteMasking(screenAttribute, characterCollection, mapInfo);
+		mapCommon_effectSpriteMasking(screenAttribute, characterCollection, mapInfo, controlPool, charActionCollection, track);
 	}
 }
 
-void mapCommon_effectSpriteMasking(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
+void mapCommon_effectSpriteMasking(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+	MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track) {
 	setSpriteMasking();
 }
 
-void mapCommon_defaultEffect(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
+void mapCommon_defaultEffect(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+	MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track) {
 }
 
-void mapCommon_returnToNormal(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
+void mapCommon_returnToNormal(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+	MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track) {
     blendBlack(0);
 	++mapInfo->screenEffect.currentFrame;
 	if (mapInfo->screenEffect.currentFrame >= mapInfo->screenEffect.durationFrames) {
@@ -138,7 +158,9 @@ void mapCommon_returnToNormal(void *screenAttribute, void *characterCollection, 
 	}
 }
 
-void mapCommon_goDark(void *screenAttribute, void *characterCollection, MapInfo *mapInfo) {
+void mapCommon_goDark(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+	MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track) {
     blendBlack(BLENDVAL_MAX);
 	++mapInfo->screenEffect.currentFrame;
 	if (mapInfo->screenEffect.currentFrame >= mapInfo->screenEffect.durationFrames) {

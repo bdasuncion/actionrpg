@@ -1,8 +1,11 @@
 #include  <stdarg.h>
+#include  <string.h>
 #include "GBATypes.h"
 #include "GBADMA.h"
 #include "GBABG.h"
 #include "GBAVideo.h"
+#include "GBACharacterType.h"
+#include "ManagerVram.h"
 
 #define MAX_LINELENGTH 30
 

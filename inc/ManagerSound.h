@@ -18,4 +18,6 @@ void msound_setChannel3d(const Sound *sound, bool isRepeating,
     int rightPhaseDelay, int leftPhaseDelay, int distAttenuation);
 void msound_process3dSound(int *distance, int *rightPhaseDelay, int *leftPhaseDelay);
 void msound_setChannelStereo(const Sound *sound, bool isRepeating, int distance);
+void msound_updateTrack(Track *track);
+void msound_mixSound();
 #endif

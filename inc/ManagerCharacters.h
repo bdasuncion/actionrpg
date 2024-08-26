@@ -23,5 +23,11 @@ void mchar_reinit(CharacterCollection *charCollection, CharacterAttr **player1);
 CharacterAttr* mchar_findCharacterType(CharacterCollection *charCollection, int type);
 void mchar_resetControlPool(ControlTypePool *freeType);
 void mchar_initControlPool(ControlTypePool *freeType);
+void mchar_initControlType(ControlTypePool *controlPool);
+void mchar_initTransferableCharacters(CharacterCollection *charCollection, int size);
+void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc);
 ControlTypeUnion* mchar_getControlType(ControlTypePool *freeType);
+ControlTypeUnion* mchar_findFreeControlType(ControlTypePool *controlPool);
+void mchar_removeControl(CharacterBaseControl *control);
+void mchar_resetControlTypeAndSetCount(ControlTypePool *controlPool, int setCount);
 #endif

@@ -3,6 +3,7 @@
 
 #include "GBAObject.h"
 #include "GBACharacter.h"
+#include "GBAMap.h"
 
 typedef enum AlisaAction
 {
@@ -32,11 +33,16 @@ typedef enum AlisaStatus
 
 void alisa_init(CharacterAttr* character, ControlTypePool* controlPool);
 void alisa_setCharacter(CharacterAttr* character);
-void alisa_controller(CharacterAttr* character);
-void alisa_slashController(CharacterAttr* character);
-void alisa_dashForwardController(CharacterAttr* character);
-void alisa_prepareDashController(CharacterAttr* character);
-void alisa_jumpController(CharacterAttr* character);
+void alisa_controller(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_slashController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_dashForwardController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_prepareDashController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_jumpController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 void alisa_getBoundingBoxStanding(const CharacterAttr* alisa, 
 	int *count, BoundingBox *boundingBox);
 void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 

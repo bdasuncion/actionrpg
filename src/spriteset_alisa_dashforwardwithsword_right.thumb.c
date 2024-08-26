@@ -18,7 +18,7 @@ const SpriteLayer alisa_dashforwardwithsword_right_layerSet3[] = {
 
 const SpriteLayerSet alisa_dashforwardwithsword_right_layerSet[] = {
     {alisa_dashforwardwithsword_right_layerSet0,3,2},
-    {alisa_dashforwardwithsword_right_layerSet1,10,2},
+    {alisa_dashforwardwithsword_right_layerSet1,7,2},
     {alisa_dashforwardwithsword_right_layerSet2,3,2},
     {alisa_dashforwardwithsword_right_layerSet3,10,2},
 };

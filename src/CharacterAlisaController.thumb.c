@@ -1,5 +1,6 @@
 #include "GBAObject.h"
 #include "GBAKey.h"
+#include "CharacterCommon.h"
 #include "CharacterAlisa.h"
 #include  <stdbool.h>
 #include  <stdlib.h>
@@ -11,14 +12,22 @@
 #define ALISA_MIN_BACKWARD_DASH 4
 #define ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME 1
 
-void alisa_stunnedController(CharacterAttr* character);
-void alisa_slashController(CharacterAttr* character);
-void alisa_prepareDashController(CharacterAttr* character);
-void alisa_dashForwardController(CharacterAttr* character);
-void alisa_dashBackwardController(CharacterAttr* character);
-void alisa_fallingDownController(CharacterAttr* character);
-void alisa_fallingDownForwardController(CharacterAttr* character);
-void alisa_jumpForwardController(CharacterAttr* character);
+void alisa_stunnedController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_slashController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_prepareDashController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_dashForwardController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_dashBackwardController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_fallingDownController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_fallingDownForwardController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_jumpForwardController(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 
 const EDirections DEFAULT_DIRECTIONMAP[EDirectionsCount] = {
 	EDown,EDown,ERight,EUp,EUp,EUp,ELeft,EDown
@@ -102,45 +111,49 @@ void alisa_setCharacter(CharacterAttr* character) {
 	character->controller = &alisa_controller; 
 }
 
-bool alisa_isStunned(CharacterAttr* character, CharacterPlayerControl *charControl) {
+bool alisa_isStunned(CharacterAttr* character, CharacterPlayerControl *charControl,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
 	if (charControl->currentStatus == EAlisaStatusStunned) {
 		character->controller = &alisa_stunnedController; 
-		alisa_stunnedController(character);
+		alisa_stunnedController(character, mapInfo, characterCollection);
 		return true;
 	}
 	return false;
 }
 
-bool alisa_isFalling(CharacterAttr* character, CharacterPlayerControl *charControl) {
+bool alisa_isFalling(CharacterAttr* character, CharacterPlayerControl *charControl,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
 	if (character->nextAction == EAlisaFallingDown) {
 		character->controller = &alisa_fallingDownController; 
-		alisa_fallingDownController(character);
+		alisa_fallingDownController(character, mapInfo, characterCollection);
 		return true;
 	}
 	
 	return false;
 }
 
-bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charControl) {
+bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charControl,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
 	if (character->nextAction != EAlisaFallingDown &&  character->nextAction != EAlisaFallingDownForward) {
 		//character->faceDirection = character->direction;
 		character->controller = &alisa_controller;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 		return true;
 	}
 	return false;
 }
 
-void alisa_controller(CharacterAttr* character) {	
+void alisa_controller(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {	
 	EDirections direction = KEYPRESS_DIRECTION;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
 
-	if (alisa_isStunned(character, charControl)) {
+	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
-	if (alisa_isFalling(character, charControl)) {
+	if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -167,17 +180,18 @@ void alisa_controller(CharacterAttr* character) {
 	character->nextAction = EAlisaStand;
 }
 
-void alisa_normalSlashController(CharacterAttr* character) {
+void alisa_normalSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	int nextScreenFrame, nextAnimationFrame, hold;
 	bool isLastFrame = false;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
 
-	if (alisa_isStunned(character, charControl)) {
+	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 
-	if (alisa_isFalling(character, charControl)) {
+	if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	character->nextAction = EAlisaNormalSwordSlash;
@@ -189,17 +203,18 @@ void alisa_normalSlashController(CharacterAttr* character) {
 	}
 }
 
-void alisa_strongSlashController(CharacterAttr* character) {
+void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	int nextScreenFrame, nextAnimationFrame, hold;
 	bool isLastFrame = false;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
 
-	if (alisa_isStunned(character, charControl)) {
+	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 
-	if (alisa_isFalling(character, charControl)) {
+	if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	character->nextAction = EAlisaStrongSwordSlash;
@@ -211,17 +226,18 @@ void alisa_strongSlashController(CharacterAttr* character) {
 	}
 }
 
-void alisa_slashController(CharacterAttr* character) {
+void alisa_slashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
    character->distanceFromGround = 1024;
    
-   	if (alisa_isStunned(character, charControl)) {
+   	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
-	if (alisa_isFalling(character, charControl)) {
+	if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 
@@ -246,17 +262,18 @@ void alisa_slashController(CharacterAttr* character) {
 	character->nextAction = EAlisaStand;
 }
 
-void alisa_prepareDashController(CharacterAttr* character) {
+void alisa_prepareDashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
     EDirections direction = KEYPRESS_DIRECTION;
     int nextScreenFrame, nextAnimationFrame, hold;
     bool isLastFrame = false;
     CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
     character->distanceFromGround = 1024;
-   	if (alisa_isStunned(character, charControl)) {
+   	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
-	if (alisa_isFalling(character, charControl)) {
+	if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -292,13 +309,14 @@ void alisa_prepareDashController(CharacterAttr* character) {
 	}
 }
 
-void alisa_dashForwardController(CharacterAttr* character) {
+void alisa_dashForwardController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	int nextScreenFrame, nextAnimationFrame, hold;
 	bool isLastFrame = false;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
     character->distanceFromGround = 1024;
 	
-   	if (alisa_isStunned(character, charControl)) {
+   	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -315,13 +333,14 @@ void alisa_dashForwardController(CharacterAttr* character) {
 	}
 }
 
-void alisa_dashBackwardController(CharacterAttr* character) {
+void alisa_dashBackwardController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	int nextScreenFrame, nextAnimationFrame, hold;
 	bool isLastFrame = false;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
       
-    if (alisa_isStunned(character, charControl)) {
+    if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -340,14 +359,15 @@ void alisa_dashBackwardController(CharacterAttr* character) {
 	}
 }
 
-void alisa_jumpUpController(CharacterAttr* character) {
+void alisa_jumpUpController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
    EDirections direction = KEYPRESS_DIRECTION;
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
     character->distanceFromGround = 1024;
  
-	if (alisa_isStunned(character, charControl)) {
+	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -380,14 +400,15 @@ void alisa_jumpUpController(CharacterAttr* character) {
 	}
 }
 
-void alisa_jumpForwardController(CharacterAttr* character) {
+void alisa_jumpForwardController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
    //EDirections direction = KEYPRESS_DIRECTION;
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
     character->distanceFromGround = 1024;
  
-	if (alisa_isStunned(character, charControl)) {
+	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -404,7 +425,8 @@ void alisa_jumpForwardController(CharacterAttr* character) {
 	}
 }
 
-void alisa_jumpController(CharacterAttr* character) {
+void alisa_jumpController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
    EDirections direction = KEYPRESS_DIRECTION;
    //if (direction != EUnknown) {
    if (direction == character->direction) {
@@ -416,18 +438,19 @@ void alisa_jumpController(CharacterAttr* character) {
    }
 }
 
-void alisa_fallingDownForwardController(CharacterAttr* character) {
+void alisa_fallingDownForwardController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
    int nextScreenFrame, nextAnimationFrame, hold;
    EDirections direction = KEYPRESS_DIRECTION;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
    character->distanceFromGround = 1024;
 
-   	if (alisa_isStunned(character, charControl)) {
+   	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
    
-	if (alisa_hasLanded(character, charControl)) {
+	if (alisa_hasLanded(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 
@@ -438,24 +461,26 @@ void alisa_fallingDownForwardController(CharacterAttr* character) {
 	}
 }
 
-void alisa_fallingDownController(CharacterAttr* character) {
+void alisa_fallingDownController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
    character->distanceFromGround = 1024;
 
-   	if (alisa_isStunned(character, charControl)) {
+   	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
    
-	if (alisa_hasLanded(character, charControl)) {
+	if (alisa_hasLanded(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 
 	character->nextAction = EAlisaFallingDown;
 }
 
-void alisa_stunnedController(CharacterAttr* character) {
+void alisa_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 	int nextScreenFrame, nextAnimationFrame;
 	bool isLastFrame = false;
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;

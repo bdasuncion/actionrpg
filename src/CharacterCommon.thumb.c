@@ -7,6 +7,9 @@
 #include "GBATimer.h"
 #include "GBACharacter.h"
 #include "GBACharacterType.h"
+#include "ManagerCharacterActionEvents.h"
+#include "ManagerCharacters.h"
+#include "ManagerVram.h"
 #include "MapCommon.h"
 #include "UtilCommonValues.h"
 #include "CharacterCommon.h"
@@ -26,30 +29,57 @@
 extern const FuncCharacterInit character_InitFunctionsCollection[];
 extern const FuncCharacterSet characterSet[];
 
-int commonDummy() {
-    return 0;
+void commonControllerDummy(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
 }
 
-const CharacterAttr openSlot = {&commonDummy, &commonDummy, &commonDummy, &commonDummy, 
-    &commonDummy, &commonDummy, &commonDummy, NULL, 0, NONE,0,0,0,0,0, NULL, {0, -1, 0}, NULL, NULL };
+void commonActionDummy(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+}
+
+int commonSetPositionDummy(CharacterAttr* charAtt, OBJ_ATTR *oamBuf, 
+	const Position *scr_pos,
+	const ScreenDimension *scr_dim) {
+	return 0;
+}
+
+void commonGetBoundsDummy(const CharacterAttr* charAtt,
+	int *count, BoundingBox *collisionBox) {
+	*count = 0;
+	collisionBox = NULL;
+}
+	
+void commonCollisionCheckDummy(CharacterAttr *charAtt, bool isOtherCharBelow,
+	bool *checkNext, const CharacterAttr *checkWithCharAtt) {
+}
+	
+void commonMapCollisionDummy(CharacterAttr* charAtt, const MapInfo* mapInfo) {
+}
+
+void commonActionCollisionDummy(CharacterAttr *charAtt, 
+	CharacterActionCollection *actionEvents, AttackEffectCollection *attackEffects) {
+}
+
+//const CharacterAttr openSlot = {&commonControllerDummy, &commonActionDummy, &commonSetPositionDummy, &commonGetBoundsDummy, 
+ //   &funcCollisionCheckDummy, &funcMapCollisionDummy, &funcActionCollisionDummy, NULL, 0, NONE,0,0,0,0,0, NULL, {0, -1, 0}, NULL, NULL };
 
 void commonRemoveCharacter(CharacterAttr *character) {
     character->type = NONE;
     commonCharacterSetPosition(character, 0, -1, 0, EDown);
-	character->controller = &commonDummy;
-	character->doAction = &commonDummy;
-	character->setPosition = &commonDummy;
-	character->getBounds = &commonDummy;
-	character->checkCollision = &commonDummy;
-	character->checkMapCollision = &commonDummy;
-	character->checkActionCollision = &commonDummy;
+	character->controller = &commonControllerDummy;
+	character->doAction = &commonActionDummy;
+	character->setPosition = &commonSetPositionDummy;
+	character->getBounds = &commonGetBoundsDummy;
+	character->checkCollision = &commonCollisionCheckDummy;
+	character->checkMapCollision = &commonMapCollisionDummy;
+	character->checkActionCollision = &commonActionCollisionDummy;
 	character->spriteDisplay.baseImageId = 0;
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.basePalleteId = 0;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	mchar_removeControl(character->free);
+	mchar_removeControl((CharacterBaseControl*)character->free);
 }
-void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection);
+void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, const CharacterCollection *charCollection);
 
 void commonCharacterSetPosition(CharacterAttr* character, int x, int y, int z, EDirections direction) {
 	character->position.x = CONVERT_2MOVE(x);
@@ -1004,7 +1034,7 @@ void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventContr
    charControl->actions = eventControl->actions;
 }
 
-void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection) {
+void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, const CharacterCollection *charCollection) {
 	//TODO Make this generic
    CharacterAttr *targetCharacter = mchar_findCharacterType(charCollection, ALISA);
    CharacterEventControl *charControl = (CharacterEventControl*)character->free;
@@ -1015,7 +1045,7 @@ void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInf
    eventBox.endX = character->position.x + charControl->width;
    eventBox.startY = character->position.y - charControl->height;
    eventBox.endY = character->position.y + charControl->height;
-
+	//TODO initialize z
     if (targetCharacter) {
        charControl->target = &targetCharacter->position;
     }
@@ -1023,14 +1053,15 @@ void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInf
 	targetCharacter->getBounds(targetCharacter, &count, &targetBox);
 	if (hasCollision(&eventBox, &targetBox)) {
 	    character->controller = &commonDoCharacterEvent;
-		charCollection->charactersDoEvent[charCollection->characterEventCurrentSize] = character;
-		++charCollection->characterEventCurrentSize;
+		//TODO check this
+		//charCollection->charactersDoEvent[charCollection->characterEventCurrentSize] = character;
+		//++charCollection->characterEventCurrentSize;
 	}
 }
 
 void commonDoActionOneCycle(CharacterAttr *character, const MapInfo *mapInfo, 
     CharacterCollection *charCollection) {
-    CharacterEventControl *eventControl = character->free;
+    CharacterEventControl *eventControl = (CharacterEventControl*)character->free;
 	int nextScreenFrame, nextAnimationFrame;
     bool isLastFrame = false;
     	   
@@ -1056,8 +1087,8 @@ void commonDoActionOneCycle(CharacterAttr *character, const MapInfo *mapInfo,
 void commonDoActionByFrames(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection) {
 }
 
-void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection) {
-    CharacterEventControl *eventControl = character->free;
+void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, const CharacterCollection *charCollection) {
+    CharacterEventControl *eventControl = (CharacterEventControl*)character->free;
 	int nextScreenFrame, nextAnimationFrame;
     bool isLastFrame = false;
     	   
@@ -1068,11 +1099,12 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, Ch
 	
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
-	if (isLastFrame) {
+	//TODO Check to change this
+	/*if (isLastFrame) {
 	    character->controller = eventControl->returnControl;
 		--charCollection->characterEventCurrentSize;
 		charCollection->charactersDoEvent[charCollection->characterEventCurrentSize] = NULL;
-	}
+	}*/
  }
  
  void transferToBoundingBox(const EventTransfer *transfer, BoundingBox *boundingBox) {

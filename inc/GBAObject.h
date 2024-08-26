@@ -2,6 +2,7 @@
 #define GBAObjects
 
 #include "GBATypes.h"
+#include "GBAStructDeclarations.h"
 #include <stdbool.h>
 
 typedef enum SEARCH_STAT {
@@ -286,7 +287,7 @@ typedef struct EventBase {
 	u16 y;
 } EventBase;
 
-typedef void (*ScreenFunc)(void* scrAtt, void *mapInfo);
+typedef void (*ScreenFunc)(struct ScreenAttr* scrAtt, struct MapInfo *mapInfo);
 
 typedef struct ScreenAttr
 {

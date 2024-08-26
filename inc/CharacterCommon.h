@@ -73,7 +73,7 @@ void commonMovingLeftDownMapCollision(CharacterAttr *character, const MapInfo* m
 void commonMovingRightUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonMovingRightDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventControl *eventControl);
-void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, CharacterCollection *charCollection);
+void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, const CharacterCollection *charCollection);
 void commonCheckForEvents(CharacterAttr* character, MapInfo *mapInfo);
 bool commonDoNextAction(CharacterAttr* character);
 const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
@@ -110,5 +110,23 @@ int commonCharacterSetToOAMBuffer(CharacterCollection *charCollection,
 	const Position *scr_pos,
 	const ScreenDimension *scr_dim);
 bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay);
-int commonDummy();
+bool commonIsCharTypeInArea(const BoundingBox *area, const CharacterCollection *characterCollection, CHARACTERTYPE findType);
+void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const Position* position, const MapInfo *mapInfo, CHARACTERTYPE type, 
+	CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection, 
+	ControlTypePool* controlPool);
+//int commonDummy();
+void commonSetToOamBufferAsMask(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf, SPRITESHAPE shape,
+		SPRITESIZE size);
+void commonControllerDummy(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void commonActionDummy(CharacterAttr* charAtt, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+int commonSetPositionDummy(CharacterAttr* charAtt, OBJ_ATTR *oamBuf, 
+	const Position *scr_pos, const ScreenDimension *scr_dim);
+void commonGetBoundsDummy(const CharacterAttr* charAtt, int *count, BoundingBox *collisionBox) ;
+void commonCollisionCheckDummy(CharacterAttr *charAtt, bool isOtherCharBelow,
+	bool *checkNext, const CharacterAttr *checkWithCharAtt);
+void commonMapCollisionDummy(CharacterAttr* charAtt, const MapInfo* mapInfo);
+void commonActionCollisionDummy(CharacterAttr *charAtt,  CharacterActionCollection *actionEvents, 
+	AttackEffectCollection *attackEffects);
 #endif

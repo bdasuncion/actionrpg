@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "GBAObject.h"
+#include "GBATransparency.h"
 #include "UtilCommonValues.h"
 #include "ManagerOAM.h"
 #include "ManagerSound.h"
@@ -9,26 +10,19 @@
 #include "ManagerCharacterActionEvents.h"
 #include "UpdategameStatus.h"
 #include "MapCommon.h"
-
-#include "GBATransparency.h"
+#include "ManagerPrinter.h"
+#include "ManagerCharacters.h"
+#include "CharacterAttackEffects.h"
+#include "CharacterCommon.h"
 
 //TODO move this somewhere else
 #include "CharacterAlisa.h"
-
-#include "CharacterCommon.h"
 
 #define DEFAULT_SCREEN_BOUNDING_BOX 0
 
 #define MAX_CHARCOUNT 28
 #define MAX_CHARACTIONEVENT 20
-
-//extern const char always[1888512];
-//extern const unsigned char sampleSound[6850];
-//extern const unsigned char slash[2359];
-//extern const unsigned char minamohana[4144320];
-//extern const Sound music_minamohana;
-//extern const Sound soundeffect_slash;
-
+	
 //TODO: Temporay only
 //extern const MapInfo mapsnowfield;
 //extern const MapInfo mapforest;
@@ -38,9 +32,6 @@ extern const EventTransfer transfer_mapforest[];
 extern const MusicTrack musickankandara_end;
 extern const EventTransfer startAt;
 extern const EventTransfer startAt_dungeonSample;
-
-void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo);
-void mapCommon_goDark(void *screenAttribute, void *characterCollection, MapInfo *mapInfo);
 
 inline void waitForVBlank() {
 	asm("swi 0x05");

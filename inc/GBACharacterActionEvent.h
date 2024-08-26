@@ -1,11 +1,14 @@
 #ifndef GBACharacterActionEvent
 #define GBACharacterActionEvent
+
+#include "GBAStructDeclarations.h"
 #include "GBAObject.h"
 #include "GBACharacter.h"
 
 typedef struct CharacterActionEvent {
     CharacterActionType type;
-	CharacterAttr *source;
+	//s16 type;
+	struct CharacterAttr *source;
 	//BoundingBox position;
 	s16 value:8;
 	s16 dummy1:4;
