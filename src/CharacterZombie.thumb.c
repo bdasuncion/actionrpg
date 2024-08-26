@@ -131,6 +131,7 @@ void zombie_actionAttack(CharacterAttr* character,const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void zombie_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+bool zombie_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent);
 	
 CharFuncAction zombie_actions[] = {
 	&zombie_actionWalk,
@@ -151,8 +152,6 @@ int zombie_setPosition(CharacterAttr* character, OBJ_ATTR *oamBuf,
 void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo);
 void zombie_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
-void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents,
-	AttackEffectCollection *attackEffects);
 	
 void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 
@@ -170,7 +169,7 @@ void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->getBounds = &zombie_getBoundingBoxMoving;
 	character->checkCollision = &zombie_checkCollision;
 	character->checkMapCollision = &zombie_checkMapCollision;
-	character->checkActionCollision = &zombie_checkActionEventCollision;
+	character->isHit = &zombie_isHit;
 		
 	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
@@ -509,37 +508,17 @@ void zombie_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
 
-void zombie_checkActionEventCollision(CharacterAttr *character, CharacterActionCollection *actionEvents,
-	AttackEffectCollection *attackEffects) {
-    int i, j, count;
-	bool isHit;
-	BoundingBox charBoundingBox;
+bool zombie_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
-	
 	if (character->stats.currentStatus == EStatusNoActionCollision) {
-		return;
+		return false;
 	}
-	character->getBounds(character, &count, &charBoundingBox);
-	for (i = 0; i < actionEvents->count; ++i) {
-		CharacterActionEvent *charActionEvent = &actionEvents->currentActions[i];
-		isHit = false;
-		//for (j = 0; j < charActionEvent->count; ++j) {
-			//isHit |= commonCollissionPointInBounds(&charActionEvent->collisionPoints[j], &charBoundingBox);
-		isHit = hasCollision(&charActionEvent->collisionBox, &charBoundingBox) & (charActionEvent->maxHit > 0);
-		//}
-		if (isHit) {
-			--charActionEvent->maxHit;
-			character->stats.currentLife -= 1;
-			//character->stats.currentStatus = EStatusNoActionCollision;
-			charControl->currentStatus = EZombieStatusStunned;
-			//add hit animation
-			Position pos;
-			charAttackEffect_getPosition(&charActionEvent->collisionBox, &charBoundingBox, &pos);
-			charAttackEffect_Add(&pos, charActionEvent->type, attackEffects);
-			if (character->stats.currentLife <= 0) {
-				commonRemoveCharacter(character);
-			}
-			break;
-		}
+	character->stats.currentLife -= 1;
+	//character->stats.currentStatus = EStatusNoActionCollision;
+	charControl->currentStatus = EZombieStatusStunned;
+	//add hit animation
+	if (character->stats.currentLife <= 0) {
+		commonRemoveCharacter(character);
 	}
+	return true;
 }

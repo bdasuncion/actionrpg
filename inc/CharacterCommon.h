@@ -129,4 +129,5 @@ void commonCollisionCheckDummy(CharacterAttr *charAtt, bool isOtherCharBelow,
 void commonMapCollisionDummy(CharacterAttr* charAtt, const MapInfo* mapInfo);
 void commonActionCollisionDummy(CharacterAttr *charAtt,  CharacterActionCollection *actionEvents, 
 	AttackEffectCollection *attackEffects);
+bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent);
 #endif

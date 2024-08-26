@@ -61,7 +61,7 @@ int charAttackEffect_setPosition(
 	effect->display.baseX = CONVERT_TO_SCRXPOS(effect->position.x, 
 		scr_pos->x, charAttackEffect_scrConversionMeasurements);
 	effect->display.baseY -= CONVERT_TO_SCRZPOS(effect->position.z);
-		
+
 	commonSetToOamBuffer(&effect->display, oamBuf);
 	effect->display.isInScreen = true;
 	

@@ -62,11 +62,12 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		screenAttribute->controller(screenAttribute, mapInfo);
 		
 		commonReverseDisplayShadow();
+		
+		charAttackEffect_UpdateAnimation(attackEffects);
+				
 		mchar_setPosition(characterCollection,
 			attackEffects, oamCollection,
 			&screenAttribute->position, &screenAttribute->dimension);
-			
-		charAttackEffect_UpdateAnimation(attackEffects);
 		
 		mchar_setDraw(characterCollection, attackEffects);
 		

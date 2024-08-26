@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "GBATypes.h"
 #include "GBAObject.h"
-#include "GBACharacterActionEvent.h"
+#include "GBACharacterActionEvent.h"	
 #include "ManagerOAM.h"
 #include "ManagerPrinter.h"
 #include "CharacterCommon.h"
@@ -238,10 +238,10 @@ void mchar_resolveAction(CharacterCollection *charCollection, const MapInfo *map
 		mchar_arrangeCharacters(charCollection);
 		
 		mchar_resolveCharacterCollision(charCollection);
-		
-		for (i = 0; i < charCollection->currentSize; ++i) {
-			charCollection->characters[i]->checkActionCollision(charCollection->characters[i], 
-				charActionCollection, attackEffects);
+			
+		for (i = 0; i < charActionCollection->count; ++i) {
+			CharacterActionEvent *actionEvent = &charActionCollection->currentActions[i];
+			actionEvent->resolve(actionEvent, charCollection, attackEffects);
 		}
 		
 		mchar_arrangeCharactersForDisplay(charCollection);

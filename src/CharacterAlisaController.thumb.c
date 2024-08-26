@@ -303,6 +303,9 @@ void alisa_prepareDashController(CharacterAttr* character, const MapInfo *mapInf
 	}
 
 	if (isLastFrame) {
+		if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
+			return;
+		}
 		character->nextDirection = commonReverseDirection(character->faceDirection);
 		character->controller = &alisa_dashBackwardController;
 		character->controller(character, NULL, NULL);
@@ -317,6 +320,16 @@ void alisa_dashForwardController(CharacterAttr* character, const MapInfo *mapInf
     character->distanceFromGround = 1024;
 	
    	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+	
+	if (commonGetCurrentAnimationFrame(character) > ALISA_DASH_STARTMOVE_FRAME &&
+		alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+	
+	if (commonGetCurrentAnimationFrame(character) > ALISA_DASH_STARTMOVE_FRAME &&
+		alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
@@ -342,6 +355,11 @@ void alisa_dashBackwardController(CharacterAttr* character, const MapInfo *mapIn
       
     if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
+	}
+	
+	if (commonGetCurrentAnimationFrame(character) > 0 && 
+		alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
+			return;
 	}
 	
 	character->stats.currentStatus = EStatusNormal;
@@ -373,7 +391,7 @@ void alisa_jumpUpController(CharacterAttr* character, const MapInfo *mapInfo,
 	
 	character->getBounds = &alisa_getBoundingBoxMoving;	
 	
-	if (character->spriteDisplay.currentAnimationFrame >= ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME && 
+	if (commonGetCurrentAnimationFrame(character) >= ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME && 
 		direction != EUnknown) {
 		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
 		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
