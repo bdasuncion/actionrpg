@@ -52,10 +52,16 @@ void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollect
 	    dma3_cpy16(PALETTE_MEMORY_BG->data[i], mapInfo->pallette[i], COUNT_PER_PALLETTE);
 	}
 	
-	for (i = 0; i < mapInfo->tileSetCount; ++i) {
+	/*for (i = 0; i < mapInfo->tileSetCount; ++i) {
 		dma3_cpy32(&VRAM->block[0].tile[currentvramIdx],
 		    mapInfo->tileSet[i]->tileData, mapInfo->tileSet[i]->size*WORDS_PER_TILE);
 		currentvramIdx += mapInfo->tileSet[i]->size;
+	}*/
+	
+	for (i = 0; i < mapInfo->tilesCount; ++i) {
+		dma3_cpy32(&VRAM->block[0].tile[currentvramIdx],
+		    mapInfo->tiles[i], WORDS_PER_TILE);
+		currentvramIdx += 1;
 	}
 	
 	mbg_initializeMapOnScreen(scrAtt, mapInfo, 

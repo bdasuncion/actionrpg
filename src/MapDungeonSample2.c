@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "GBAMap.h"
+#include <stddef.h>
 
 extern const unsigned short pallette_tile_dungeonsample_floor1[16];
 extern const unsigned short pallette_tile_dungeonsample_walledge[16];
@@ -513,5 +514,6 @@ const SpriteMaskImage spritemaskimage_mapdungeonsample2[] = {
 const SpriteMaskInit spritemask_mapdungeonsample2[] = {
 	{ 560, 600, 112, 0,EMask32x16 }, 	{ 560, 568, 96, 0,EMask32x16 }, 
 };
-const MapInfo mapdungeonsample2 = { 768, 768, 2, 4, 4, 1, 0, 2, 0, NULL , mapentryset_mapdungeonsample2, tileset_mapdungeonsample2, pallette_mapdungeonsample2,
+//const MapInfo mapdungeonsample2 = { 768, 768, 2, 4, 4, 1, 0, 2, 0, NULL , mapentryset_mapdungeonsample2, tileset_mapdungeonsample2, pallette_mapdungeonsample2,
+const MapInfo mapdungeonsample2 = { 768, 768, 2, 4, 4, 1, 0, 2, 0, NULL , mapentryset_mapdungeonsample2, NULL, pallette_mapdungeonsample2,
 transfer_mapdungeonsample2, heightMap_mapdungeonsample2, actors_mapdungeonsample2, spritemask_mapdungeonsample2, spritemaskimage_mapdungeonsample2, NULL, NULL, NULL, NULL, {0,0,0,0,0} };

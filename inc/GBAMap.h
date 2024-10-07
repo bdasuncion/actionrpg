@@ -36,6 +36,11 @@ typedef struct TileSet {
 	const u32* tileData;
 } ALIGN4 TileSet;
 
+typedef struct VramSet {
+	const u32* tileData;
+	const u32 index;
+} ALIGN4 VramSet;
+
 typedef struct EventTransfer {
 	u16 x;
 	u16 y;
@@ -74,15 +79,17 @@ typedef struct MapInfo {
 	u16 width;
 	u16 height;
 	u16 mapEntryCount:2;
-	u16 tileSetCount:8;
+	//u16 tileSetCount:8;
+	u16 tilesCount:10;
 	u16 palletteCnt:4;
-	u16 eventTransferCount:6;
+	u16 eventTransferCount:5;
 	u16 characterCount:6;
-	u16 spriteMaskCount:6;
+	u16 spriteMaskCount:5;
 	u16 spriteMaskImageCount:6;
 	EventTransfer *transferTo;
 	const u16 **mapEntry;
-	const TileSet **tileSet;
+	//const TileSet **tileSet;
+	const u32 **tiles;
 	const u16 **pallette;
 	const EventTransfer *tranfers;
 	//const u8 *heightMap;

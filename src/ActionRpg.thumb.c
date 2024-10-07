@@ -28,10 +28,12 @@
 //extern const MapInfo mapforest;
 extern const MapInfo mapheighttest;
 extern const MapInfo mapdungeonsample;
+extern const MapInfo mapgraveyard;
 extern const EventTransfer transfer_mapforest[];
 extern const MusicTrack musickankandara_end;
 extern const EventTransfer startAt;
 extern const EventTransfer startAt_dungeonSample;
+extern const EventTransfer startAt_graveyard;
 
 inline void waitForVBlank() {
 	asm("swi 0x05");
@@ -135,7 +137,8 @@ int main() {
 		&alisa->position, DEFAULT_SCREEN_BOUNDING_BOX);
 	
 	//mapInfo.transferTo =  &startAt;
-	mapInfo.transferTo =  &startAt_dungeonSample;
+	//mapInfo.transferTo =  &startAt_dungeonSample;
+	mapInfo.transferTo =  &startAt_graveyard;
 	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,
 		&charActionCollection, &track);
 	

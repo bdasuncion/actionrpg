@@ -2,6 +2,8 @@
 #include "GBAMap.h"
 //#include "GBASound.h"
 #include "CharacterCommon.h"
+#include <stddef.h>
+
 extern const unsigned short pallette_tile_dungeonsample_floor1[16];
 extern const unsigned short pallette_tile_dungeonsample_wallside1[16];
 extern const unsigned short pallette_tile_dungeonsample_wallseethrough[16];
@@ -306,7 +308,8 @@ void mapDungeonSampleFunction(ScreenAttr *screenAttribute, CharacterCollection *
 extern const MusicTrack musickankandara_end;
 //const Track track_kankandara = {&musickankandara_end,0,0};
 
-const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 1, 2, 0, NULL , mapentryset_mapdungeonsample, tileset_mapdungeonsample, pallette_mapdungeonsample,
+const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 1, 2, 0, NULL , mapentryset_mapdungeonsample, NULL, pallette_mapdungeonsample,
+//const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 1, 2, 0, NULL , mapentryset_mapdungeonsample, tileset_mapdungeonsample, pallette_mapdungeonsample,
 //const MapInfo mapdungeonsample = { 512, 512, 2, 4, 4, 2, 0, 2, 0, NULL , mapentryset_mapdungeonsample, tileset_mapdungeonsample, pallette_mapdungeonsample,
 transfer_mapdungeonsample, heightMap_mapdungeonsample, actors_mapdungeonsample, spritemask_mapdungeonsample, spritemaskimage_mapdungeonsample, &mapDungeonSampleFunction, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };
 //transfer_mapdungeonsample, heightMap_mapdungeonsample, actors_mapdungeonsample, spritemask_mapdungeonsample, spritemaskimage_mapdungeonsample, NULL, NULL, NULL, &musickankandara_end, {0,0,0,0,0} };
