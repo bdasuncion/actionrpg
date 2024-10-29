@@ -29,11 +29,13 @@
 extern const MapInfo mapheighttest;
 extern const MapInfo mapdungeonsample;
 extern const MapInfo mapgraveyard;
+extern const MapInfo mapgraveyard_a;
 extern const EventTransfer transfer_mapforest[];
 extern const MusicTrack musickankandara_end;
 extern const EventTransfer startAt;
 extern const EventTransfer startAt_dungeonSample;
 extern const EventTransfer startAt_graveyard;
+extern const EventTransfer startAt_graveyard_a;
 
 inline void waitForVBlank() {
 	asm("swi 0x05");
@@ -138,7 +140,8 @@ int main() {
 	
 	//mapInfo.transferTo =  &startAt;
 	//mapInfo.transferTo =  &startAt_dungeonSample;
-	mapInfo.transferTo =  &startAt_graveyard;
+	//mapInfo.transferTo =  &startAt_graveyard;
+	mapInfo.transferTo =  &startAt_graveyard_a;
 	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,
 		&charActionCollection, &track);
 	
