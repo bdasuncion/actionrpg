@@ -1,0 +1,17 @@
+#include <stdlib.h>
+#include <stdbool.h>
+#include "GBATypes.h"
+#include "GBAObject.h"
+#include "GBAVideo.h"
+#include "GBADMA.h"
+#include "GBACharacterActionEvent.h"
+#include "UtilCommonValues.h"
+#include "ManagerVram.h"
+#include "ManagerSound.h"
+#include "ManagerCharacterActionEvents.h"
+#include "CharacterAlisa.h"
+#include "CharacterCommon.h"
+#include "MapCommon.h"
+#include "GBAMap.h"
+#include "ManagerCharacters.h"
+#include "ManagerPrinter.h"
