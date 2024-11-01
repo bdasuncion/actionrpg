@@ -8,6 +8,7 @@
 #include "GBAInterrupt.h"
 #include "ManagerBG.h"
 #include "ManagerScrDisplay.h"
+#include "ManagerPrinter.h"
 
 #define OFFSET_X 100
 #define OFFSET_Y 60
@@ -33,7 +34,7 @@ void mscr_checkMoveRight(ScreenAttr *scrAtt, u16 x,
 	s32 right_max);
 void mscr_checkMoveUp(ScreenAttr *scrAtt, u16 y,
 	s32 up_max);
-void mscr_checkMoveDown(ScreenAttr *scrAtt, u16 y,
+void mscr_checkMoveDown(ScreenAttr *scrAtt, s16 y,
 	s32 down_max);
 void mscr_setHorizontalMove(ScreenAttr *scrAtt,
 	MapInfo *mapInfo, u16 startXPos);
@@ -175,14 +176,14 @@ void mscr_checkMoveUp(ScreenAttr *scrAtt, u16 y,
 	}
 }
 
-void mscr_checkMoveDown(ScreenAttr *scrAtt, u16 y,
+void mscr_checkMoveDown(ScreenAttr *scrAtt, s16 y,
 	s32 down_max)
 {
 	u16 downLimit = scrAtt->position.y +
 		scrAtt->moveRefBox.offset_y +
 		scrAtt->moveRefBox.height;
-		
-	if (y > downLimit) {
+	s16 conY = y;
+	if (conY > downLimit) {
 		s32 movey = y - downLimit;
 		if (movey > Y_MOVE_LIMIT) {
 			movey = Y_MOVE_LIMIT;
