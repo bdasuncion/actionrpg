@@ -6,12 +6,9 @@ extern const SpriteSet alisa_standwithsword_down;
 extern const SpriteSet alisa_standwithsword_left;
 extern const SpriteSet alisa_standwithsword_right;
 extern const SpriteSet alisa_standwithsword_up;
-extern const SpriteSet alisa_standwithsword_big_right;
 
 const SpriteSet *alisaStandWithSwordSet[] = {&alisa_standwithsword_down, &alisa_standwithsword_down, &alisa_standwithsword_right, &alisa_standwithsword_up,
     &alisa_standwithsword_up, &alisa_standwithsword_up, &alisa_standwithsword_left, &alisa_standwithsword_down};
-//const SpriteSet *alisaStandWithSwordSet[] = {&alisa_standwithsword_down, &alisa_standwithsword_down, &alisa_standwithsword_big_right, &alisa_standwithsword_up,
-//    &alisa_standwithsword_up, &alisa_standwithsword_up, &alisa_standwithsword_left, &alisa_standwithsword_down};
 	
 extern const SpriteSet alisa_runwithsword_down;
 extern const SpriteSet alisa_runwithsword_right;
