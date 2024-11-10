@@ -139,10 +139,10 @@ const unsigned short mapentry_mapgraveyard_a[2][6144] = {
 const HeightCollision heightMap_mapgraveyard_a[] = {
 	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},{0, 0},{0, 0},{0, 0},
 	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},
-	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 0},{0, 12},
+	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 4},{0, 12},
 	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},{0, 0},{0, 0},{0, 0},
 	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},
-	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 0},{0, 12},
+	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 4},{0, 12},
 	{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 0},{0, 0},{0, 0},
 	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 12},{0, 12},
 	{0, 0},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 12},{0, 4},{0, 12},
@@ -348,7 +348,7 @@ const unsigned int *vram_mapgraveyard_a[] = {
 const u16 *pallette_mapgraveyard_a[] = {  pallette_graveyard_ground, pallette_graveyard_wall, pallette_graveyard_gravestones, };
 const u16 *mapentryset_mapgraveyard_a[] = { mapentry_mapgraveyard_a[0], mapentry_mapgraveyard_a[1], };
 const CharacterInit actors_mapgraveyard_a[] = {
-
+	{ 136, 152, 1, ZOMBIE }, 
 };
 extern const MapInfo mapgraveyard_b;
 const EventTransfer transfer_mapgraveyard_a[] = {
@@ -360,7 +360,7 @@ const SpriteMaskImage spritemaskimage_mapgraveyard_a[] = {
 const SpriteMaskInit spritemask_mapgraveyard_a[] = {
 
 };
-const MapInfo mapgraveyard_a = { 768, 512, 2, 111, 3, 1, 0, 0, 0, NULL , mapentryset_mapgraveyard_a, vram_mapgraveyard_a, pallette_mapgraveyard_a,
+const MapInfo mapgraveyard_a = { 768, 512, 2, 111, 3, 1, 1, 0, 0, NULL , mapentryset_mapgraveyard_a, vram_mapgraveyard_a, pallette_mapgraveyard_a,
 transfer_mapgraveyard_a, heightMap_mapgraveyard_a, actors_mapgraveyard_a, spritemask_mapgraveyard_a, spritemaskimage_mapgraveyard_a, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
 
 const EventTransfer startAt_graveyard_a = { 400, 400, 26, 234, 1, &mapgraveyard_a, 16, 48, 0, ERight};
