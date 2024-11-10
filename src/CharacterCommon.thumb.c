@@ -66,6 +66,21 @@ bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent
 
 //const CharacterAttr openSlot = {&commonControllerDummy, &commonActionDummy, &commonSetPositionDummy, &commonGetBoundsDummy, 
  //   &funcCollisionCheckDummy, &funcMapCollisionDummy, &funcActionCollisionDummy, NULL, 0, NONE,0,0,0,0,0, NULL, {0, -1, 0}, NULL, NULL };
+const EDirections FAR_TARGET[5][5] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
+const EDirections NEAR_TARGET[5][5] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
 
 void commonRemoveCharacter(CharacterAttr *character) {
     character->type = NONE;
