@@ -130,4 +130,7 @@ void commonMapCollisionDummy(CharacterAttr* charAtt, const MapInfo* mapInfo);
 void commonActionCollisionDummy(CharacterAttr *charAtt,  CharacterActionCollection *actionEvents, 
 	AttackEffectCollection *attackEffects);
 bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent);
+
+extern const EDirections FAR_TARGET[5][5];
+extern const EDirections NEAR_TARGET[5][5];
 #endif

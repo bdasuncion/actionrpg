@@ -26,6 +26,22 @@
 #define COLLISIONCHECKNEXT_DIST_MAX 32
 #define HEIGHT_CONVERSION 8
 
+const EDirections FAR_TARGET[5][5] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
+const EDirections NEAR_TARGET[5][5] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
 extern const FuncCharacterInit character_InitFunctionsCollection[];
 extern const FuncCharacterSet characterSet[];
 

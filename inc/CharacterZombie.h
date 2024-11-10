@@ -10,7 +10,7 @@ typedef enum ZombieAction {
 	EZombieAttack,
 	EZombieStunned,
 	EZombieActionCount
-} ZombiefAction;
+} ZombieAction;
 
 typedef enum ZombieStatus {
 	EZombieStatusWalkAround,

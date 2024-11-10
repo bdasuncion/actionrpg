@@ -202,8 +202,11 @@ typedef struct CharacterAIControl {
 	bool rightBlocked:1;
 	bool upBlocked:1;
 	bool downBlocked:1;
+	u32 patrolCnt:4;
+	u32 patrolIndex:4;
     Position target;
     ActionControl actions[MAXACTIONS];
+	Position patrolPoints[MAXACTIONS];
 } ALIGN4 CharacterAIControl;
 
 typedef struct CharacterEventControl {
