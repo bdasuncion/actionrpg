@@ -24,18 +24,6 @@
 #define MAPBLOCK_WIDTH 32
 #define MAPBLOCK_HEIGHT 32
 
-//for test only
-/*extern const unsigned short testmap_pal[48];
-extern const unsigned int testmap_tiles[2336];
-extern const unsigned int testmap_collisionEntry[288];
-extern const unsigned short testmap_mapEntry[2][2304];
-extern const unsigned int testmap_width;
-extern const unsigned int testmap_height;*/
-
-extern const FuncCharacterInit character_InitFunctionsCollection[];
-//extern const FuncCharacterSet characterSet[];
-//end test const
-
 /*void mbg_checkCollision(
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,

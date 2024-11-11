@@ -27,7 +27,6 @@
 #define HEIGHT_CONVERSION 8
 
 extern const FuncCharacterInit character_InitFunctionsCollection[];
-extern const FuncCharacterSet characterSet[];
 
 void commonControllerDummy(CharacterAttr* charAtt, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
