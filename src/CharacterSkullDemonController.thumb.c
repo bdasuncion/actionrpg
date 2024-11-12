@@ -43,6 +43,8 @@ void findDirection(Position *current, Position *targetPos, EDirections *goDirect
 	int distanceX = targetPos->x - current->x + FAR_DIST_OFFSET;
 	int distanceY = targetPos->y - current->y + FAR_DIST_OFFSET;
 
+	mprinter_printf("CURRENT %d %d %d\n", current->x , current->y, current->z);
+	mprinter_printf("TARGET %d %d %d\n", targetPos->x , targetPos->y, targetPos->z);
 	distanceX = DIVIDE_BY_32(distanceX);
 	distanceY = DIVIDE_BY_32(distanceY);
 	
@@ -58,14 +60,14 @@ void findDirection(Position *current, Position *targetPos, EDirections *goDirect
 }
 
 void findDirectionOfTarget(Position *current, Position *target, EDirections *goDirection) {
-	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), current->z};
-	Position targetConverted = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), target->z};
+	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetConverted = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
 	
 	findDirection(&currentConverted, &targetConverted, goDirection);
 }
 
 void findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection) {
-	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), current->z};
+	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
 	
 	findDirection(&currentConverted, targetPos, goDirection);
 }
@@ -117,13 +119,16 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 	bool hasArrived = commonCollissionPointInBounds(&charControl->patrolPoints[charControl->patrolIndex], &boundingBox);
 	
 	if (hasArrived) {
+		mprinter_printf("ARRIVAL\n");
 		++charControl->patrolIndex;
 		if (charControl->patrolIndex >= charControl->patrolCnt) {
 			charControl->patrolIndex= 0;
 		}
 	}
+	//mprinter_printf("PATROL %d\n", charControl->patrolIndex);
+	//mprinter_printf("DIRECTION %d\n", character->nextDirection);
 	EDirections direction;
-	findDirectionOfPosition(&character->position, &charControl->patrolPoints[charControl->patrolCnt], &direction);
+	findDirectionOfPosition(&character->position, &charControl->patrolPoints[charControl->patrolIndex], &direction);
 	character->nextAction = ESkullDemonWalk;
 	character->nextDirection = direction;
 		

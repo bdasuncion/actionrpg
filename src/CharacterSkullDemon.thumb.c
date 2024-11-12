@@ -5,12 +5,14 @@
 #include "GBAVideo.h"
 #include "GBADMA.h"
 #include "CharacterSkullDemon.h"
+#include "ImageSkullDemon.h"
 #include "GBACharacterActionEvent.h"
 #include "UtilCommonValues.h"
 #include "ManagerVram.h"
 #include "ManagerSound.h"
 #include "ManagerCharacterActionEvents.h"
-#include "CharacterAlisa.h"
+#include "CharacterSkullDemon.h"
+#include "SpriteSetSkullDemon.h"
 #include "CharacterCommon.h"
 #include "MapCommon.h"
 #include "GBAMap.h"
@@ -21,7 +23,7 @@ extern const EDirections directions[EDirectionsCount];
 
 #define SKULLDEMON_LENGTH 14
 #define SKULLDEMON_WIDTH 10
-#define SKULLDEMON_HEIGHT 28
+#define SKULLDEMON_HEIGHT 36
 
 #define SKULLDEMON_SCRCNVRTWIDTH 16
 #define SKULLDEMON_SCRCNVRTHEIGHT 28
@@ -31,7 +33,7 @@ extern const EDirections directions[EDirectionsCount];
 
 #define SKULLDEMON_PAL_CNT 1
 
-#define skulldemon_WALK_MVMNT_CTRL_MAX 5
+#define skulldemon_WALK_MVMNT_CTRL_MAX 4
 
 #define MAX_DIST_FOR_CHASE 80
 
@@ -155,10 +157,12 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	character->checkMapCollision = &skulldemon_checkMapCollision;
 	character->isHit = &skulldemon_isHit;
 		
+	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeLarge);
 	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeMedium);
+	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(SKULLDEMON, SKULLDEMON_PAL_CNT);
-	//sprite_palette_copy32_ID(zombie_walk_side_pal, character->spriteDisplay.basePalleteId);
+	sprite_palette_copy32_ID(skull_demon_walking_side_pal, character->spriteDisplay.basePalleteId);
 	character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
 	CharacterAIControl *charControl = (CharacterAIControl*)mchar_findFreeControlType(controlPool);
@@ -229,7 +233,12 @@ void skulldemon_actionWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	    character->movementCtrl.currentFrame = 0;
 	}
 	
-	if (commonGetCurrentAnimationFrame(character) == 0 || commonGetCurrentAnimationFrame(character) == 2) {
+	//character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
+	//character->position.x += character->delta.x;
+		
+	//character->delta.y = skulldemon_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
+	//character->position.y += character->delta.y;
+	/*if (commonGetCurrentAnimationFrame(character) == 0 || commonGetCurrentAnimationFrame(character) == 2) {
 		character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
 		character->position.x += character->delta.x;
 		
@@ -240,22 +249,22 @@ void skulldemon_actionWalk(CharacterAttr* character, const MapInfo *mapInfo,
 		character->delta.y = 0;
 	}
 	
-	commonGravityEffect(character, common_zOffsetDown);
+	commonGravityEffect(character, common_zOffsetDown);*/
 	
 	++character->movementCtrl.currentFrame;
-	//character->spriteDisplay.spriteSet = zombieWalk[character->direction];
+	character->spriteDisplay.spriteSet = skulldemonWalking[character->direction];
 	
 	boundingBox.startX = CONVERT_2POS(position->x) + skulldemon_scanSurroundingOffset[character->direction][0].x;
 	boundingBox.startY = CONVERT_2POS(position->y) + skulldemon_scanSurroundingOffset[character->direction][0].y;
 	boundingBox.endX = CONVERT_2POS(position->x) + skulldemon_scanSurroundingOffset[character->direction][1].x;
 	boundingBox.endY = CONVERT_2POS(position->y) + skulldemon_scanSurroundingOffset[character->direction][1].y;
-	
-	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
+
+	/*charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 		
 	if (commonIsFoundPosition(&charControl->target)) {
 		//charControl->currentStatus = EZombieStatusHuntTarget;
-	}
+	}*/
 }
 
 void skulldemon_getBoundingBoxMoving(const CharacterAttr* character, 
