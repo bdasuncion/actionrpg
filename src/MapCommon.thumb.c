@@ -55,7 +55,6 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
         mapInfo, controlPool, charActionCollection, track);
 	}
 
-	//sprite_vram_init();
 	sprite_vram_init_sections();
 	sprite_palette_init();
 	mchar_reinit(characterCollection, &character);
