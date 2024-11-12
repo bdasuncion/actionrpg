@@ -44,7 +44,7 @@ void sprite_vram_init_sections() {
 		idCtrl.status = VRAM_FREE;
 	    idCollection[i] = idCtrl;
 	}
-	
+	currentID = BLOCKSPERCHARACTERSMALL*MAXNCHARACTERSMALL;
 	for (j = 0; j < MAXNCHARACTERMEDIUM; ++i, ++j) {
 	    VramIdControl idCtrl;
 		idCtrl.id = currentID;
@@ -82,14 +82,16 @@ u32 sprite_vram_findIdByType(CharacterSizeType type) {
 			}
 		}
 	} else if (type == ECharSizeMedium) {
-		for (i = MAXNCHARACTERSMALL; i < MAXNCHARACTERMEDIUM; ++i) {
+		int count = MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM;
+		for (i = MAXNCHARACTERSMALL; i < count; ++i) {
 			if (idCollection[i].status == VRAM_FREE) {
 				idCollection[i].status = VRAM_TAKEN;
 				return idCollection[i].id;
 			}
 		}
 	} else if (type == ECharSizeLarge) {
-		for (i = MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM; i < MAXNCHARACTERLARGE; ++i) {
+		int count = MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM + MAXNCHARACTERLARGE;
+		for (i = MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM; i < count; ++i) {
 			if (idCollection[i].status == VRAM_FREE) {
 				idCollection[i].status = VRAM_TAKEN;
 				return idCollection[i].id;
