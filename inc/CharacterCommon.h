@@ -80,6 +80,7 @@ const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *chara
 const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
 const Position* commonFindCharTypePositionByDistance(const CharacterCollection *characterCollection, 
 	const Position *refPos, int dist, CHARACTERTYPE fromType, CHARACTERTYPE toType);
+bool commonHasReachedWaypoint(const Position *waypoint, const BoundingBox *boundingBox);
 extern const CharFuncCollisionReaction common_collisionReactions[8];
 extern const CharFuncCollisionReaction common_mapCollisionReactions[8];
 extern const CommonMapCollision common_mapCollision[8];
@@ -91,6 +92,7 @@ inline bool commonIsFoundPosition(const Position* position);
 int common_fallingDown(CharacterAttr* character, const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 int common_fallingDownOnBoundingBox(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void commonHandleBlockedPath(CharacterAIControl *charControl, EDirections *goDirection);
 void commonGravityEffect(CharacterAttr *character, int zOffsetDown);
 int commonConvertBoundingBoxZ(int zPos);
 void commonInitShadow();

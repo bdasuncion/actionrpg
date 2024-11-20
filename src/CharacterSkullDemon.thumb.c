@@ -167,8 +167,10 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
 	CharacterAIControl *charControl = (CharacterAIControl*)mchar_findFreeControlType(controlPool);
 	charControl->type = EControlAiType;
-	charControl->countAction = 0;
-	charControl->currentAction = MAXACTIONS;
+	//charControl->countAction = 0;
+	//charControl->currentAction = MAXACTIONS;
+	charControl->countAction = 1;
+	charControl->currentAction = 0;
 	character->nextAction = ESkullDemonWalk;
 	charControl->rightBlocked = false;
 	charControl->leftBlocked = false;
@@ -176,7 +178,7 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->downBlocked = false;
 	charControl->currentStatus = ESkullDemonAIStateWalkAround;
 	charControl->patrolCnt = 2;
-	charControl->patrolIndex = 0;
+	charControl->patrolIndex = 1;
 	
 	//charControl->patrolPoints[0] = {141, 77, 1};
 	//charControl->patrolPoints[1] = {141, 176, 1};
@@ -184,7 +186,7 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->patrolPoints[0].y = 77;
 	charControl->patrolPoints[0].z = 1;
 	charControl->patrolPoints[1].x = 141;
-	charControl->patrolPoints[1].y = 176;
+	charControl->patrolPoints[1].y = 200;
 	charControl->patrolPoints[1].z = 1;
 	
 	character->free = (ControlTypeUnion*)charControl;
@@ -233,11 +235,11 @@ void skulldemon_actionWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	    character->movementCtrl.currentFrame = 0;
 	}
 	
-	//character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
-	//character->position.x += character->delta.x;
+	character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
+	character->position.x += character->delta.x;
 		
-	//character->delta.y = skulldemon_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
-	//character->position.y += character->delta.y;
+	character->delta.y = skulldemon_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
+	character->position.y += character->delta.y;
 	/*if (commonGetCurrentAnimationFrame(character) == 0 || commonGetCurrentAnimationFrame(character) == 2) {
 		character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
 		character->position.x += character->delta.x;

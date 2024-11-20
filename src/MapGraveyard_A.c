@@ -348,7 +348,8 @@ const unsigned int *vram_mapgraveyard_a[] = {
 const u16 *pallette_mapgraveyard_a[] = {  pallette_graveyard_ground, pallette_graveyard_wall, pallette_graveyard_gravestones, };
 const u16 *mapentryset_mapgraveyard_a[] = { mapentry_mapgraveyard_a[0], mapentry_mapgraveyard_a[1], };
 const CharacterInit actors_mapgraveyard_a[] = {
-	{ 136, 152, 1, ZOMBIE }, 
+	//{ 136, 152, 1, ZOMBIE }, 
+	{ 136, 152, 1, SKULLDEMON }, 
 };
 extern const MapInfo mapgraveyard_b;
 const EventTransfer transfer_mapgraveyard_a[] = {

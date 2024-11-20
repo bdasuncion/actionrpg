@@ -411,6 +411,24 @@ bool common_checkNext(bool isOtherCharBelow, const Position *characterPos,
 	return (distance <= COLLISIONCHECKNEXT_DIST_MAX);
 }
 
+void commonHandleBlockedPath(CharacterAIControl *charControl, EDirections *goDirection) {
+	if (*goDirection == EUnknown) {
+		return;
+	}
+	if(charControl->leftBlocked) {
+		*goDirection = EUp;
+	}
+	if(charControl->rightBlocked) {
+		*goDirection = EDown;
+	}
+	if(charControl->upBlocked) {
+		*goDirection = ERight;
+	}
+	if(charControl->downBlocked) {
+		*goDirection = ELeft;
+	}
+}
+
 inline bool inBounds(int value, int min, int max) {
     return (value >= min & value <= max);
 }
@@ -433,6 +451,21 @@ bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCh
 		inBounds(otherCharBoundingBox->startZ, charBoundingBox->startZ, charBoundingBox->endZ) | 
 		inBounds(charBoundingBox->endZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ) |
 		inBounds(otherCharBoundingBox->endZ, charBoundingBox->startZ, charBoundingBox->endZ)); 
+}
+
+inline void convertWaypointToBoundingBox(const Position *wayPoint, BoundingBox *boundingBox) {
+	boundingBox->startX = wayPoint->x + 8;
+	boundingBox->endX =  wayPoint->x - 8;
+	boundingBox->startY =  wayPoint->y + 8;
+	boundingBox->endY =  wayPoint->y - 8;
+	boundingBox->startZ =  wayPoint->z;
+	boundingBox->endZ =   wayPoint->z + 32;
+}
+
+bool commonHasReachedWaypoint(const Position *waypoint, const BoundingBox *boundingBox) {
+	BoundingBox waypointBox;
+	convertWaypointToBoundingBox(waypoint, &waypointBox);
+	return hasCollision(&waypointBox, boundingBox);
 }
 
 bool commonCollissionPointInBounds(const Position *collisionPoint, const BoundingBox *boundingBox) {
