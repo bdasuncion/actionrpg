@@ -341,14 +341,14 @@ void alisa_actionStand(CharacterAttr* alisa,
 	alisa->delta.x = 0;
 	alisa->delta.y = 0;
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	
 	alisa->movementCtrl.maxFrames = 0;
 	alisa->movementCtrl.currentFrame = 0;
 	
-	alisa->spriteDisplay.spriteSet = alisaStandWithSwordSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaStandWithSwordSet[alisa->faceDirection&EDirectionsMax];
 	//alisa->spriteDisplay.spriteSet = &maincharacter_stand;
 }
 
@@ -369,7 +369,7 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
@@ -387,7 +387,7 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo,
 	
 	++alisa->movementCtrl.currentFrame;
 	//alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->direction];
-	alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaRunSet[alisa->faceDirection&EDirectionsMax];
 	//alisa->spriteDisplay.spriteSet = &maincharacter_walk;
 }
 
@@ -412,23 +412,23 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->movementCtrl.currentFrame = 0;
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	int currentAnimationFrame = commonGetCurrentAnimationFrame(alisa);
 	int displayCountFrame = commonGetCurrentDisplayFrame(alisa);
 	if (currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION && 
 		currentAnimationFrame <= ALISA_NORMALSLASH_ANIMATIONFRAME_END_COLLISION) {
 		BoundingBox collisionBox;
-		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection].startX + 
-			alisa_normalSlashOffsetX[alisa->faceDirection][currentAnimationFrame];
-		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection].startY + 
-			alisa_normalSlashOffsetY[alisa->faceDirection][currentAnimationFrame];
-		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection].startZ;
-		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection].endX +
-			alisa_normalSlashOffsetX[alisa->faceDirection][currentAnimationFrame];
-		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection].endY +
-			alisa_normalSlashOffsetY[alisa->faceDirection][currentAnimationFrame];
-		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection].endZ;
+		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startX + 
+			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
+		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startY + 
+			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
+		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startZ;
+		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endX +
+			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
+		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endY +
+			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
+		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endZ;
 		if (displayCountFrame < ALISA_NORMALSLASH_FRAME_END_COLLISION){
 			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->direction], attackVal, 1, &collisionBox);
 		} else {
@@ -460,12 +460,12 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->movementCtrl.currentFrame = 0;
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
 
-	alisa->spriteDisplay.spriteSet = alisaPrepareDashSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaPrepareDashSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo,
@@ -485,7 +485,7 @@ void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
@@ -502,7 +502,7 @@ void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 		
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaDashForwardSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaDashForwardSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo,
@@ -522,7 +522,7 @@ void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
@@ -538,7 +538,7 @@ void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaDashBackwardWithSwordSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaDashBackwardWithSwordSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionJumpUp(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -557,7 +557,7 @@ void alisa_actionJumpUp(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
@@ -568,7 +568,7 @@ void alisa_actionJumpUp(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaJumpWithSwordSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaJumpWithSwordSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -588,7 +588,7 @@ void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
@@ -608,7 +608,7 @@ void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaJumpWithSwordSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaJumpWithSwordSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -628,7 +628,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
@@ -637,7 +637,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	
 	
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -657,7 +657,7 @@ void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo
 	}
 	
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
 	    alisa->movementCtrl.currentFrame;
@@ -670,7 +670,7 @@ void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo
 	alisa->position.y += alisa->delta.y;
 		
 	++alisa->movementCtrl.currentFrame;
-	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection];
+	alisa->spriteDisplay.spriteSet = alisaFallingDownSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -697,7 +697,7 @@ void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->delta.x = 0;
 	alisa->delta.y = 0;
 	alisa->action = alisa->nextAction;
-	alisa->direction = alisa->nextDirection;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
 	alisa->spriteDisplay.spriteSet = alisaStunnedSet[alisa->direction];
 }
