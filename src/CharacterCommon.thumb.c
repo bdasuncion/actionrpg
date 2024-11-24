@@ -65,7 +65,9 @@ bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent
 
 //const CharacterAttr openSlot = {&commonControllerDummy, &commonActionDummy, &commonSetPositionDummy, &commonGetBoundsDummy, 
  //   &funcCollisionCheckDummy, &funcMapCollisionDummy, &funcActionCollisionDummy, NULL, 0, NONE,0,0,0,0,0, NULL, {0, -1, 0}, NULL, NULL };
-const EDirections FAR_TARGET[5][5] = {
+#define FARTARGET_SIZE 5
+
+const EDirections FAR_TARGET[FARTARGET_SIZE][FARTARGET_SIZE] = {
  {EUpleft, EUpleft, EUp, EUpright, EUpright},
  {EUpleft, EUpleft, EUp, EUpright, EUpright},
  {ELeft, ELeft, EUnknown, ERight, ERight},
@@ -73,13 +75,73 @@ const EDirections FAR_TARGET[5][5] = {
  {EDownleft, EDownleft, EDown, EDownright, EDownright}
 };
 
-const EDirections NEAR_TARGET[5][5] = {
+#define NEARTARGET_SIZE 5
+
+const EDirections NEAR_TARGET[NEARTARGET_SIZE][NEARTARGET_SIZE] = {
  {EUpleft, EUpleft, EUp, EUpright, EUpright},
  {EUpleft, EUpleft, EUp, EUpright, EUpright},
  {ELeft, ELeft, EUnknown, ERight, ERight},
  {EDownleft, EDownleft, EDown, EDownright, EDownright},
  {EDownleft, EDownleft, EDown, EDownright, EDownright}
 };
+
+#define FAR_DIST_OFFSET 80
+#define NEAR_DIST_OFFSET 20
+
+void handleFarDistance(int distanceX, int distanceY, EDirections *goDirection) {
+	if (abs(distanceX) > abs(distanceY)) {
+		if (distanceX < 0) {
+			*goDirection = ELeft;
+		} else {
+			*goDirection = ERight;
+		}
+	} else {
+		if (distanceY < 0) {
+			*goDirection = EUp;
+		} else {
+			*goDirection = EDown;
+		}
+	}
+}
+
+void findDirection(Position *current, Position *targetPos, EDirections *goDirection) {	
+	int distanceX = targetPos->x - current->x;
+	int distanceY = targetPos->y - current->y;
+	
+	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
+	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
+	
+	offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
+	
+	if (offsetDistanceX >= FARTARGET_SIZE || offsetDistanceY >= FARTARGET_SIZE || offsetDistanceX < 0 || offsetDistanceY < 0) {
+		handleFarDistance(distanceX, distanceY, goDirection);
+		return;
+	}
+	
+	*goDirection = FAR_TARGET[offsetDistanceY][offsetDistanceX];
+	if (*goDirection == EUnknown) {
+		distanceX = targetPos->x - current->x + NEAR_DIST_OFFSET;
+		distanceY = targetPos->y - current->y + NEAR_DIST_OFFSET;
+		distanceX = DIVIDE_BY_8(distanceX);
+		distanceY = DIVIDE_BY_8(distanceY);
+
+		*goDirection = NEAR_TARGET[distanceY][distanceX];
+	}
+}
+
+void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection) {
+	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetConverted = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	findDirection(&currentConverted, &targetConverted, goDirection);
+}
+
+void common_findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection) {
+	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	
+	findDirection(&currentConverted, targetPos, goDirection);
+}
 
 void commonRemoveCharacter(CharacterAttr *character) {
     character->type = NONE;
@@ -1316,5 +1378,5 @@ bool commonIsFoundPosition(const Position* position) {
 }
 
 EDirections commonReverseDirection(EDirections direction) {
- return (direction+4)&7;
+ return (direction+4)&EDirectionsMax;
 }

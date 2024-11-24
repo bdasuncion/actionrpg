@@ -177,6 +177,12 @@ typedef struct CharacterBaseControl {
 	Position target;
 } ALIGN4 CharacterBaseControl;
 
+typedef struct CharacterWaypoints {
+	u32 wayPointCnt:4;
+	u32 wayPointCurrent:4;
+	Position wayPoints[MAXACTIONS];
+}ALIGN4 CharacterWaypoints;
+
 typedef struct CharacterPlayerControl {
     ControlType type:3;
 	u32 poolId:5;
@@ -202,11 +208,11 @@ typedef struct CharacterAIControl {
 	bool rightBlocked:1;
 	bool upBlocked:1;
 	bool downBlocked:1;
-	u32 patrolCnt:4;
-	u32 patrolIndex:4;
+	u32 wayPointCnt:4;
+	u32 wayPointCurrent:4;
     Position target;
     ActionControl actions[MAXACTIONS];
-	Position patrolPoints[MAXACTIONS];
+	Position wayPoints[MAXACTIONS];
 } ALIGN4 CharacterAIControl;
 
 typedef struct CharacterEventControl {

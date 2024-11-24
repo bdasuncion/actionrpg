@@ -177,17 +177,17 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
 	charControl->currentStatus = ESkullDemonAIStateWalkAround;
-	charControl->patrolCnt = 2;
-	charControl->patrolIndex = 1;
+	charControl->wayPointCnt = 2;
+	charControl->wayPointCurrent = 0;
 	
 	//charControl->patrolPoints[0] = {141, 77, 1};
 	//charControl->patrolPoints[1] = {141, 176, 1};
-	charControl->patrolPoints[0].x = 141;
-	charControl->patrolPoints[0].y = 77;
-	charControl->patrolPoints[0].z = 1;
-	charControl->patrolPoints[1].x = 141;
-	charControl->patrolPoints[1].y = 200;
-	charControl->patrolPoints[1].z = 1;
+	charControl->wayPoints[0].x = 141;
+	charControl->wayPoints[0].y = 77;
+	charControl->wayPoints[0].z = 1;
+	charControl->wayPoints[1].x = 141;
+	charControl->wayPoints[1].y = 200;
+	charControl->wayPoints[1].z = 1;
 	
 	character->free = (ControlTypeUnion*)charControl;
 	

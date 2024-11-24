@@ -32,75 +32,6 @@ void skulldemon_setCharacter(CharacterAttr* character) {
     character->controller = &skulldemon_walkAroundController; 
 }
 
-#define DOWN_DIRECTION -4
-#define UP_DIRECTION 4
-#define RIGHT_DIRECTION -4
-#define LEFT_DIRECTION 4
-#define FAR_DIST_OFFSET 80
-//#define FAR_DIST_OFFSET 100
-#define NEAR_DIST_OFFSET 20
-
-void findDirection(Position *current, Position *targetPos, EDirections *goDirection) {	
-	int distanceX = targetPos->x - current->x;
-	int distanceY = targetPos->y - current->y;
-
-	//mprinter_printf("CURRENT %d %d %d\n", current->x , current->y, current->z);
-	//mprinter_printf("TARGET %d %d %d\n", targetPos->x , targetPos->y, targetPos->z);
-	mprinter_printf("TARGET Y %d CURRENT Y %d\n", targetPos->y, current->y);
-	mprinter_printf("X %d Y %d\n", distanceX , distanceY);
-	if (abs(distanceX) > FAR_DIST_OFFSET || abs(distanceY) > FAR_DIST_OFFSET) {
-		if (abs(distanceX) > abs(distanceY)) {
-			if (distanceX < 0) {
-				*goDirection = ELeft;
-			} else {
-				*goDirection = ERight;
-			}
-		} else {
-			if (distanceY < 0) {
-				*goDirection = EUp;
-			} else {
-				*goDirection = EDown;
-			}
-		}
-	}
-	
-	distanceX += FAR_DIST_OFFSET;
-	distanceY += FAR_DIST_OFFSET;
-	
-	distanceX = DIVIDE_BY_32(distanceX);
-	distanceY = DIVIDE_BY_32(distanceY);
-	mprinter_printf("X %d Y %d\n", distanceX , distanceY);
-	
-	if (distanceX < 0 || distanceX > 5) {
-	}
-	
-	if (distanceY < 0 || distanceY > 5) {
-	}
-	
-	*goDirection = FAR_TARGET[distanceY][distanceX];
-	if (*goDirection == EUnknown) {
-		distanceX = targetPos->x - current->x + NEAR_DIST_OFFSET;
-		distanceY = targetPos->y - current->y + NEAR_DIST_OFFSET;
-		distanceX = DIVIDE_BY_8(distanceX);
-		distanceY = DIVIDE_BY_8(distanceY);
-
-		*goDirection = NEAR_TARGET[distanceY][distanceX];
-	}
-}
-
-void findDirectionOfTarget(Position *current, Position *target, EDirections *goDirection) {
-	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
-	Position targetConverted = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
-	
-	findDirection(&currentConverted, &targetConverted, goDirection);
-}
-
-void findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection) {
-	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
-	
-	findDirection(&currentConverted, targetPos, goDirection);
-}
-
 void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
@@ -146,20 +77,18 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 	int count;
 	BoundingBox boundingBox;
 	character->getBounds(character, &count, &boundingBox);
-	bool hasArrived = commonHasReachedWaypoint(&charControl->patrolPoints[charControl->patrolIndex], &boundingBox);
+	bool hasArrived = commonHasReachedWaypoint(&charControl->wayPoints[charControl->wayPointCurrent], &boundingBox);
 	
 	if (hasArrived) {
-		mprinter_printf("ARRIVAL\n");
-		++charControl->patrolIndex;
-		if (charControl->patrolIndex >= charControl->patrolCnt) {
-			charControl->patrolIndex= 0;
+		++charControl->wayPointCurrent;
+		if (charControl->wayPointCurrent >= charControl->wayPointCnt) {
+			charControl->wayPointCurrent= 0;
 		}
 	}
 	//mprinter_printf("PATROL %d\n", charControl->patrolIndex);
 	//mprinter_printf("DIRECTION %d\n", character->nextDirection);
 	EDirections direction;
-	findDirectionOfPosition(&character->position, &charControl->patrolPoints[charControl->patrolIndex], &direction);
-	mprinter_printf("DIRECTION %d\n", direction);
+	common_findDirectionOfPosition(&character->position, &charControl->wayPoints[charControl->wayPointCurrent], &direction);
 	character->nextAction = ESkullDemonWalk;
 	character->nextDirection = direction;
 		

@@ -134,4 +134,6 @@ void commonActionCollisionDummy(CharacterAttr *charAtt,  CharacterActionCollecti
 bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent);
 extern const EDirections FAR_TARGET[5][5];
 extern const EDirections NEAR_TARGET[5][5];
+void common_findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection);
+void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection);
 #endif

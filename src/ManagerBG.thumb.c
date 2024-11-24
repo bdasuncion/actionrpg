@@ -94,10 +94,10 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 		commonSetCharType(&position, mapInfo, mapInfo->characterInit[i].type, characterCollection, 
 			charActionCollection, character, controlPool);
 		characterCollection->characters[characterCollection->currentSize] = character;
-		if (mapInfo->characterInit[i].eventControl) {
-		    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);
-			character->controller = &commonTriggerCharacterEvent;
-		}
+		//if (mapInfo->characterInit[i].eventControl) {
+		//    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);
+		//	character->controller = &commonTriggerCharacterEvent;
+		//}
 	}
 }
 
