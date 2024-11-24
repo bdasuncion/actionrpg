@@ -56,3 +56,6 @@ Mkfile.old
 #remove files
 *.gba
 *.sav
+
+#screenshots
+*.png
