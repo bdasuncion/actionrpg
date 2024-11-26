@@ -3,13 +3,13 @@
 #include "GBACharacter.h"
 #include "GBACharacterType.h"
 
-void alisa_init(CharacterAttr *character, ControlTypePool* controlPool);
+void alisa_init(CharacterAttr *character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void alisa_setCharacter(CharacterAttr *character);
-void werewolf_init(CharacterAttr *character, ControlTypePool* controlPool);
+void werewolf_init(CharacterAttr *character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void werewolf_setCharacter(CharacterAttr *character);
-void zombie_init(CharacterAttr* character, ControlTypePool* controlPool);
+void zombie_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void zombie_setCharacter(CharacterAttr* character);
-void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool);
+void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void skulldemon_setCharacter(CharacterAttr* character);
 
 const FuncCharacterInit character_InitFunctionsCollection[] = { &alisa_init, &werewolf_init, &zombie_init, &skulldemon_init};

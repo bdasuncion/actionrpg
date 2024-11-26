@@ -140,7 +140,7 @@ void skulldemon_checkMapCollision(CharacterAttr* character, const MapInfo* mapIn
 void skulldemon_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 	
-void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool) {
+void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
 //use library to get id
 	character->id = 0;
 	//use enum of character type
@@ -177,17 +177,18 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool) {
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
 	charControl->currentStatus = ESkullDemonAIStateWalkAround;
-	charControl->wayPointCnt = 2;
+	charControl->wayPointCnt = charWaypoints->wayPointCnt;
 	charControl->wayPointCurrent = 0;
 	
 	//charControl->patrolPoints[0] = {141, 77, 1};
 	//charControl->patrolPoints[1] = {141, 176, 1};
-	charControl->wayPoints[0].x = 141;
-	charControl->wayPoints[0].y = 77;
-	charControl->wayPoints[0].z = 1;
-	charControl->wayPoints[1].x = 141;
-	charControl->wayPoints[1].y = 200;
-	charControl->wayPoints[1].z = 1;
+	charControl->wayPoints = charWaypoints->wayPoints;
+	//charControl->wayPoints[0].x = 141;
+	//charControl->wayPoints[0].y = 77;
+	//charControl->wayPoints[0].z = 1;
+	//charControl->wayPoints[1].x = 141;
+	//charControl->wayPoints[1].y = 200;
+	//charControl->wayPoints[1].z = 1;
 	
 	character->free = (ControlTypeUnion*)charControl;
 	

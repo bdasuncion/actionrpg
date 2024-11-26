@@ -62,7 +62,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	mchar_resetControlTypeAndSetCount(controlPool, characterCollection->countCharacterTransfer + 
 		((MapInfo*)eventTransfer->mapInfo)->characterCount);
 	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
-		characterCollection->characterTransfer[i](character, controlPool);
+		characterCollection->characterTransfer[i](character, controlPool, NULL);
 	}
 	
     commonCharacterSetPosition(character, 

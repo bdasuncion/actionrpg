@@ -153,7 +153,7 @@ void zombie_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo);
 void zombie_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 	
-void zombie_init(CharacterAttr* character, ControlTypePool* controlPool) {
+void zombie_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
 
 //use library to get id
 	character->id = 0;

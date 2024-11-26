@@ -1325,9 +1325,9 @@ bool commonIsCharTypeInArea(const BoundingBox *area, const CharacterCollection *
 void commonSetCharType(const Position* position, const MapInfo *mapInfo, 
 	CHARACTERTYPE type, CharacterCollection *characterCollection, 
 	CharacterActionCollection *charActionCollection, CharacterAttr *character,
-	ControlTypePool* controlPool) {
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
 	
-	character_InitFunctionsCollection[type](character, controlPool);
+	character_InitFunctionsCollection[type](character, controlPool, charWaypoints);
 	commonCharacterSetPosition(character, position->x, position->y, position->z, EDown);
 	character->doAction(character, mapInfo, characterCollection, charActionCollection);
 	character->checkMapCollision(character, mapInfo);
@@ -1344,7 +1344,7 @@ void createBoundingBoxAtPosition(const Position* position, BoundingBox *bounding
 
 void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const Position* position, const MapInfo *mapInfo, CHARACTERTYPE type, 
 	CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection, 
-	ControlTypePool* controlPool) {
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
 	BoundingBox charBoundingBox;
 	int countBox, i;
 	for (i = 0; i < characterCollection->currentSize; ++i) {
@@ -1362,7 +1362,7 @@ void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const P
 	if (character->type != NONE) {
 		return;
 	}
-	commonSetCharType(position, mapInfo, type, characterCollection, charActionCollection, character, controlPool);
+	commonSetCharType(position, mapInfo, type, characterCollection, charActionCollection, character, controlPool, charWaypoints);
 	characterCollection->characters[characterCollection->currentSize] = character;
 	++characterCollection->currentSize;
 	++characterCollection->displaySize;

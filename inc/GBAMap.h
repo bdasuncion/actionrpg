@@ -65,6 +65,7 @@ typedef struct CharacterInit {
 	u16 z;
 	CHARACTERTYPE type;
 	//const struct CharacterEventControl *eventControl;
+	const CharacterWaypoints *charWaypoints; 
 } CharacterInit;
 
 typedef struct ScreenEffect {

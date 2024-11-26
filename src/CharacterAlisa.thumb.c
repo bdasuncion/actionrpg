@@ -244,7 +244,7 @@ const BoundingBox alisa_slashCollisionBox[8] = {
 };
 
 
-void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool)
+void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints)
 {	
 	//use library to get id
 	alisa->id = 0;

@@ -103,7 +103,7 @@ bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharB
 void commonSetCharType(const Position* position, const MapInfo *mapInfo, 
 	CHARACTERTYPE type, CharacterCollection *characterCollection, 
 	CharacterActionCollection *charActionCollection, CharacterAttr *character,
-	ControlTypePool* controlPool);
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 inline EDirections commonReverseDirection(EDirections direction);
 inline UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay);
 int commonCharacterSetToOAMBuffer(CharacterCollection *charCollection,
@@ -115,7 +115,7 @@ bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay);
 bool commonIsCharTypeInArea(const BoundingBox *area, const CharacterCollection *characterCollection, CHARACTERTYPE findType);
 void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const Position* position, const MapInfo *mapInfo, CHARACTERTYPE type, 
 	CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection, 
-	ControlTypePool* controlPool);
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 //int commonDummy();
 void commonSetToOamBufferAsMask(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf, SPRITESHAPE shape,
 		SPRITESIZE size);

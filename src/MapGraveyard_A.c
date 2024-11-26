@@ -347,11 +347,17 @@ const unsigned int *vram_mapgraveyard_a[] = {
 	graveyard_wall_1_5,graveyard_ground_3_6,graveyard_ground_3_7,graveyard_wall_0_10,graveyard_wall_0_11,graveyard_wall_1_10,graveyard_wall_1_11,};
 const u16 *pallette_mapgraveyard_a[] = {  pallette_graveyard_ground, pallette_graveyard_wall, pallette_graveyard_gravestones, };
 const u16 *mapentryset_mapgraveyard_a[] = { mapentry_mapgraveyard_a[0], mapentry_mapgraveyard_a[1], };
+
+
+const CharacterWaypoints charwaypoint1_mapgraveyard_a = {2, {{141, 77, 1}, {141, 200, 1}}};
+
 const CharacterInit actors_mapgraveyard_a[] = {
-	//{ 136, 152, 1, ZOMBIE }, 
-	{ 136, 152, 1, SKULLDEMON }, 
+	{ 136, 152, 1, SKULLDEMON, &charwaypoint1_mapgraveyard_a }, 
 };
+
 extern const MapInfo mapgraveyard_b;
+
+
 const EventTransfer transfer_mapgraveyard_a[] = {
 	{ 544, 496, 294, 74, 33, &mapgraveyard_b, 16, 16, 32, EDown},
 };

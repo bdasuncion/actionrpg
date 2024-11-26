@@ -92,7 +92,7 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 	    
 		Position position = {mapInfo->characterInit[i].x, mapInfo->characterInit[i].y, mapInfo->characterInit[i].z};
 		commonSetCharType(&position, mapInfo, mapInfo->characterInit[i].type, characterCollection, 
-			charActionCollection, character, controlPool);
+			charActionCollection, character, controlPool, mapInfo->characterInit[i].charWaypoints);
 		characterCollection->characters[characterCollection->currentSize] = character;
 		//if (mapInfo->characterInit[i].eventControl) {
 		//    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);

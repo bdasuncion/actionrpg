@@ -131,7 +131,7 @@ CharFuncAction werewolf_actions[] = {
 void werewolf_doAction(CharacterAttr* character, const MapInfo *mapInfo, 
     const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 
-void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool) {
+void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
 
 //use library to get id
 	character->id = 0;

@@ -20,7 +20,7 @@ typedef enum WerewolfStatus {
 	EWerewolfStatusHuntTarget,
 } WerewolfStatus;
 
-void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool);
+void werewolf_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void werewolf_setCharacter(CharacterAttr* character);
 void werewolf_remove(CharacterAttr* character, 
     const MapInfo *mapInfo, CharacterCollection *charCollection);

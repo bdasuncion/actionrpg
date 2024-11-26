@@ -72,7 +72,7 @@ void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCh
 void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1, 
 	ControlTypePool *controlPool) {
 	
-	alisa_init(charCollection->charactersForDisplay[charCollection->displaySize], controlPool);
+	alisa_init(charCollection->charactersForDisplay[charCollection->displaySize], controlPool, NULL);
 	*player1 = charCollection->charactersForDisplay[charCollection->displaySize];
 	++charCollection->displaySize;
 	charCollection->characters[charCollection->currentSize] = charCollection->charactersForDisplay[charCollection->displaySize];
