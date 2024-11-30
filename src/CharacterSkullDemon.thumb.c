@@ -177,18 +177,10 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool, Cha
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
 	charControl->currentStatus = ESkullDemonAIStateWalkAround;
+	
 	charControl->wayPointCnt = charWaypoints->wayPointCnt;
 	charControl->wayPointCurrent = 0;
-	
-	//charControl->patrolPoints[0] = {141, 77, 1};
-	//charControl->patrolPoints[1] = {141, 176, 1};
 	charControl->wayPoints = charWaypoints->wayPoints;
-	//charControl->wayPoints[0].x = 141;
-	//charControl->wayPoints[0].y = 77;
-	//charControl->wayPoints[0].z = 1;
-	//charControl->wayPoints[1].x = 141;
-	//charControl->wayPoints[1].y = 200;
-	//charControl->wayPoints[1].z = 1;
 	
 	character->free = (ControlTypeUnion*)charControl;
 	
@@ -344,18 +336,18 @@ void skulldemon_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 
 bool skulldemon_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
-	return false;
-	/*if (character->stats.currentStatus == EStatusNoActionCollision) {
+	//return false;
+	if (character->stats.currentStatus == EStatusNoActionCollision) {
 		return false;
 	}
 	character->stats.currentLife -= 1;
 	//character->stats.currentStatus = EStatusNoActionCollision;
-	charControl->currentStatus = ESkullDemonAIStateStunned;
+	//charControl->currentStatus = ESkullDemonAIStateStunned;
 	//add hit animation
 	if (character->stats.currentLife <= 0) {
 		commonRemoveCharacter(character);
 	}
-	return true;*/
+	return true;
 }
 
 void skulldemon_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
