@@ -377,6 +377,7 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo,
 	//mprinter_printf("JAPANESE %d\n", 'か');
 	//mprinter_printf("JAPANESE2 %d\n", 'め');
 	//mprinter_printf("JAPANESE3 %d\n", '火');
+	
 	alisa->delta.x = alisa_runOffsetX[alisa->direction][alisa->movementCtrl.currentFrame];
 	alisa->position.x += alisa->delta.x;
 	
@@ -772,10 +773,8 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 	
 	if (fallingDown > 0 ) {
 		alisa->nextAction = EAlisaFallingDown;
-		//commonFallingDownCollision(alisa, mapInfo);
 	} else if ((alisa->nextAction == EAlisaFallingDown ||  
 		alisa->nextAction == EAlisaFallingDownForward) && fallingDown <= 0) {
-		//mprinter_printf("MAP STAND\n");
 		alisa->nextAction = EAlisaStand;
 	}
 	
@@ -783,8 +782,10 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 		alisa->distanceFromGround = fallingDown;
 	}
 	
-	common_mapCollision[alisa->direction](alisa, mapInfo, 
-	    common_mapCollisionReactions[alisa->direction]);
+	mprinter_printf("falling %d ", alisa->distanceFromGround);
+	common_mapCollision[alisa->direction&EDirectionsMax](alisa, mapInfo, 
+	    common_mapCollisionReactions[alisa->direction&EDirectionsMax]);
+		
 }
 
 void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
