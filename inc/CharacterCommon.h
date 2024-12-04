@@ -31,6 +31,7 @@ bool common_checkNext(bool isOtherCharBelow, const Position *charBoundingBox,
     const Position *otherCharBoundingBox);
 void common_noMovement(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+
 void common_movingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingLeftOffset(CharacterAttr* character, 
@@ -47,6 +48,7 @@ void common_movingRightDownOffset(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+
 void common_mapMovingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_mapMovingLeftOffset(CharacterAttr* character, 
@@ -63,6 +65,24 @@ void common_mapMovingRightDownOffset(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_mapMovingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+	
+void common_mapMovingRightOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingRightUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingRightDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+
 void commonGetBoundsFromMap(s32 x, s32 y, const MapInfo* mapInfo, BoundingBox *charBoundingBox);
 void commonMovingUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonMovingDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
@@ -83,6 +103,7 @@ const Position* commonFindCharTypePositionByDistance(const CharacterCollection *
 bool commonHasReachedWaypoint(const Position *waypoint, const BoundingBox *boundingBox);
 extern const CharFuncCollisionReaction common_collisionReactions[8];
 extern const CharFuncCollisionReaction common_mapCollisionReactions[8];
+extern const CharFuncCollisionReaction common_mapCollisionReactionsWhileFallingDown[8];
 extern const CommonMapCollision common_mapCollision[8];
 inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);
 inline int commonGetCurrentDisplayFrame(const CharacterAttr* character);

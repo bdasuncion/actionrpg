@@ -10,6 +10,7 @@
 #include "ManagerVram.h"
 #include "ManagerSound.h"
 #include "ManagerCharacterActionEvents.h"
+#include "ManagerPrinter.h"
 #include "CharacterAlisa.h"
 #include "CharacterCommon.h"
 #include "MapCommon.h"
@@ -760,6 +761,12 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)alisa->free;
 	int fallingDown = 1024;
 	
+	if (alisa->nextAction == EAlisaFallingDown ||  
+		alisa->nextAction == EAlisaFallingDownForward) {
+		common_mapCollision[alisa->direction&EDirectionsMax](alisa, mapInfo, 
+			common_mapCollisionReactionsWhileFallingDown[alisa->direction&EDirectionsMax]);
+	}
+
 	alisa->getBounds(alisa, &count, &characterBoundingBox);
 	
 	for (int i = 0; i < 4; ++i) {
@@ -782,10 +789,20 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 		alisa->distanceFromGround = fallingDown;
 	}
 	
-	mprinter_printf("falling %d ", alisa->distanceFromGround);
+	//mprinter_printf("falling %d ", alisa->distanceFromGround);
 	common_mapCollision[alisa->direction&EDirectionsMax](alisa, mapInfo, 
 	    common_mapCollisionReactions[alisa->direction&EDirectionsMax]);
 		
+	/*alisa->getBounds(alisa, &count, &characterBoundingBox);
+	
+	for (int i = 0; i < 4; ++i) {
+		commonGetBoundsFromMap(CONVERT_2POS(alisa->position.x) + alisa_mapCollisionXAdjust[i], 
+			CONVERT_2POS(alisa->position.y) + alisa_mapCollisionYAdjust[i], mapInfo, &mapBoundingBox);
+		int dist = common_fallingDown(alisa, &characterBoundingBox, &mapBoundingBox);
+		if (dist < fallingDown && dist >= 0) {
+			fallingDown = dist;
+		}
+	}*/
 }
 
 void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,

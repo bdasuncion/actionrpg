@@ -10,6 +10,7 @@
 #include "ManagerCharacterActionEvents.h"
 #include "ManagerCharacters.h"
 #include "ManagerVram.h"
+#include "ManagerPrinter.h"
 #include "MapCommon.h"
 #include "UtilCommonValues.h"
 #include "CharacterCommon.h"
@@ -228,6 +229,17 @@ const CharFuncCollisionReaction common_mapCollisionReactions[8] = {
 	&common_mapMovingLeftUpOffset,
 	&common_mapMovingLeftOffset,
 	&common_mapMovingLeftDownOffset
+};
+
+const CharFuncCollisionReaction common_mapCollisionReactionsWhileFallingDown[8] = {
+	&common_mapMovingDownOffsetWhileFallingDown,
+	&common_mapMovingRightDownOffsetWhileFallingDown,
+	&common_mapMovingRightOffsetWhileFallingDown,
+	&common_mapMovingRightUpOffsetWhileFallingDown,
+	&common_mapMovingUpOffsetWhileFallingDown,
+	&common_mapMovingLeftUpOffsetWhileFallingDown,
+	&common_mapMovingLeftOffsetWhileFallingDown,
+	&common_mapMovingLeftDownOffsetWhileFallingDown
 };
 
 const CommonMapCollision common_mapCollision[8] = {
@@ -559,6 +571,7 @@ void common_movingRightOffset(CharacterAttr* character,
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
 	
+	mprinter_printf("%d\n", CONVERT_2MOVE(xoffset));
 	character->position.x -= CONVERT_2MOVE(xoffset);
 	
 	if (character->free->type == EControlAiType) {
@@ -577,6 +590,7 @@ void common_movingLeftOffset(CharacterAttr* character,
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
 	
+	mprinter_printf("qwe %d\n", CONVERT_2MOVE(xoffset));
 	character->position.x += CONVERT_2MOVE(xoffset);
 	
 	if (character->free->type == EControlAiType) {
@@ -798,6 +812,14 @@ inline int commonConvertBoundingBoxZ(int zPos) {
 	return adjust*CONVERT_TO_BOUNDINGBOX_Z(adjust*zPos);
 }
 
+void common_mapMovingRightOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingRightOffset(character, charBoundingBox, otherCharBoundingBox);
+}
+
 void common_mapMovingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
@@ -809,6 +831,14 @@ void common_mapMovingRightOffset(CharacterAttr* character,
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->rightBlocked |= (xoffset != 0);
 	}
+}
+
+void common_mapMovingLeftOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingLeftOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 	
 void common_mapMovingLeftOffset(CharacterAttr* character, 
@@ -824,6 +854,14 @@ void common_mapMovingLeftOffset(CharacterAttr* character,
 	}
 }
 
+void common_mapMovingUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingUpOffset(character, charBoundingBox, otherCharBoundingBox);
+}
+
 void common_mapMovingUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
@@ -835,6 +873,14 @@ void common_mapMovingUpOffset(CharacterAttr* character,
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->upBlocked |= (yoffset != 0);
 	}
+}
+
+void common_mapMovingDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingDownOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 
 void common_mapMovingDownOffset(CharacterAttr* character, 
@@ -849,7 +895,15 @@ void common_mapMovingDownOffset(CharacterAttr* character,
 		((CharacterAIControl*)character->free)->downBlocked |= (yoffset != 0);
 	}  
 }
-	
+
+void common_mapMovingRightUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingRightUpOffset(character, charBoundingBox, otherCharBoundingBox);
+}
+
 void common_mapMovingRightUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
@@ -869,6 +923,14 @@ void common_mapMovingRightUpOffset(CharacterAttr* character,
 	}  
 }
 
+void common_mapMovingLeftUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingLeftUpOffset(character, charBoundingBox, otherCharBoundingBox);
+}
+
 void common_mapMovingLeftUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
@@ -882,10 +944,19 @@ void common_mapMovingLeftUpOffset(CharacterAttr* character,
 	xOffset *= (!doOffsetY)*didCollide;
 	character->position.y += CONVERT_2MOVE(yOffset);
 	character->position.x += CONVERT_2MOVE(xOffset);
+	
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->upBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->leftBlocked |= (xOffset != 0);
 	}
+}
+
+void common_mapMovingRightDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingRightDownOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 
 void common_mapMovingRightDownOffset(CharacterAttr* character, 
@@ -905,6 +976,14 @@ void common_mapMovingRightDownOffset(CharacterAttr* character,
 		((CharacterAIControl*)character->free)->downBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->rightBlocked |= (xOffset != 0);
 	}
+}
+
+void common_mapMovingLeftDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingLeftDownOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 
 void common_mapMovingLeftDownOffset(CharacterAttr* character, 
