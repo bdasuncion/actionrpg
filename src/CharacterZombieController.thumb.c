@@ -105,22 +105,6 @@ void zombie_walkAroundController(CharacterAttr* character, const MapInfo *mapInf
 	++charControl->actions[charControl->currentAction].currentFrame;
 }
 
-const EDirections FAR_TARGET[5][5] = {
- {EUpleft, EUpleft, EUp, EUpright, EUpright},
- {EUpleft, EUpleft, EUp, EUpright, EUpright},
- {ELeft, ELeft, EUnknown, ERight, ERight},
- {EDownleft, EDownleft, EDown, EDownright, EDownright},
- {EDownleft, EDownleft, EDown, EDownright, EDownright}
-};
-
-const EDirections NEAR_TARGET[5][5] = {
- {EUpleft, EUpleft, EUp, EUpright, EUpright},
- {EUpleft, EUpleft, EUp, EUpright, EUpright},
- {ELeft, ELeft, EUnknown, ERight, ERight},
- {EDownleft, EDownleft, EDown, EDownright, EDownright},
- {EDownleft, EDownleft, EDown, EDownright, EDownright}
-};
-
 void findAttackDirection(const Position *charPosition, const Position *target, EDirections *direction) {
 	int xDist = CONVERT_2POS(charPosition->x) - CONVERT_2POS(target->x);
 	int yDist = CONVERT_2POS(charPosition->y) - CONVERT_2POS(target->y);
@@ -165,7 +149,7 @@ void zombie_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	distanceX = CONVERT_2POS(charControl->target.x) - CONVERT_2POS(character->position.x) + DIST_OFFSET;
 	distanceY = CONVERT_2POS(charControl->target.y) - CONVERT_2POS(character->position.y) + DIST_OFFSET;
 	
-	if (charControl->actions[charControl->currentAction].action != EZombieAttack && (distanceX < DIST_OFFSET*2 && distanceX >= 0) && (distanceY < DIST_OFFSET*2 && distanceY >= 0)) {
+	if (charControl->actions[charControl->currentAction].action != EZombieAttack && ((distanceX < DIST_OFFSET*2 && distanceX >= 0) || (distanceY < DIST_OFFSET*2 && distanceY >= 0))) {
 		EDirections goDirection;
 		distanceX = DIVIDE_BY_32(distanceX);
 		distanceY = DIVIDE_BY_32(distanceY);

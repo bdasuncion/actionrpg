@@ -9,9 +9,10 @@
 #include "CharacterAttackEffects.h"
 #include "CharacterAlisa.h"
 #include "GBATimer.h"
+#include "DebugLogMgba.h"
 
-CharacterCollection *mchar_vreference = NULL;
-AttackEffectCollection *mattackeffect_vreference = NULL;
+EWRAM CharacterCollection *mchar_vreference = NULL;
+EWRAM AttackEffectCollection *mattackeffect_vreference = NULL;
 
 void mchar_setDraw(CharacterCollection *reference, AttackEffectCollection *attackEffectCollection) {
 	mchar_vreference = reference;
@@ -72,7 +73,7 @@ void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCh
 void mchar_getPlayerCharacter(CharacterCollection *charCollection, CharacterAttr **player1, 
 	ControlTypePool *controlPool) {
 	
-	alisa_init(charCollection->charactersForDisplay[charCollection->displaySize], controlPool);
+	alisa_init(charCollection->charactersForDisplay[charCollection->displaySize], controlPool, NULL);
 	*player1 = charCollection->charactersForDisplay[charCollection->displaySize];
 	++charCollection->displaySize;
 	charCollection->characters[charCollection->currentSize] = charCollection->charactersForDisplay[charCollection->displaySize];
@@ -204,7 +205,7 @@ void mchar_resolveCharacterCollision(CharacterCollection *charCollection) {
 	}
 }
 
-inline void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) {
+void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) {
 	if (charCollection->characters[charCollection->currentSize - 1]->type == NONE) {
 		--charCollection->currentSize;
 	}
@@ -271,7 +272,9 @@ void mchar_setPosition(CharacterCollection *charCollection,
 		scr_pos, scr_dim);
 	currentOAMIdx = commonCharacterSetToOAMBuffer(charCollection, oamCollection, currentOAMIdx,
 		scr_pos, scr_dim); 
+	mgba_log("AFTER SETPOS",12);
 	mchar_removeOAMExcess(oamCollection, currentOAMIdx);
+	mgba_log("REMOVE EXCESS",13);
 }
 
 CharacterAttr* mchar_findCharacterType(CharacterCollection *charCollection, int type) {

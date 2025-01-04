@@ -11,7 +11,7 @@
 extern const CharacterAttr openSlot;
 extern const s32 common_zOffsetDown;
 void commonRemoveCharacter(CharacterAttr *character);
-void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf);
+void commonSetToOamBuffer(const SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf);
 void commonDrawDisplay(SpriteDisplay *spriteDisplay);
 UpdateStatus commonUpdateCharacterAnimation(CharacterAttr* character);
 UpdateStatus commonInitializeAction(CharacterAttr* character);
@@ -31,6 +31,7 @@ bool common_checkNext(bool isOtherCharBelow, const Position *charBoundingBox,
     const Position *otherCharBoundingBox);
 void common_noMovement(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+
 void common_movingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingLeftOffset(CharacterAttr* character, 
@@ -47,6 +48,7 @@ void common_movingRightDownOffset(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_movingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+
 void common_mapMovingRightOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_mapMovingLeftOffset(CharacterAttr* character, 
@@ -63,6 +65,24 @@ void common_mapMovingRightDownOffset(CharacterAttr* character,
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 void common_mapMovingLeftDownOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+	
+void common_mapMovingRightOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingRightUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingRightDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void common_mapMovingLeftDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+
 void commonGetBoundsFromMap(s32 x, s32 y, const MapInfo* mapInfo, BoundingBox *charBoundingBox);
 void commonMovingUpMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
 void commonMovingDownMapCollision(CharacterAttr *character, const MapInfo* mapInfo, CharFuncCollisionReaction reaction);
@@ -80,17 +100,20 @@ const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *chara
 const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
 const Position* commonFindCharTypePositionByDistance(const CharacterCollection *characterCollection, 
 	const Position *refPos, int dist, CHARACTERTYPE fromType, CHARACTERTYPE toType);
+bool commonHasReachedWaypoint(const Position *waypoint, const BoundingBox *boundingBox);
 extern const CharFuncCollisionReaction common_collisionReactions[8];
 extern const CharFuncCollisionReaction common_mapCollisionReactions[8];
+extern const CharFuncCollisionReaction common_mapCollisionReactionsWhileFallingDown[8];
 extern const CommonMapCollision common_mapCollision[8];
-inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);
-inline int commonGetCurrentDisplayFrame(const CharacterAttr* character);
-inline bool commonDoIntializeActions(CharacterAttr* character);
-inline void commonRemoveActionOnInit(CharacterAttr* character, CharacterActionCollection *charActionCollection);
-inline bool commonIsFoundPosition(const Position* position);
+int commonGetCurrentAnimationFrame(const CharacterAttr* character);
+int commonGetCurrentDisplayFrame(const CharacterAttr* character);
+bool commonDoIntializeActions(CharacterAttr* character);
+void commonRemoveActionOnInit(CharacterAttr* character, CharacterActionCollection *charActionCollection);
+bool commonIsFoundPosition(const Position* position);
 int common_fallingDown(CharacterAttr* character, const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 int common_fallingDownOnBoundingBox(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+void commonHandleBlockedPath(CharacterAIControl *charControl, EDirections *goDirection);
 void commonGravityEffect(CharacterAttr *character, int zOffsetDown);
 int commonConvertBoundingBoxZ(int zPos);
 void commonInitShadow();
@@ -101,9 +124,9 @@ bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharB
 void commonSetCharType(const Position* position, const MapInfo *mapInfo, 
 	CHARACTERTYPE type, CharacterCollection *characterCollection, 
 	CharacterActionCollection *charActionCollection, CharacterAttr *character,
-	ControlTypePool* controlPool);
-inline EDirections commonReverseDirection(EDirections direction);
-inline UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay);
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
+EDirections commonReverseDirection(EDirections direction);
+UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay);
 int commonCharacterSetToOAMBuffer(CharacterCollection *charCollection,
 	OAMCollection *oamCollection,
 	int currentOAMIdx,
@@ -113,7 +136,7 @@ bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay);
 bool commonIsCharTypeInArea(const BoundingBox *area, const CharacterCollection *characterCollection, CHARACTERTYPE findType);
 void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const Position* position, const MapInfo *mapInfo, CHARACTERTYPE type, 
 	CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection, 
-	ControlTypePool* controlPool);
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 //int commonDummy();
 void commonSetToOamBufferAsMask(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf, SPRITESHAPE shape,
 		SPRITESIZE size);
@@ -130,4 +153,8 @@ void commonMapCollisionDummy(CharacterAttr* charAtt, const MapInfo* mapInfo);
 void commonActionCollisionDummy(CharacterAttr *charAtt,  CharacterActionCollection *actionEvents, 
 	AttackEffectCollection *attackEffects);
 bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent);
+extern const EDirections FAR_TARGET[5][5];
+extern const EDirections NEAR_TARGET[5][5];
+void common_findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection);
+void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection);
 #endif

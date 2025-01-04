@@ -31,7 +31,7 @@ typedef enum AlisaStatus
 } AlisaStatus;
 
 
-void alisa_init(CharacterAttr* character, ControlTypePool* controlPool);
+void alisa_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void alisa_setCharacter(CharacterAttr* character);
 void alisa_controller(CharacterAttr* charAtt, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection);

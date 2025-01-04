@@ -24,18 +24,6 @@
 #define MAPBLOCK_WIDTH 32
 #define MAPBLOCK_HEIGHT 32
 
-//for test only
-/*extern const unsigned short testmap_pal[48];
-extern const unsigned int testmap_tiles[2336];
-extern const unsigned int testmap_collisionEntry[288];
-extern const unsigned short testmap_mapEntry[2][2304];
-extern const unsigned int testmap_width;
-extern const unsigned int testmap_height;*/
-
-extern const FuncCharacterInit character_InitFunctionsCollection[];
-//extern const FuncCharacterSet characterSet[];
-//end test const
-
 /*void mbg_checkCollision(
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,
@@ -104,12 +92,12 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 	    
 		Position position = {mapInfo->characterInit[i].x, mapInfo->characterInit[i].y, mapInfo->characterInit[i].z};
 		commonSetCharType(&position, mapInfo, mapInfo->characterInit[i].type, characterCollection, 
-			charActionCollection, character, controlPool);
+			charActionCollection, character, controlPool, mapInfo->characterInit[i].charWaypoints);
 		characterCollection->characters[characterCollection->currentSize] = character;
-		if (mapInfo->characterInit[i].eventControl) {
-		    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);
-			character->controller = &commonTriggerCharacterEvent;
-		}
+		//if (mapInfo->characterInit[i].eventControl) {
+		//    commonSetCharacterEvent(character, mapInfo->characterInit[i].eventControl);
+		//	character->controller = &commonTriggerCharacterEvent;
+		//}
 	}
 }
 

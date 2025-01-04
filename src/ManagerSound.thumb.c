@@ -50,9 +50,9 @@ const u32 distanceAttenuation[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
 
 const SampleSoundChannel freeSoundEffectChannel = { 0, 0, 0, true, false, true, true, false, false, 0, 0, 0, 0, 0, 0};
 const MusicChannel freeMusicChannel = { NULL, 0, 0, 0, 0};
-SoundBuffer soundBuffer;
-SampleSoundChannel soundChannels[SOUNDEFFECT_NUM_CHANNEL];
-MusicChannel musicChannels[MUSIC_NUM_CHANNEL] = {{0,0,0,0,0,0,0}, {0,0,0,0,0,0,0}, {0,0,0,0,0,0,0}, {0,0,0,0,0,0,0}};
+EWRAM SoundBuffer soundBuffer;
+EWRAM SampleSoundChannel soundChannels[SOUNDEFFECT_NUM_CHANNEL];
+EWRAM MusicChannel musicChannels[MUSIC_NUM_CHANNEL] = {{0,0,0,0,0,0,0}, {0,0,0,0,0,0,0}, {0,0,0,0,0,0,0}, {0,0,0,0,0,0,0}};
 
 void msound_init() {
     int i;

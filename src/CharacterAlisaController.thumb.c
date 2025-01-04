@@ -5,6 +5,8 @@
 #include  <stdbool.h>
 #include  <stdlib.h>
 
+#include "ManagerPrinter.h"
+
 #define MAX_BUTTON_INTERVAL 30
 #define MAX_STUN_ANIMATION 30
 #define ALISA_NORMALATTACK_INTERVALMAX 8
@@ -146,6 +148,8 @@ bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charContr
 void alisa_controller(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {	
 	EDirections direction = KEYPRESS_DIRECTION;
+	mprinter_printf("PRESS %d\n", KEYPRESS);
+	//mprinter_printf("PRESS %d\n", 0xF);
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
 
@@ -158,7 +162,7 @@ void alisa_controller(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (controlButtonCheck(character)) {
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
 
@@ -166,10 +170,10 @@ void alisa_controller(CharacterAttr* character, const MapInfo *mapInfo,
 	
 	if (direction != EUnknown) {
 		character->nextAction = EAlisaRun;
-		character->nextDirection = direction;
+		character->nextDirection = direction&EDirectionsMax;
 		if (!((direction == EUpleft | direction == EDownleft) & character->faceDirection == ELeft) && 
 			!((direction == EUpright | direction == EDownright) & character->faceDirection == ERight)) {
-			character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
+			character->faceDirection = DEFAULT_DIRECTIONMAP[direction]&EDirectionsMax;
 		}
 		//character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
 		character->getBounds = &alisa_getBoundingBoxMoving;
@@ -198,7 +202,7 @@ void alisa_normalSlashController(CharacterAttr* character, const MapInfo *mapInf
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
 		character->controller = &alisa_controller;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
 }
@@ -221,7 +225,7 @@ void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInf
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
 		character->controller = &alisa_controller;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
 }
@@ -250,12 +254,12 @@ void alisa_slashController(CharacterAttr* character, const MapInfo *mapInfo,
 		if (hold >= ALISA_NORMALATTACK_INTERVALMAX) {
 			character->nextAction = EAlisaStrongSwordSlash;
 			character->controller = &alisa_strongSlashController;
-			character->controller(character, NULL, NULL);
+			character->controller(character, mapInfo, characterCollection);
 			return;
 		} else {
 			character->nextAction = EAlisaNormalSwordSlash;
 			character->controller = &alisa_normalSlashController;
-			character->controller(character, NULL, NULL);
+			character->controller(character, mapInfo, characterCollection);
 		}
 	}
 	
@@ -285,7 +289,7 @@ void alisa_prepareDashController(CharacterAttr* character, const MapInfo *mapInf
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	if (direction != EUnknown) {
-		character->nextDirection = direction;
+		character->nextDirection = direction&EDirectionsMax;
 		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
 		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
 		if (direction != character->faceDirection & 
@@ -293,11 +297,11 @@ void alisa_prepareDashController(CharacterAttr* character, const MapInfo *mapInf
 			character->spriteDisplay.numberOfFramesPassed >= ALISA_MIN_BACKWARD_DASH &
 			character->nextAction == character->action) {
 			character->controller = &alisa_dashBackwardController;
-			character->controller(character, NULL, NULL);
+			character->controller(character, mapInfo, characterCollection);
 			return;
 		} else if (isLastFrame) {
 			character->controller = &alisa_dashForwardController;
-			character->controller(character, NULL, NULL);
+			character->controller(character, mapInfo, characterCollection);
 			return;
 		}
 	}
@@ -306,9 +310,9 @@ void alisa_prepareDashController(CharacterAttr* character, const MapInfo *mapInf
 		if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 			return;
 		}
-		character->nextDirection = commonReverseDirection(character->faceDirection);
+		character->nextDirection = commonReverseDirection(character->faceDirection&EDirectionsMax)&EDirectionsMax;
 		character->controller = &alisa_dashBackwardController;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 	}
 }
 
@@ -342,7 +346,7 @@ void alisa_dashForwardController(CharacterAttr* character, const MapInfo *mapInf
 
 	if (isLastFrame) {
 		character->controller = &alisa_controller;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 	}
 }
 
@@ -371,50 +375,49 @@ void alisa_dashBackwardController(CharacterAttr* character, const MapInfo *mapIn
 
 	//mprinter_printf("FRAMES %d %d %d\n", nextScreenFrame, nextAnimationFrame,  isLastFrame);
 	if (isLastFrame) {
-		character->nextDirection = character->faceDirection;
+		character->nextDirection = character->faceDirection&EDirectionsMax;
 		character->controller = &alisa_controller;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 	}
 }
 
 void alisa_jumpUpController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
    EDirections direction = KEYPRESS_DIRECTION;
+   mprinter_printf("PRESS %d", KEYPRESS);
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
-    character->distanceFromGround = 1024;
+   character->distanceFromGround = 1024;
  
 	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
 		return;
 	}
 	
 	character->getBounds = &alisa_getBoundingBoxMoving;	
-	
+	character->nextAction = EAlisaJumpUp;
+		
 	if (commonGetCurrentAnimationFrame(character) >= ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME && 
-		direction != EUnknown) {
+		direction != EUnknown && (character->nextAction == character->action)) {
 		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
 		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
 		if (direction == character->faceDirection | 
 			direction == clockwise | direction == counterClockwise) {
 			character->nextAction = EAlisaJumpForward;
 			character->action = EAlisaJumpForward;
-			character->nextDirection = direction;
+			character->nextDirection = direction&EDirectionsMax;
 			character->controller = &alisa_jumpForwardController;
-			character->controller(character, NULL, NULL);
+			character->controller(character, mapInfo, characterCollection);
 			return;
 		}
 	}
 	
-	character->nextAction = EAlisaJumpUp;
-
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
-		//mprinter_printf("")
-		character->nextDirection = character->direction;
+		character->nextDirection = character->direction&EDirectionsMax;
 		character->nextAction = EAlisaFallingDown;
 		character->controller = &alisa_fallingDownController;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 	}
 }
 
@@ -436,10 +439,10 @@ void alisa_jumpForwardController(CharacterAttr* character, const MapInfo *mapInf
 	
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
-		character->nextDirection = character->direction;
+		character->nextDirection = character->direction&EDirectionsMax;
 		character->nextAction = EAlisaFallingDownForward;
 		character->controller = &alisa_fallingDownForwardController;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
 	}
 }
 
@@ -449,10 +452,10 @@ void alisa_jumpController(CharacterAttr* character, const MapInfo *mapInfo,
    //if (direction != EUnknown) {
    if (direction == character->direction) {
 		character->controller = &alisa_jumpForwardController;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
    } else {
 		character->controller = &alisa_jumpUpController;
-		character->controller(character, NULL, NULL);
+		character->controller(character, mapInfo, characterCollection);
    }
 }
 

@@ -280,7 +280,7 @@ const TileSet *tileset_mapdungeonsample[] = { &tileset_tile_dungeonsample_floor1
 const u16 *pallette_mapdungeonsample[] = {  pallette_tile_dungeonsample_floor1, pallette_tile_dungeonsample_wallside1, pallette_tile_dungeonsample_wallseethrough, pallette_tile_dungeonsample_walledge, };
 const u16 *mapentryset_mapdungeonsample[] = { mapentry_mapdungeonsample[0], mapentry_mapdungeonsample[1], };
 const CharacterInit actors_mapdungeonsample[] = {
-	{ 296, 376, 33, ZOMBIE }
+	{ 296, 376, 33, ZOMBIE, NULL }
 };
 extern const MapInfo mapdungeonsample2;
 extern const MusicTrack musickankandara_end;
@@ -302,7 +302,7 @@ void mapDungeonSampleFunction(ScreenAttr *screenAttribute, CharacterCollection *
 	if (!commonIsCharTypeInArea(&checkArea, characterCollection, ZOMBIE)) {
 		Position regenerateAt = {298, 348, 33};
 		commonRegenerateCharTypeAt(&checkArea, &regenerateAt, mapInfo, ZOMBIE, characterCollection, 
-			charActionCollection, controlPool);
+			charActionCollection, controlPool, NULL);
 	}
 }
 extern const MusicTrack musickankandara_end;

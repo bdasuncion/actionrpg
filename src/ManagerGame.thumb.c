@@ -3,7 +3,7 @@
 #include "GBAVideo.h"
 #include <stdbool.h>
 
-bool updateGameState;
+EWRAM bool updateGameState;
 void setUpdateGameState(bool shouldUpdate) {
 	updateGameState = shouldUpdate;
 }

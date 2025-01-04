@@ -5,7 +5,7 @@
 
 extern const SpriteSet slash_horizontalright;
 extern const SpriteSet slash_horizontalleft;
-const SpriteSet *attackEffectSpiteSets[EActionCount] = {&slash_horizontalright, &slash_horizontalleft, 
+const SpriteSet *const attackEffectSpiteSets[EActionCount] = {&slash_horizontalright, &slash_horizontalleft, 
 	&slash_horizontalright, &slash_horizontalleft};
 
 extern const unsigned short slash_horizontal_pal[];
@@ -85,7 +85,7 @@ int charAttackEffect_setToOAMBuffer(AttackEffectCollection* attackEffectCollecti
 	return oamIdx;
 }
 
-inline void charAttackEffect_Remove(int idx, AttackEffect *effect, AttackEffectCollection* attackEffectCollection) {
+void charAttackEffect_Remove(int idx, AttackEffect *effect, AttackEffectCollection* attackEffectCollection) {
 	--attackEffectCollection->count;
 	effect->type = EActionNone;
 	AttackEffect *lastActiveEffect = attackEffectCollection->collection[attackEffectCollection->count];

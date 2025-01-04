@@ -44,5 +44,6 @@ static inline int isRPressed() { return isKeyPressed(KEY_R); }
 
 extern EDirections dir_from_key[16];
 
-#define KEYPRESS_DIRECTION dir_from_key[(~REG_KEYIN>>4)&0xF]
+#define KEYPRESS_DIRECTION dir_from_key[((~REG_KEYIN)>>4)&0xF]
+#define KEYPRESS (((~REG_KEYIN)>>4)&0xF)
 #endif

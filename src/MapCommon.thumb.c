@@ -22,9 +22,9 @@
 #define DELAY 1
 #define BLENDVAL_MAX 16
 
-int blendVal = 0;
-int current = 0;
-bool update = true;
+EWRAM int blendVal = 0;
+EWRAM int current = 0;
+EWRAM bool update = true;
 
 //extern const MapInfo mapTest;
 
@@ -55,7 +55,6 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
         mapInfo, controlPool, charActionCollection, track);
 	}
 
-	//sprite_vram_init();
 	sprite_vram_init_sections();
 	sprite_palette_init();
 	mchar_reinit(characterCollection, &character);
@@ -63,7 +62,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	mchar_resetControlTypeAndSetCount(controlPool, characterCollection->countCharacterTransfer + 
 		((MapInfo*)eventTransfer->mapInfo)->characterCount);
 	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
-		characterCollection->characterTransfer[i](character, controlPool);
+		characterCollection->characterTransfer[i](character, controlPool, NULL);
 	}
 	
     commonCharacterSetPosition(character, 

@@ -10,9 +10,15 @@
 #include "ManagerCharacterActionEvents.h"
 #include "ManagerCharacters.h"
 #include "ManagerVram.h"
+#include "ManagerPrinter.h"
 #include "MapCommon.h"
 #include "UtilCommonValues.h"
 #include "CharacterCommon.h"
+
+//#include "DebugLogMgba.h"
+//#include <string.h>
+//#include <stdio.h>
+#include <assert.h>
 
 #define IMG8X8W  8
 #define IMG16X16W  32
@@ -27,7 +33,6 @@
 #define HEIGHT_CONVERSION 8
 
 extern const FuncCharacterInit character_InitFunctionsCollection[];
-extern const FuncCharacterSet characterSet[];
 
 void commonControllerDummy(CharacterAttr* charAtt, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
@@ -66,6 +71,83 @@ bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent
 
 //const CharacterAttr openSlot = {&commonControllerDummy, &commonActionDummy, &commonSetPositionDummy, &commonGetBoundsDummy, 
  //   &funcCollisionCheckDummy, &funcMapCollisionDummy, &funcActionCollisionDummy, NULL, 0, NONE,0,0,0,0,0, NULL, {0, -1, 0}, NULL, NULL };
+#define FARTARGET_SIZE 5
+
+const EDirections FAR_TARGET[FARTARGET_SIZE][FARTARGET_SIZE] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
+#define NEARTARGET_SIZE 5
+
+const EDirections NEAR_TARGET[NEARTARGET_SIZE][NEARTARGET_SIZE] = {
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {EUpleft, EUpleft, EUp, EUpright, EUpright},
+ {ELeft, ELeft, EUnknown, ERight, ERight},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright},
+ {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
+#define FAR_DIST_OFFSET 80
+#define NEAR_DIST_OFFSET 20
+
+void handleFarDistance(int distanceX, int distanceY, EDirections *goDirection) {
+	if (abs(distanceX) > abs(distanceY)) {
+		if (distanceX < 0) {
+			*goDirection = ELeft;
+		} else {
+			*goDirection = ERight;
+		}
+	} else {
+		if (distanceY < 0) {
+			*goDirection = EUp;
+		} else {
+			*goDirection = EDown;
+		}
+	}
+}
+
+void findDirection(Position *current, Position *targetPos, EDirections *goDirection) {	
+	int distanceX = targetPos->x - current->x;
+	int distanceY = targetPos->y - current->y;
+	
+	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
+	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
+	
+	offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
+	
+	if (offsetDistanceX >= FARTARGET_SIZE || offsetDistanceY >= FARTARGET_SIZE || offsetDistanceX < 0 || offsetDistanceY < 0) {
+		handleFarDistance(distanceX, distanceY, goDirection);
+		return;
+	}
+	
+	*goDirection = FAR_TARGET[offsetDistanceY][offsetDistanceX];
+	if (*goDirection == EUnknown) {
+		distanceX = targetPos->x - current->x + NEAR_DIST_OFFSET;
+		distanceY = targetPos->y - current->y + NEAR_DIST_OFFSET;
+		distanceX = DIVIDE_BY_8(distanceX);
+		distanceY = DIVIDE_BY_8(distanceY);
+
+		*goDirection = NEAR_TARGET[distanceY][distanceX];
+	}
+}
+
+void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection) {
+	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetConverted = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	findDirection(&currentConverted, &targetConverted, goDirection);
+}
+
+void common_findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection) {
+	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	
+	findDirection(&currentConverted, targetPos, goDirection);
+}
 
 void commonRemoveCharacter(CharacterAttr *character) {
     character->type = NONE;
@@ -154,6 +236,17 @@ const CharFuncCollisionReaction common_mapCollisionReactions[8] = {
 	&common_mapMovingLeftDownOffset
 };
 
+const CharFuncCollisionReaction common_mapCollisionReactionsWhileFallingDown[8] = {
+	&common_mapMovingDownOffsetWhileFallingDown,
+	&common_mapMovingRightDownOffsetWhileFallingDown,
+	&common_mapMovingRightOffsetWhileFallingDown,
+	&common_mapMovingRightUpOffsetWhileFallingDown,
+	&common_mapMovingUpOffsetWhileFallingDown,
+	&common_mapMovingLeftUpOffsetWhileFallingDown,
+	&common_mapMovingLeftOffsetWhileFallingDown,
+	&common_mapMovingLeftDownOffsetWhileFallingDown
+};
+
 const CommonMapCollision common_mapCollision[8] = {
     &commonMovingDownMapCollision,
 	&commonMovingRightDownMapCollision,
@@ -171,7 +264,7 @@ const s32 common_zOffsetDown =  -2*MOVE_STR;
 
 extern const SpriteDisplay common_shadowDisplay;
 extern const unsigned short shadow_pal[];
-bool shouldSetShadow = true;
+EWRAM bool shouldSetShadow = true;
 
 void commonInitShadow() {
 	lzss2vram(common_shadowDisplay.spriteSet->set[0].layers[0].image, common_shadowDisplay.baseImageId);
@@ -194,31 +287,37 @@ int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf){
 	return 0;
 }
 
-void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
+void commonSetToOamBuffer(const SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
     int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
+	int currentAnimation = spriteDisplay->currentAnimationFrame;
+	const int maxAnimation = spriteDisplay->spriteSet->numberOfAnimation;
+	const int numberOfLayers = spriteDisplay->spriteSet->set[currentAnimation].numberOflayers;
 	
-    for (i = 0; i < spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].numberOflayers; ++i) {
+	//BRYAN temporary assert
+	assert(currentAnimation < maxAnimation);
+	
+    for (i = 0; i < numberOfLayers; ++i) {
 
         yScreen = (spriteDisplay->baseY + 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].offsetY) & 0x00FF;
-
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].offsetY) & 0x00FF;
+	
 		oamBuf[i].attr0 = ATTR0_SET(yScreen, 
-		    spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].shape);
+		    spriteDisplay->spriteSet->set[currentAnimation].layers[i].shape);
 
         xScreen = (spriteDisplay->baseX + 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].offsetX) & 0x01FF;
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].offsetX) & 0x01FF;
 		
 		oamBuf[i].attr1 = ATTR1_SET(xScreen, 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].size,
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].hflip, 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].vflip);
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].size,
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].hflip, 
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].vflip);
 		
-		id += spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].idOffset;
+		id += spriteDisplay->spriteSet->set[currentAnimation].layers[i].idOffset;
 		
 		oamBuf[i].attr2 =  ATTR2_SET(id,
 		    spriteDisplay->basePalleteId + 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset, 3);
-			
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].palleteidOffset, 3);
+		
 		oamBuf[i].fill = 0;
 	}
 }
@@ -341,7 +440,7 @@ bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay) {
 	
 }
 
-inline void getNextFrame(const SpriteDisplay* spriteDisplay, int *nextScreenFrame, 
+void getNextFrame(const SpriteDisplay* spriteDisplay, int *nextScreenFrame, 
     int *nextAnimationFrame, bool *isLastFrame) {
 	int frameCount = spriteDisplay->spriteSet->numberOfAnimation;
 	
@@ -397,11 +496,29 @@ bool common_checkNext(bool isOtherCharBelow, const Position *characterPos,
 	return (distance <= COLLISIONCHECKNEXT_DIST_MAX);
 }
 
-inline bool inBounds(int value, int min, int max) {
+void commonHandleBlockedPath(CharacterAIControl *charControl, EDirections *goDirection) {
+	if (*goDirection == EUnknown) {
+		return;
+	}
+	if(charControl->leftBlocked) {
+		*goDirection = EUp;
+	}
+	if(charControl->rightBlocked) {
+		*goDirection = EDown;
+	}
+	if(charControl->upBlocked) {
+		*goDirection = ERight;
+	}
+	if(charControl->downBlocked) {
+		*goDirection = ELeft;
+	}
+}
+
+bool inBounds(int value, int min, int max) {
     return (value >= min & value <= max);
 }
 
-inline bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
     return (inBounds(charBoundingBox->startX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
 		inBounds(otherCharBoundingBox->startX, charBoundingBox->startX, charBoundingBox->endX) |
 	    inBounds(charBoundingBox->endX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
@@ -419,6 +536,21 @@ bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCh
 		inBounds(otherCharBoundingBox->startZ, charBoundingBox->startZ, charBoundingBox->endZ) | 
 		inBounds(charBoundingBox->endZ, otherCharBoundingBox->startZ, otherCharBoundingBox->endZ) |
 		inBounds(otherCharBoundingBox->endZ, charBoundingBox->startZ, charBoundingBox->endZ)); 
+}
+
+void convertWaypointToBoundingBox(const Position *wayPoint, BoundingBox *boundingBox) {
+	boundingBox->startX = wayPoint->x + 8;
+	boundingBox->endX =  wayPoint->x - 8;
+	boundingBox->startY =  wayPoint->y + 8;
+	boundingBox->endY =  wayPoint->y - 8;
+	boundingBox->startZ =  wayPoint->z;
+	boundingBox->endZ =   wayPoint->z + 32;
+}
+
+bool commonHasReachedWaypoint(const Position *waypoint, const BoundingBox *boundingBox) {
+	BoundingBox waypointBox;
+	convertWaypointToBoundingBox(waypoint, &waypointBox);
+	return hasCollision(&waypointBox, boundingBox);
 }
 
 bool commonCollissionPointInBounds(const Position *collisionPoint, const BoundingBox *boundingBox) {
@@ -450,6 +582,7 @@ void common_movingRightOffset(CharacterAttr* character,
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
 	
+	mprinter_printf("%d\n", CONVERT_2MOVE(xoffset));
 	character->position.x -= CONVERT_2MOVE(xoffset);
 	
 	if (character->free->type == EControlAiType) {
@@ -468,6 +601,7 @@ void common_movingLeftOffset(CharacterAttr* character,
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
 	
+	mprinter_printf("qwe %d\n", CONVERT_2MOVE(xoffset));
 	character->position.x += CONVERT_2MOVE(xoffset);
 	
 	if (character->free->type == EControlAiType) {
@@ -676,17 +810,25 @@ int common_fallingDownOnBoundingBox(CharacterAttr* character,
 	return -1;
 }
 
-inline void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {
+void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {
 	int isAboveGround;
 	character->verticalDirection = EVDown;
 	character->delta.z = zOffsetDown;
 	character->position.z += character->delta.z;
 }
 
-inline int commonConvertBoundingBoxZ(int zPos) {
+int commonConvertBoundingBoxZ(int zPos) {
 	bool belowGround = zPos < 0;
 	int adjust =  (belowGround*(-1)) + ((!belowGround)*(1));
 	return adjust*CONVERT_TO_BOUNDINGBOX_Z(adjust*zPos);
+}
+
+void common_mapMovingRightOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingRightOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 
 void common_mapMovingRightOffset(CharacterAttr* character, 
@@ -700,6 +842,14 @@ void common_mapMovingRightOffset(CharacterAttr* character,
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->rightBlocked |= (xoffset != 0);
 	}
+}
+
+void common_mapMovingLeftOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingLeftOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 	
 void common_mapMovingLeftOffset(CharacterAttr* character, 
@@ -715,6 +865,14 @@ void common_mapMovingLeftOffset(CharacterAttr* character,
 	}
 }
 
+void common_mapMovingUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingUpOffset(character, charBoundingBox, otherCharBoundingBox);
+}
+
 void common_mapMovingUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
@@ -726,6 +884,14 @@ void common_mapMovingUpOffset(CharacterAttr* character,
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->upBlocked |= (yoffset != 0);
 	}
+}
+
+void common_mapMovingDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingDownOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 
 void common_mapMovingDownOffset(CharacterAttr* character, 
@@ -740,7 +906,15 @@ void common_mapMovingDownOffset(CharacterAttr* character,
 		((CharacterAIControl*)character->free)->downBlocked |= (yoffset != 0);
 	}  
 }
-	
+
+void common_mapMovingRightUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingRightUpOffset(character, charBoundingBox, otherCharBoundingBox);
+}
+
 void common_mapMovingRightUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
@@ -760,6 +934,14 @@ void common_mapMovingRightUpOffset(CharacterAttr* character,
 	}  
 }
 
+void common_mapMovingLeftUpOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingLeftUpOffset(character, charBoundingBox, otherCharBoundingBox);
+}
+
 void common_mapMovingLeftUpOffset(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
 	bool didCollide = hasCollision(charBoundingBox, otherCharBoundingBox);
@@ -773,10 +955,19 @@ void common_mapMovingLeftUpOffset(CharacterAttr* character,
 	xOffset *= (!doOffsetY)*didCollide;
 	character->position.y += CONVERT_2MOVE(yOffset);
 	character->position.x += CONVERT_2MOVE(xOffset);
+	
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->upBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->leftBlocked |= (xOffset != 0);
 	}
+}
+
+void common_mapMovingRightDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingRightDownOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 
 void common_mapMovingRightDownOffset(CharacterAttr* character, 
@@ -796,6 +987,14 @@ void common_mapMovingRightDownOffset(CharacterAttr* character,
 		((CharacterAIControl*)character->free)->downBlocked |= (yOffset != 0);
 		((CharacterAIControl*)character->free)->rightBlocked |= (xOffset != 0);
 	}
+}
+
+void common_mapMovingLeftDownOffsetWhileFallingDown(CharacterAttr* character, 
+    const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+	if (charBoundingBox->startZ - CONVERT_2POS(character->delta.z) > otherCharBoundingBox->endZ) {
+		return;
+	}
+	common_mapMovingLeftDownOffset(character, charBoundingBox, otherCharBoundingBox);
 }
 
 void common_mapMovingLeftDownOffset(CharacterAttr* character, 
@@ -831,7 +1030,7 @@ void commonGetBoundsFromMap(s32 x, s32 y, const MapInfo* mapInfo, BoundingBox *c
 		charBoundingBox->endZ =  height*HEIGHT_CONVERSION;
 }
 
-inline void commonCheckMapCollision(CharacterAttr *character, const MapInfo* mapInfo, const Position *point, 
+void commonCheckMapCollision(CharacterAttr *character, const MapInfo* mapInfo, const Position *point, 
     const BoundingBox *characterBoundingBox, const CharFuncCollisionReaction reaction) {
 	BoundingBox mapBoundingBox;
 	commonGetBoundsFromMap(point->x, point->y, mapInfo, &mapBoundingBox);
@@ -1137,11 +1336,11 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 	}
 }
 
-extern inline int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
+int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.currentAnimationFrame;
 }
 
-extern inline int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
+int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.numberOfFramesPassed;
 }
 
@@ -1216,9 +1415,9 @@ bool commonIsCharTypeInArea(const BoundingBox *area, const CharacterCollection *
 void commonSetCharType(const Position* position, const MapInfo *mapInfo, 
 	CHARACTERTYPE type, CharacterCollection *characterCollection, 
 	CharacterActionCollection *charActionCollection, CharacterAttr *character,
-	ControlTypePool* controlPool) {
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
 	
-	character_InitFunctionsCollection[type](character, controlPool);
+	character_InitFunctionsCollection[type](character, controlPool, charWaypoints);
 	commonCharacterSetPosition(character, position->x, position->y, position->z, EDown);
 	character->doAction(character, mapInfo, characterCollection, charActionCollection);
 	character->checkMapCollision(character, mapInfo);
@@ -1235,7 +1434,7 @@ void createBoundingBoxAtPosition(const Position* position, BoundingBox *bounding
 
 void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const Position* position, const MapInfo *mapInfo, CHARACTERTYPE type, 
 	CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection, 
-	ControlTypePool* controlPool) {
+	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
 	BoundingBox charBoundingBox;
 	int countBox, i;
 	for (i = 0; i < characterCollection->currentSize; ++i) {
@@ -1253,7 +1452,7 @@ void commonRegenerateCharTypeAt(const BoundingBox *boundingBoxCheckArea, const P
 	if (character->type != NONE) {
 		return;
 	}
-	commonSetCharType(position, mapInfo, type, characterCollection, charActionCollection, character, controlPool);
+	commonSetCharType(position, mapInfo, type, characterCollection, charActionCollection, character, controlPool, charWaypoints);
 	characterCollection->characters[characterCollection->currentSize] = character;
 	++characterCollection->currentSize;
 	++characterCollection->displaySize;
@@ -1269,5 +1468,5 @@ bool commonIsFoundPosition(const Position* position) {
 }
 
 EDirections commonReverseDirection(EDirections direction) {
- return (direction+4)&7;
+ return (direction+4)&EDirectionsMax;
 }
