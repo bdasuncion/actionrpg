@@ -173,7 +173,7 @@ void alisa_controller(CharacterAttr* character, const MapInfo *mapInfo,
 		character->nextDirection = direction&EDirectionsMax;
 		if (!((direction == EUpleft | direction == EDownleft) & character->faceDirection == ELeft) && 
 			!((direction == EUpright | direction == EDownright) & character->faceDirection == ERight)) {
-			character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
+			character->faceDirection = DEFAULT_DIRECTIONMAP[direction]&EDirectionsMax;
 		}
 		//character->faceDirection = DEFAULT_DIRECTIONMAP[direction];
 		character->getBounds = &alisa_getBoundingBoxMoving;
@@ -310,7 +310,7 @@ void alisa_prepareDashController(CharacterAttr* character, const MapInfo *mapInf
 		if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 			return;
 		}
-		character->nextDirection = commonReverseDirection(character->faceDirection);
+		character->nextDirection = commonReverseDirection(character->faceDirection&EDirectionsMax)&EDirectionsMax;
 		character->controller = &alisa_dashBackwardController;
 		character->controller(character, mapInfo, characterCollection);
 	}
@@ -395,9 +395,10 @@ void alisa_jumpUpController(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	character->getBounds = &alisa_getBoundingBoxMoving;	
-	
+	character->nextAction = EAlisaJumpUp;
+		
 	if (commonGetCurrentAnimationFrame(character) >= ALISA_JUMPUP2_JUMPFORWARD_TRANSITIONFRAME && 
-		direction != EUnknown) {
+		direction != EUnknown && (character->nextAction == character->action)) {
 		EDirections clockwise = (character->faceDirection - 1)&EDirectionsMax;
 		EDirections counterClockwise = (character->faceDirection + 1)&EDirectionsMax;
 		if (direction == character->faceDirection | 
@@ -411,11 +412,8 @@ void alisa_jumpUpController(CharacterAttr* character, const MapInfo *mapInfo,
 		}
 	}
 	
-	character->nextAction = EAlisaJumpUp;
-
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	if (isLastFrame) {
-		//mprinter_printf("")
 		character->nextDirection = character->direction&EDirectionsMax;
 		character->nextAction = EAlisaFallingDown;
 		character->controller = &alisa_fallingDownController;
