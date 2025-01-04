@@ -120,7 +120,7 @@ void skulldemon_actionStunned(CharacterAttr* character, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 bool skulldemon_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent);
 	
-CharFuncAction skulldemon_actions[] = {
+const CharFuncAction skulldemon_actions[] = {
 	&skulldemon_actionWalk,
 	//&skulldemon_actionChaseTarget,
 	//&skulldemon_actionAttack,

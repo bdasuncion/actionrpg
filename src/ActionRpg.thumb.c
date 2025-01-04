@@ -15,6 +15,8 @@
 #include "CharacterAttackEffects.h"
 #include "CharacterCommon.h"
 
+#include "DebugLogMgba.h"
+
 //TODO move this somewhere else
 #include "CharacterAlisa.h"
 
@@ -72,24 +74,24 @@ void gameloop(MapInfo *mapInfo, CharacterCollection *characterCollection,
 		mchar_setPosition(characterCollection,
 			attackEffects, oamCollection,
 			&screenAttribute->position, &screenAttribute->dimension);
-		
+		//mgba_log("AFTER SET POS", 13);
 		mchar_setDraw(characterCollection, attackEffects);
-		
+		//mgba_log("AFTER SET DRAW", 14);
 		moam_setUpdate(oamCollection);
-		
+		//mgba_log("AFTER SET UPDATE", 16);
 		mscr_setDraw(screenAttribute);
-		
+		//mgba_log("AFTER SET DRAW", 14);
 		if (mapInfo->mapFunction) {
 		    mapInfo->mapFunction(screenAttribute, characterCollection, mapInfo, 
 			    controlPool, charActionCollection, track);
 		}
-		
+		//mgba_log("AFTER SET MAP", 13);
 		mapInfo->screenEffect.processScreenEffect(screenAttribute, characterCollection, 
 		    mapInfo, controlPool, charActionCollection, track);
-
+		//mgba_log("AFTER SET EFFECT", 16);
 		msound_updateTrack(track);
 		msound_mixSound();
-		
+		//mgba_log("AFTER SET MIX", 13);
 		setUpdateGameState(true);
 		waitForVBlank();
 	}

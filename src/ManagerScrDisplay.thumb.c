@@ -21,7 +21,7 @@
 #define SCR_VERTICAL_TILE_COUNT 20
 #define SCR_HORIZONTAL_TILE_COUNT 30
 
-ScreenAttr *mscr_vscrRef = NULL;
+EWRAM ScreenAttr *mscr_vscrRef = NULL;
 
 const ScreenBoundingBox default_scrBoundingBox = {
 	OFFSET_X, OFFSET_Y, BOUND_LENGTH, BOUND_HEIGHT

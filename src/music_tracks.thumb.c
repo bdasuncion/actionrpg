@@ -71,7 +71,7 @@ const PatternData columnhorror_3[] = {
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 };
-const PatternData *columnhorror[] = {columnhorror_0,columnhorror_1,columnhorror_2,columnhorror_3};
+const PatternData *const columnhorror[] = {columnhorror_0,columnhorror_1,columnhorror_2,columnhorror_3};
 const MusicTrack musichorror = {columnhorror,64};
 
 const PatternData columntest2_0[] = {
@@ -115,7 +115,7 @@ const PatternData columntest2_3[] = {
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 };
 
-const PatternData *columntest2[] = {columntest2_0,columntest2_1,columntest2_2,columntest2_3,};
+const PatternData *const columntest2[] = {columntest2_0,columntest2_1,columntest2_2,columntest2_3,};
 const MusicTrack musictest2 = {columntest2,64};
 
 const PatternData columnkankandara_0[] = {
@@ -190,7 +190,7 @@ const PatternData columnkankandara_3[] = {
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 };
-const PatternData *columnkankandara[] = {columnkankandara_0,columnkankandara_1,columnkankandara_2,columnkankandara_3};
+const PatternData *const columnkankandara[] = {columnkankandara_0,columnkankandara_1,columnkankandara_2,columnkankandara_3};
 const MusicTrack musickankandara = {columnkankandara,128};
 
 const PatternData columnkankandara_end_0[] = {
@@ -234,6 +234,6 @@ const PatternData columnkankandara_end_3[] = {
 	{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},{NULL,0,63,0},
 };
 
-const PatternData *columnkankandara_end[] = {columnkankandara_end_0,columnkankandara_end_1,columnkankandara_end_2,columnkankandara_end_3};
+const PatternData *const columnkankandara_end[] = {columnkankandara_end_0,columnkankandara_end_1,columnkankandara_end_2,columnkankandara_end_3};
 const MusicTrack musickankandara_end = {columnkankandara_end,64};
 

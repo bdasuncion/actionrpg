@@ -120,7 +120,7 @@ const HeightCollision heightMap_mapgraveyard_b[] = {
 	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},
 	{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},{0, 0},
 	};
-const unsigned int *vram_mapgraveyard_b[] = {
+const unsigned int *const vram_mapgraveyard_b[] = {
 	graveyard_wall_4_0,graveyard_wall_0_8,graveyard_wall_0_9,graveyard_wall_2_0,graveyard_wall_2_1,graveyard_ground_2_0,graveyard_ground_2_1,graveyard_wall_5_0,
 	graveyard_wall_1_8,graveyard_wall_1_9,graveyard_wall_3_0,graveyard_wall_3_1,graveyard_ground_3_0,graveyard_ground_3_1,graveyard_wall_2_2,graveyard_wall_2_3,
 	graveyard_ground_2_2,graveyard_ground_2_3,graveyard_wall_3_2,graveyard_wall_3_3,graveyard_ground_3_2,graveyard_ground_3_3,graveyard_ground_2_4,graveyard_ground_2_5,
@@ -135,8 +135,8 @@ const unsigned int *vram_mapgraveyard_b[] = {
 	graveyard_ground_2_9,graveyard_wall_0_0,graveyard_wall_0_1,graveyard_gravestones_3_2,graveyard_gravestones_3_3,graveyard_ground_3_8,graveyard_ground_3_9,graveyard_wall_1_0,
 	graveyard_wall_1_1,graveyard_wall_4_10,graveyard_wall_4_11,graveyard_wall_4_12,graveyard_wall_4_13,graveyard_wall_5_10,graveyard_wall_5_11,graveyard_wall_5_12,
 	graveyard_wall_5_13,graveyard_wall_0_10,graveyard_wall_0_11,graveyard_wall_1_10,graveyard_wall_1_11,};
-const u16 *pallette_mapgraveyard_b[] = {  pallette_graveyard_ground, pallette_graveyard_wall, pallette_graveyard_gravestones, };
-const u16 *mapentryset_mapgraveyard_b[] = { mapentry_mapgraveyard_b[0], mapentry_mapgraveyard_b[1], };
+const u16 *const pallette_mapgraveyard_b[] = {  pallette_graveyard_ground, pallette_graveyard_wall, pallette_graveyard_gravestones, };
+const u16 *const mapentryset_mapgraveyard_b[] = { mapentry_mapgraveyard_b[0], mapentry_mapgraveyard_b[1], };
 const CharacterInit actors_mapgraveyard_b[] = {
 
 };

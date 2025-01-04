@@ -22,9 +22,9 @@
 #define DELAY 1
 #define BLENDVAL_MAX 16
 
-int blendVal = 0;
-int current = 0;
-bool update = true;
+EWRAM int blendVal = 0;
+EWRAM int current = 0;
+EWRAM bool update = true;
 
 //extern const MapInfo mapTest;
 

@@ -11,7 +11,7 @@
 extern const CharacterAttr openSlot;
 extern const s32 common_zOffsetDown;
 void commonRemoveCharacter(CharacterAttr *character);
-void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf);
+void commonSetToOamBuffer(const SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf);
 void commonDrawDisplay(SpriteDisplay *spriteDisplay);
 UpdateStatus commonUpdateCharacterAnimation(CharacterAttr* character);
 UpdateStatus commonInitializeAction(CharacterAttr* character);
@@ -105,11 +105,11 @@ extern const CharFuncCollisionReaction common_collisionReactions[8];
 extern const CharFuncCollisionReaction common_mapCollisionReactions[8];
 extern const CharFuncCollisionReaction common_mapCollisionReactionsWhileFallingDown[8];
 extern const CommonMapCollision common_mapCollision[8];
-inline int commonGetCurrentAnimationFrame(const CharacterAttr* character);
-inline int commonGetCurrentDisplayFrame(const CharacterAttr* character);
-inline bool commonDoIntializeActions(CharacterAttr* character);
-inline void commonRemoveActionOnInit(CharacterAttr* character, CharacterActionCollection *charActionCollection);
-inline bool commonIsFoundPosition(const Position* position);
+int commonGetCurrentAnimationFrame(const CharacterAttr* character);
+int commonGetCurrentDisplayFrame(const CharacterAttr* character);
+bool commonDoIntializeActions(CharacterAttr* character);
+void commonRemoveActionOnInit(CharacterAttr* character, CharacterActionCollection *charActionCollection);
+bool commonIsFoundPosition(const Position* position);
 int common_fallingDown(CharacterAttr* character, const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 int common_fallingDownOnBoundingBox(CharacterAttr* character, 
     const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
@@ -125,8 +125,8 @@ void commonSetCharType(const Position* position, const MapInfo *mapInfo,
 	CHARACTERTYPE type, CharacterCollection *characterCollection, 
 	CharacterActionCollection *charActionCollection, CharacterAttr *character,
 	ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
-inline EDirections commonReverseDirection(EDirections direction);
-inline UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay);
+EDirections commonReverseDirection(EDirections direction);
+UpdateStatus commonUpdateAnimation(SpriteDisplay *spriteDisplay);
 int commonCharacterSetToOAMBuffer(CharacterCollection *charCollection,
 	OAMCollection *oamCollection,
 	int currentOAMIdx,

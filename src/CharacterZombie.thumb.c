@@ -133,7 +133,7 @@ void zombie_actionStunned(CharacterAttr* character, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 bool zombie_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent);
 	
-CharFuncAction zombie_actions[] = {
+const CharFuncAction zombie_actions[] = {
 	&zombie_actionWalk,
 	&zombie_actionChaseTarget,
 	&zombie_actionAttack,

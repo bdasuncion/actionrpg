@@ -122,7 +122,7 @@ void werewolf_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 void werewolf_checkActionEventCollision(CharacterAttr *alisa, CharacterActionCollection *actionEvents,
 	AttackEffectCollection *attackEffects);
 
-CharFuncAction werewolf_actions[] = {
+const CharFuncAction werewolf_actions[] = {
 	NULL,
 	&werewolf_actionWalk,
 	&werewolf_actionFindTarget

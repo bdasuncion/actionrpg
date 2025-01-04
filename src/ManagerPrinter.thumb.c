@@ -9,10 +9,10 @@
 
 #define MAX_LINELENGTH 30
 
-u16 mprinter_textEntry[32][32];
-int mprinter_lineNumber = 0;
-int mprinter_lineIndex = 0;
-int delay = 0;
+EWRAM u16 mprinter_textEntry[32][32];
+EWRAM int mprinter_lineNumber = 0;
+EWRAM int mprinter_lineIndex = 0;
+EWRAM int delay = 0;
 
 
 const unsigned short character_pal[16] = 
@@ -224,7 +224,7 @@ void mprinter_init()
 	*REG_BG_V2 = 0;
 }
 
-inline void* mprinter_getTextBuf()
+void* mprinter_getTextBuf()
 {
 	return mprinter_textEntry;
 }

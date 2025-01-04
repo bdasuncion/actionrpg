@@ -15,6 +15,11 @@
 #include "UtilCommonValues.h"
 #include "CharacterCommon.h"
 
+//#include "DebugLogMgba.h"
+//#include <string.h>
+//#include <stdio.h>
+#include <assert.h>
+
 #define IMG8X8W  8
 #define IMG16X16W  32
 #define IMG32X32W  128
@@ -259,7 +264,7 @@ const s32 common_zOffsetDown =  -2*MOVE_STR;
 
 extern const SpriteDisplay common_shadowDisplay;
 extern const unsigned short shadow_pal[];
-bool shouldSetShadow = true;
+EWRAM bool shouldSetShadow = true;
 
 void commonInitShadow() {
 	lzss2vram(common_shadowDisplay.spriteSet->set[0].layers[0].image, common_shadowDisplay.baseImageId);
@@ -282,31 +287,37 @@ int commonSetShadow(int x, int y, OBJ_ATTR *oamBuf){
 	return 0;
 }
 
-void commonSetToOamBuffer(SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
+void commonSetToOamBuffer(const SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf) {
     int i, xScreen, yScreen, id = spriteDisplay->baseImageId;
+	int currentAnimation = spriteDisplay->currentAnimationFrame;
+	const int maxAnimation = spriteDisplay->spriteSet->numberOfAnimation;
+	const int numberOfLayers = spriteDisplay->spriteSet->set[currentAnimation].numberOflayers;
 	
-    for (i = 0; i < spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].numberOflayers; ++i) {
+	//BRYAN temporary assert
+	assert(currentAnimation < maxAnimation);
+	
+    for (i = 0; i < numberOfLayers; ++i) {
 
         yScreen = (spriteDisplay->baseY + 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].offsetY) & 0x00FF;
-
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].offsetY) & 0x00FF;
+	
 		oamBuf[i].attr0 = ATTR0_SET(yScreen, 
-		    spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].shape);
+		    spriteDisplay->spriteSet->set[currentAnimation].layers[i].shape);
 
         xScreen = (spriteDisplay->baseX + 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].offsetX) & 0x01FF;
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].offsetX) & 0x01FF;
 		
 		oamBuf[i].attr1 = ATTR1_SET(xScreen, 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].size,
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].hflip, 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].vflip);
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].size,
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].hflip, 
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].vflip);
 		
-		id += spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].idOffset;
+		id += spriteDisplay->spriteSet->set[currentAnimation].layers[i].idOffset;
 		
 		oamBuf[i].attr2 =  ATTR2_SET(id,
 		    spriteDisplay->basePalleteId + 
-			spriteDisplay->spriteSet->set[spriteDisplay->currentAnimationFrame].layers[i].palleteidOffset, 3);
-			
+			spriteDisplay->spriteSet->set[currentAnimation].layers[i].palleteidOffset, 3);
+		
 		oamBuf[i].fill = 0;
 	}
 }
@@ -429,7 +440,7 @@ bool commonAnimation_IsLastFrame(const SpriteDisplay* spriteDisplay) {
 	
 }
 
-inline void getNextFrame(const SpriteDisplay* spriteDisplay, int *nextScreenFrame, 
+void getNextFrame(const SpriteDisplay* spriteDisplay, int *nextScreenFrame, 
     int *nextAnimationFrame, bool *isLastFrame) {
 	int frameCount = spriteDisplay->spriteSet->numberOfAnimation;
 	
@@ -503,11 +514,11 @@ void commonHandleBlockedPath(CharacterAIControl *charControl, EDirections *goDir
 	}
 }
 
-inline bool inBounds(int value, int min, int max) {
+bool inBounds(int value, int min, int max) {
     return (value >= min & value <= max);
 }
 
-inline bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+bool isOverlap(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
     return (inBounds(charBoundingBox->startX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
 		inBounds(otherCharBoundingBox->startX, charBoundingBox->startX, charBoundingBox->endX) |
 	    inBounds(charBoundingBox->endX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) |
@@ -527,7 +538,7 @@ bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCh
 		inBounds(otherCharBoundingBox->endZ, charBoundingBox->startZ, charBoundingBox->endZ)); 
 }
 
-inline void convertWaypointToBoundingBox(const Position *wayPoint, BoundingBox *boundingBox) {
+void convertWaypointToBoundingBox(const Position *wayPoint, BoundingBox *boundingBox) {
 	boundingBox->startX = wayPoint->x + 8;
 	boundingBox->endX =  wayPoint->x - 8;
 	boundingBox->startY =  wayPoint->y + 8;
@@ -799,14 +810,14 @@ int common_fallingDownOnBoundingBox(CharacterAttr* character,
 	return -1;
 }
 
-inline void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {
+void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {
 	int isAboveGround;
 	character->verticalDirection = EVDown;
 	character->delta.z = zOffsetDown;
 	character->position.z += character->delta.z;
 }
 
-inline int commonConvertBoundingBoxZ(int zPos) {
+int commonConvertBoundingBoxZ(int zPos) {
 	bool belowGround = zPos < 0;
 	int adjust =  (belowGround*(-1)) + ((!belowGround)*(1));
 	return adjust*CONVERT_TO_BOUNDINGBOX_Z(adjust*zPos);
@@ -1019,7 +1030,7 @@ void commonGetBoundsFromMap(s32 x, s32 y, const MapInfo* mapInfo, BoundingBox *c
 		charBoundingBox->endZ =  height*HEIGHT_CONVERSION;
 }
 
-inline void commonCheckMapCollision(CharacterAttr *character, const MapInfo* mapInfo, const Position *point, 
+void commonCheckMapCollision(CharacterAttr *character, const MapInfo* mapInfo, const Position *point, 
     const BoundingBox *characterBoundingBox, const CharFuncCollisionReaction reaction) {
 	BoundingBox mapBoundingBox;
 	commonGetBoundsFromMap(point->x, point->y, mapInfo, &mapBoundingBox);
@@ -1325,11 +1336,11 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 	}
 }
 
-extern inline int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
+int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.currentAnimationFrame;
 }
 
-extern inline int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
+int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.numberOfFramesPassed;
 }
 

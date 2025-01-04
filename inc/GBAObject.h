@@ -61,7 +61,8 @@ typedef enum TYPE
 
 typedef enum EDirections {
 	EUnknown = -1,
-	EDown,
+	EDirectionsMin,
+	EDown = EDirectionsMin,
 	EDownright,
 	ERight,
 	EUpright,

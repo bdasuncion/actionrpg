@@ -19,11 +19,11 @@
 #define MAXNPALETTE 15
 #define PALLETTEERROR -1
 
-u32	sprite_memory_bank = 0;
-u32 BG_memory_bank = 0;
-u32 palette_memory_bank = 0;
-VramIdControl idCollection[MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM + MAXNCHARACTERLARGE];
-PaletteIdControl paletteIdCollection[MAXNPALETTE];
+EWRAM u32	sprite_memory_bank = 0;
+EWRAM u32 BG_memory_bank = 0;
+EWRAM u32 palette_memory_bank = 0;
+EWRAM VramIdControl idCollection[MAXNCHARACTERSMALL + MAXNCHARACTERMEDIUM + MAXNCHARACTERLARGE];
+EWRAM PaletteIdControl paletteIdCollection[MAXNPALETTE];
 
 void sprite_vram_init() {
     int i;
