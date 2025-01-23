@@ -96,6 +96,7 @@ void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventContr
 void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, const CharacterCollection *charCollection);
 void commonCheckForEvents(CharacterAttr* character, MapInfo *mapInfo);
 bool commonDoNextAction(CharacterAttr* character);
+void commonInitializeAISetActions(CharacterAIControl *charControl);
 const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
 const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
 const Position* commonFindCharTypePositionByDistance(const CharacterCollection *characterCollection, 
@@ -155,6 +156,8 @@ void commonActionCollisionDummy(CharacterAttr *charAtt,  CharacterActionCollecti
 bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent);
 extern const EDirections FAR_TARGET[5][5];
 extern const EDirections NEAR_TARGET[5][5];
-void common_findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection);
+void common_findDirectionOfPosition(const Position *current, const Position *targetPos, EDirections *goDirection);
 void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection);
+void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target,
+	EDirections *goDirection, bool *isNear);
 #endif

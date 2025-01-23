@@ -31,4 +31,12 @@ extern const unsigned int skull_demon_walking_side_image1[];
 extern const unsigned int skull_demon_walking_side_image2[];
 extern const unsigned int skull_demon_walking_up_image0[];
 extern const unsigned int skull_demon_walking_up_image1[];
+
+//extern const unsigned short skull_demon_prepare_attack_down_pal[];
+extern const unsigned int skull_demon_prepare_attack_down_image0[];
+extern const unsigned int skull_demon_prepare_attack_down_image1[];
+extern const unsigned int skull_demon_prepare_attack_side_image0[];
+extern const unsigned int skull_demon_prepare_attack_side_image1[];
+extern const unsigned int skull_demon_attack_arm_down_image0[];
+extern const unsigned int skull_demon_attack_arm_side_image0[];
 #endif
