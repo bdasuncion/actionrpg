@@ -148,7 +148,7 @@ bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charContr
 void alisa_controller(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {	
 	EDirections direction = KEYPRESS_DIRECTION;
-	mprinter_printf("PRESS %d\n", KEYPRESS);
+	//mprinter_printf("PRESS %d\n", KEYPRESS);
 	//mprinter_printf("PRESS %d\n", 0xF);
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
 	character->distanceFromGround = 1024;
@@ -384,7 +384,7 @@ void alisa_dashBackwardController(CharacterAttr* character, const MapInfo *mapIn
 void alisa_jumpUpController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
    EDirections direction = KEYPRESS_DIRECTION;
-   mprinter_printf("PRESS %d", KEYPRESS);
+   //mprinter_printf("PRESS %d", KEYPRESS);
    int nextScreenFrame, nextAnimationFrame, hold;
    bool isLastFrame = false;
    CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;

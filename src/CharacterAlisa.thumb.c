@@ -331,7 +331,7 @@ void alisa_actionStand(CharacterAttr* alisa,
 	CharacterActionCollection *charActionCollection) {
     bool isLastFrame = false;
 
-	mprinter_printf("STAND\n");
+	//mprinter_printf("STAND\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonInitializeAction(alisa) == EUpdate) {
@@ -357,7 +357,7 @@ void alisa_actionStand(CharacterAttr* alisa,
 void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
     bool isLastFrame = false;
-	mprinter_printf("RUN %d %d\n", alisa->spriteDisplay.currentAnimationFrame, alisa->movementCtrl.currentFrame);
+	//mprinter_printf("RUN %d %d\n", alisa->spriteDisplay.currentAnimationFrame, alisa->movementCtrl.currentFrame);
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
@@ -433,7 +433,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
 		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endZ;
 		if (displayCountFrame < ALISA_NORMALSLASH_FRAME_END_COLLISION){
-			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->direction], attackVal, 1, &collisionBox);
+			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 1, &collisionBox);
 		} else {
 			mchar_actione_remove(alisa, charActionCollection);
 		}
@@ -443,7 +443,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		msound_setChannel(&soundeffect_slash, false);
 	}
 	
-	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->direction];
+	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->faceDirection&EDirectionsMax];
 }
 
 void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo,
