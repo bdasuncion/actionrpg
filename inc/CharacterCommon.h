@@ -95,7 +95,7 @@ void commonMovingRightDownMapCollision(CharacterAttr *character, const MapInfo* 
 void commonSetCharacterEvent(CharacterAttr *character, const CharacterEventControl *eventControl);
 void commonTriggerCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, const CharacterCollection *charCollection);
 void commonCheckForEvents(CharacterAttr* character, MapInfo *mapInfo);
-bool commonDoNextAction(CharacterAttr* character);
+bool common_shouldDoNextAction(CharacterAttr* character);
 void commonInitializeAISetActions(CharacterAIControl *charControl);
 const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
 const BoundingBox *boundingBox, CHARACTERTYPE fromType, CHARACTERTYPE toType);
@@ -108,7 +108,7 @@ extern const CharFuncCollisionReaction common_mapCollisionReactionsWhileFallingD
 extern const CommonMapCollision common_mapCollision[8];
 int commonGetCurrentAnimationFrame(const CharacterAttr* character);
 int commonGetCurrentDisplayFrame(const CharacterAttr* character);
-bool commonDoIntializeActions(CharacterAttr* character);
+bool common_shouldDoIntializeActions(CharacterAttr* character);
 void commonRemoveActionOnInit(CharacterAttr* character, CharacterActionCollection *charActionCollection);
 bool commonIsFoundPosition(const Position* position);
 int common_fallingDown(CharacterAttr* character, const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
@@ -160,4 +160,9 @@ void common_findDirectionOfPosition(const Position *current, const Position *tar
 void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection);
 void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target,
 	EDirections *goDirection, bool *isNear);
+void common_findPosition(const Position *current, const Position *target, 
+	const EDirections blocked, EDirections *direction);
+void common_doGoAroundObstacle(const Position *current, const Position *target, 
+	CharacterAIControl *charControl, int action, int duration);
+void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* character);
 #endif

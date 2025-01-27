@@ -37,7 +37,7 @@ void werewolf_scanSurroundingsController(CharacterAttr* character,
 		return;
 	}
 	
-	if (commonDoIntializeActions(character)){
+	if (common_shouldDoIntializeActions(character)){
 		EDirections direction = werewolf_patrolDirections[GET_REMAINDER_8(rand())];
 		direction -= direction&1;
 		//EDirections direction = character->nextDirection == EUpleft ? EDownright : EUpleft;
@@ -53,7 +53,7 @@ void werewolf_scanSurroundingsController(CharacterAttr* character,
 		character->nextDirection = charControl->actions[charControl->currentAction].direction;
 	}
 	
-	if (commonDoNextAction(character) &&
+	if (common_shouldDoNextAction(character) &&
 	    charControl->currentAction < charControl->countAction - 1) {
 		++charControl->currentAction;
 		character->getBounds = &werewolf_getBoundingBoxMoving;
@@ -95,7 +95,7 @@ void werewolf_goAroundObstacleController(CharacterAttr* character, const MapInfo
 	
 	charControl->actions[0].direction = character->nextDirection;
 	
-	if (commonDoNextAction(character)) {
+	if (common_shouldDoNextAction(character)) {
 		charControl->countAction = 0;
 		charControl->currentAction = MAXACTIONS;
 		charControl->leftBlocked = false;

@@ -1447,7 +1447,7 @@ int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.numberOfFramesPassed;
 }
 
-bool commonDoNextAction(CharacterAttr* character) {
+bool common_shouldDoNextAction(CharacterAttr* character) {
     int nextScreenFrame, nextAnimationFrame;
 	bool isLastFrame = false;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
@@ -1460,10 +1460,10 @@ bool commonDoNextAction(CharacterAttr* character) {
 			charControl->actions[charControl->currentAction].doForNumFrames);
 }
 
-bool commonDoIntializeActions(CharacterAttr* character) {
+bool common_shouldDoIntializeActions(CharacterAttr* character) {
    CharacterAIControl *charControl = (CharacterAIControl*)character->free;
    return charControl->currentAction >= MAXACTIONS | ((charControl->currentAction + 1) >= charControl->countAction &
-	commonDoNextAction(character));
+	common_shouldDoNextAction(character));
 }
 
 const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
@@ -1572,4 +1572,66 @@ bool commonIsFoundPosition(const Position* position) {
 
 EDirections commonReverseDirection(EDirections direction) {
  return (direction+4)&EDirectionsMax;
+}
+
+void common_findPosition(const Position *current, const Position *target, 
+	const EDirections blocked, EDirections *direction) {
+	if (blocked == ELeft || blocked == ERight) {
+		int yDirection = current->y - target->y;
+		if (yDirection < 0) {
+			*direction = EDown;
+		} else {
+			*direction = EUp;
+		}	
+	} else if (blocked == EUp || blocked == EDown) {
+		int xDirection = current->x - target->x;
+		if (xDirection < 0) {
+			*direction = ERight;
+		} else {
+			*direction = ELeft;
+		}
+	} 
+}
+
+void common_doGoAroundObstacle(const Position *current, const Position *target, 
+	CharacterAIControl *charControl, int action, int duration) {
+	EDirections goTarget;
+	if (charControl->leftBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, ELeft, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->leftBlocked = false;
+	} else if (charControl->rightBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, ERight, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->rightBlocked = false;
+	} else if (charControl->upBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, EUp, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->upBlocked = false;
+	} else if (charControl->downBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, EDown, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->downBlocked = false;
+	}
+}
+
+void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* character)  {
+	if (charControl->currentAction < charControl->countAction) {
+		character->nextAction = charControl->actions[charControl->currentAction].action;
+		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+		++charControl->actions[charControl->currentAction].currentFrame;
+		if (charControl->actions[charControl->currentAction].currentFrame >= 
+			charControl->actions[charControl->currentAction].doForNumFrames) {
+			charControl->actions[charControl->currentAction].currentFrame = 0;
+			++charControl->currentAction;
+		}
+	}
 }

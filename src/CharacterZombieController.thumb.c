@@ -72,7 +72,7 @@ void zombie_walkAroundController(CharacterAttr* character, const MapInfo *mapInf
 		return;
 	}
 	
-	if (commonDoIntializeActions(character)) { 
+	if (common_shouldDoIntializeActions(character)) { 
 		EDirections direction = zombie_walkDirections[GET_REMAINDER_8(rand())];
 		direction -= direction&1;
 		charControl->countAction = 4;
@@ -93,7 +93,7 @@ void zombie_walkAroundController(CharacterAttr* character, const MapInfo *mapInf
 	charControl->actions[charControl->currentAction].direction = goDirection;
 	character->nextDirection = goDirection;
 	
-	if (commonDoNextAction(character) &&
+	if (common_shouldDoNextAction(character) &&
 	    charControl->currentAction < charControl->countAction - 1) {
 		++charControl->currentAction;
 		character->getBounds = &zombie_getBoundingBoxMoving;
@@ -137,7 +137,7 @@ void zombie_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 		return;
 	}
 	
-	if (commonDoIntializeActions(character)) {
+	if (common_shouldDoIntializeActions(character)) {
 		charControl->countAction = 4;
 		charControl->currentAction = 0;
 		
@@ -172,7 +172,7 @@ void zombie_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 		//charControl->actions[charControl->currentAction].currentFrame = 0;*/
 	}
 	
-	if (commonDoNextAction(character) &&
+	if (common_shouldDoNextAction(character) &&
 	    charControl->currentAction < charControl->countAction - 1) {
 		resetBlockedDirection(charControl);
 		++charControl->currentAction;
@@ -189,7 +189,7 @@ void zombie_isStunnedController(CharacterAttr* character, const MapInfo *mapInfo
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int distanceX, distanceY, i;
 	
-	if (commonDoIntializeActions(character)) {
+	if (common_shouldDoIntializeActions(character)) {
 		charControl->countAction = 1;
 		charControl->currentAction = 0;
 		
@@ -201,7 +201,7 @@ void zombie_isStunnedController(CharacterAttr* character, const MapInfo *mapInfo
 	}
 	++charControl->actions[charControl->currentAction].currentFrame;
 	
-	if (commonDoNextAction(character)) {
+	if (common_shouldDoNextAction(character)) {
 	    charControl->currentAction = MAXACTIONS;
 		character->controller = &zombie_huntController;
 		character->stats.currentStatus = EStatusNormal;

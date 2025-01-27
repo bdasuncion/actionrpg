@@ -35,6 +35,7 @@ void skulldemon_stunnedController(CharacterAttr* character, const MapInfo *mapIn
 	
 void skulldemon_getBoundingBoxMoving(const CharacterAttr* character, 
 	int *count, BoundingBox *boundingBox);
+	
 
 void skulldemon_setCharacter(CharacterAttr* character) {
     character->controller = &skulldemon_walkAroundController; 
@@ -55,55 +56,7 @@ void skulldemon_doWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	if (commonIsFoundPosition(&charControl->target)) {
 		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
 		character->nextAction = ESkullDemonChaseTarget;
-	}
-}
-
-void skulldemon_findPosition(const Position *current, const Position *target, 
-	const EDirections blocked, EDirections *direction) {
-	if (blocked == ELeft || blocked == ERight) {
-		int yDirection = current->y - target->y;
-		if (yDirection < 0) {
-			*direction = EDown;
-		} else {
-			*direction = EUp;
-		}	
-	} else if (blocked == EUp || blocked == EDown) {
-		int xDirection = current->x - target->x;
-		if (xDirection < 0) {
-			*direction = ERight;
-		} else {
-			*direction = ELeft;
-		}
-	} 
-}
-
-void skulldemon_doGoAroundObstacle(const Position *current, const Position *target, 
-	const EDirections targetDirection, CharacterAIControl *charControl) {
-	EDirections goTarget;
-	if (charControl->leftBlocked) {
-		charControl->currentAction = 0;
-		charControl->countAction = 1;
-		skulldemon_findPosition(current, target, ELeft, &goTarget);
-		charControl->actions[0] = ((ActionControl){30, 0, goTarget, ESkullDemonChaseTarget});
-		charControl->leftBlocked = false;
-	} else if (charControl->rightBlocked) {
-		charControl->currentAction = 0;
-		charControl->countAction = 1;
-		skulldemon_findPosition(current, target, ERight, &goTarget);
-		charControl->actions[0] = ((ActionControl){30, 0, goTarget, ESkullDemonChaseTarget});
-		charControl->rightBlocked = false;
-	} else if (charControl->upBlocked) {
-		charControl->currentAction = 0;
-		charControl->countAction = 1;
-		skulldemon_findPosition(current, target, EUp, &goTarget);
-		charControl->actions[0] = ((ActionControl){30, 0, goTarget, ESkullDemonChaseTarget});
-		charControl->upBlocked = false;
-	} else if (charControl->downBlocked) {
-		charControl->currentAction = 0;
-		charControl->countAction = 1;
-		skulldemon_findPosition(current, target, EDown, &goTarget);
-		charControl->actions[0] = ((ActionControl){30, 0, goTarget, ESkullDemonChaseTarget});
-		charControl->downBlocked = false;
+		//return;
 	}
 }
 
@@ -111,7 +64,7 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 	const CharacterCollection *characterCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int i;
-	EDirections goDirection;
+	//EDirections goDirection;
    
 	if (charControl->currentStatus == ESkullDemonAIStateHuntTarget) {
 		charControl->currentAction = MAXACTIONS;
@@ -127,7 +80,7 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 		return;
 	}
 		
-	if (commonDoIntializeActions(character)) {
+	if (common_shouldDoIntializeActions(character)) {
 		character->getBounds = &skulldemon_getBoundingBoxMoving;
 	}
 	
@@ -142,11 +95,27 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 			charControl->wayPointCurrent= 0;
 		}
 	}
-	
+		
 	EDirections direction;
 	common_findDirectionOfPosition(&character->position, &charControl->wayPoints[charControl->wayPointCurrent], &direction);
 	character->nextAction = ESkullDemonWalk;
 	character->nextDirection = direction;
+	
+	if (charControl->leftBlocked | charControl->rightBlocked | 
+		charControl->upBlocked | charControl->downBlocked) {
+		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
+			ESkullDemonWalk, 60);
+	}
+	
+	common_doSetActions(charControl, character);
+	
+	if (charControl->currentAction >= charControl->countAction) {
+		//charControl->countAction = 0;
+		commonInitializeAISetActions(charControl);
+		charControl->currentAction = MAXACTIONS;
+		//character->nextDirection = direction;
+		//return;
+	}
 		
 	skulldemon_doWalk(character, mapInfo, characterCollection, charControl);
 }
@@ -182,17 +151,20 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
-		skulldemon_doGoAroundObstacle(&character->position, &charControl->target, goDirection, charControl);
+		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
+			ESkullDemonChaseTarget, 60);
+		common_doSetActions(charControl, character);
 		return;
-	} else if (charControl->currentAction < charControl->countAction && 
-		charControl->actions[charControl->currentAction].currentFrame >= charControl->actions[charControl->currentAction].doForNumFrames) {
+	} else if (charControl->currentAction >= charControl->countAction) {
 		//charControl->countAction = 0;
 		commonInitializeAISetActions(charControl);
 		charControl->currentAction = MAXACTIONS;
 		character->nextDirection = goDirection;
 		return;
-	} 
+	}
+	
 	character->nextDirection = goDirection;
+	common_doSetActions(charControl, character);
 }
 
 void skulldemon_doAttack(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -218,7 +190,7 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 		return;
 	}
 	
-	if (commonDoIntializeActions(character)) {
+	if (common_shouldDoIntializeActions(character)) {
 		commonInitializeAISetActions(charControl);
 		character->nextAction = ESkullDemonChaseTarget;
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
@@ -229,7 +201,6 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	} else if (character->action == ESkullDemonAttack) {
 		skulldemon_doAttack(character, mapInfo, characterCollection, charControl);
 	}
-		
 	++charControl->actions[charControl->currentAction].currentFrame;
 }
 
@@ -249,7 +220,7 @@ void skulldemon_stunnedController(CharacterAttr* character, const MapInfo *mapIn
 		return;
 	}
 	
-	if (commonDoIntializeActions(character)) {
+	if (common_shouldDoIntializeActions(character)) {
 		charControl->countAction = 1;
 		charControl->currentAction = 0;
 		charControl->actions[0] = ((ActionControl){30, 0, character->direction, ESkullDemonStunned});

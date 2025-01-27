@@ -221,13 +221,19 @@ void skulldemon_actionWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	    character->movementCtrl.maxFrames = skulldemon_WALK_MVMNT_CTRL_MAX;
 		character->movementCtrl.currentFrame = 0;
 	}
-	
-	character->action = character->nextAction;
-	character->direction = character->nextDirection;
-	
+			
 	if (character->movementCtrl.currentFrame >= character->movementCtrl.maxFrames) {
 	    character->movementCtrl.currentFrame = 0;
 	}
+	
+	//if (charControl->currentAction < charControl->countAction) {
+	//	character->nextAction = charControl->actions[charControl->currentAction].action;
+	//	character->nextDirection = charControl->actions[charControl->currentAction].direction;
+	//	++charControl->actions[charControl->currentAction].currentFrame;
+	//}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
 	
 	character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
 	character->position.x += character->delta.x;
@@ -263,11 +269,11 @@ void skulldemon_actionChaseTarget(CharacterAttr* character, const MapInfo *mapIn
 		character->movementCtrl.currentFrame = 0;
 	}
 	
-	if (charControl->currentAction < charControl->countAction) {
-		character->nextAction = charControl->actions[charControl->currentAction].action;
-		character->nextDirection = charControl->actions[charControl->currentAction].direction;
-		++charControl->actions[charControl->currentAction].currentFrame;
-	}
+	//if (charControl->currentAction < charControl->countAction) {
+	//	character->nextAction = charControl->actions[charControl->currentAction].action;
+	//	character->nextDirection = charControl->actions[charControl->currentAction].direction;
+	//	++charControl->actions[charControl->currentAction].currentFrame;
+	//}
 	
 	character->action = character->nextAction;
 	character->direction = character->nextDirection;
@@ -284,7 +290,8 @@ void skulldemon_actionChaseTarget(CharacterAttr* character, const MapInfo *mapIn
 	
 	commonGravityEffect(character, common_zOffsetDown);
 	
-	mprinter_printf("WALK FRAME %d", character->spriteDisplay.currentAnimationFrame);
+	mprinter_printf("WALK FRAME %d\n", character->spriteDisplay.currentAnimationFrame);
+	mprinter_printf("HUNT DIR %d %d\n", character->nextDirection, character->direction);
 	++character->movementCtrl.currentFrame;
 	character->spriteDisplay.spriteSet = skulldemonWalking[character->direction];
 }
