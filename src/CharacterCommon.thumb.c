@@ -80,19 +80,76 @@ const EDirections FAR_TARGET[FARTARGET_SIZE ][FARTARGET_SIZE] = {
  {EDownleft, EDownleft, EDown, EDownright, EDownright}
 };
 
-#define FINER_FARTARGET_SIZE 10
+//UL UL UL U  U  U  U  UR UR UR
+//UL UL UL U  U  U  U  UR UR UR 
+//UL UL UL UL U  U  UR UR UR UR 
+//L  L  UL UL X  X  UR UR R  R
+//L  L  L  X  X  X  X  R  R  R
+//L  L  L  X  X  X  X  R  R  R
+//L  L  DL DL X  X  DR DR R  R
+//DL DL DL DL D  D  DR DR DR DR
+//DL DL DL D  D  D  D  DR DR DR
+//DL DL DL D  D  D  D  DR DR DR
 
-const EDirections FINER_FAR_TARGET[FINER_FARTARGET_SIZE][FINER_FARTARGET_SIZE] = {
+#define FARTARGET_16x16_SIZE 10
+
+const EDirections FAR_TARGET_16x16[FARTARGET_16x16_SIZE][FARTARGET_16x16_SIZE] = {
  {EUpleft, EUpleft, EUpleft, EUp,  EUp,  EUp,  EUp, EUpright, EUpright, EUpright},
  {EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright},
  {EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright, EUpright},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, ERight, ERight}, ERight, ERight,
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, EUpleft, EUpleft, EUnknown, EUnknown, EUpright, EUpright, ERight, ERight},
+ {ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight},
+ {ELeft, ELeft, EDownleft, EDownleft, EUnknown, EUnknown, EDownright, EDownright, ERight, ERight},
  {EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright, EDownright, EDownright},
  {EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright},
  {EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright}
+};
+
+//UL UL UL UL UL UL U  U  U  U  U  U  U  U  UR UR UR UR UR UR
+//UL UL UL UL UL UL U  U  U  U  U  U  U  U  UR UR UR UR UR UR
+//UL UL UL UL UL UL UL U  U  U  U  U  U  UR UR UR UR UR UR UR
+//UL UL UL UL UL UL UL U  U  U  U  U  U  UR UR UR UR UR UR UR
+//UL UL UL UL UL UL UL UL U  U  U  U  UR UR UR UR UR UR UR UR
+//UL UL UL UL UL UL UL UL U  U  U  U  UR UR UR UR UR UR UR UR
+//L  L  UL UL UL UL UL UL UL U  U  UR UR UR UR UR UR UR R  R 
+//L  L  L  L  UL UL UL UL UL U  U  UR UR UR UR UR R  R  R  R 
+//L  L  L  L  L  L  UL UL UL X  X  UR UR UR R  R  R  R  R  R
+//L  L  L  L  L  L  L  L  X  X  X  X  R  R  R  R  R  R  R  R
+//L  L  L  L  L  L  L  L  X  X  X  X  R  R  R  R  R  R  R  R
+//L  L  L  L  L  L  DL DL DL X  X  DR DR DR R  R  R  R  R  R
+//L  L  L  L  DL DL DL DL DL D  D  DR DR DR DR DR R  R  R  R
+//L  L  DL DL DL DL DL DL DL D  D  DR DR DR DR DR DR DR R  R
+//DL DL DL DL DL DL DL DL D  D  D  D  DR DR DR DR DR DR DR DR
+//DL DL DL DL DL DL DL DL D  D  D  D  DR DR DR DR DR DR DR DR
+//DL DL DL DL DL DL DL D  D  D  D  D  D  DR DR DR DR DR DR DR
+//DL DL DL DL DL DL DL D  D  D  D  D  D  DR DR DR DR DR DR DR
+//DL DL DL DL DL DL D  D  D  D  D  D  D  D  DR DR DR DR DR DR
+//DL DL DL DL DL DL D  D  D  D  D  D  D  D  DR DR DR DR DR DR
+
+#define FARTARGET_8x8_SIZE 20
+
+const EDirections FAR_TARGET_8x8[FARTARGET_8x8_SIZE][FARTARGET_8x8_SIZE] = {
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {ELeft, ELeft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUnknown, EUnknown, EUpright, EUpright, EUpright, EUpright, EUpright, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUpleft, EUpleft, EUpleft, EUnknown, EUnknown, EUpright, EUpright, EUpright, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EDownleft, EDownleft, EDownleft, EUnknown, EUnknown, EDownright, EDownright, EDownright, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft,  EDownleft, EDownleft,  EDownleft, EDownleft, EDownleft, EUnknown, EUnknown, EDownright, EDownright,  EDownright, EDownright,  EDownright, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, EDownleft, EDownleft,  EDownleft, EDownleft,  EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright,  EDownright, EDownright,  EDownright, EDownright, EDownright, ERight, ERight},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright}
 };
 
 #define NEARTARGET_SIZE 5
@@ -105,20 +162,23 @@ const EDirections NEAR_TARGET[NEARTARGET_SIZE][NEARTARGET_SIZE] = {
  {EDownleft, EDownleft, EDown, EDownright, EDownright}
 };
 
-#define MIDRANGE_NEARTARGET_SIZE 7
+#define MIDRANGE_NEARTARGET_SIZE 8
 
 const EDirections MIDRANGE_NEAR_TARGET[MIDRANGE_NEARTARGET_SIZE][MIDRANGE_NEARTARGET_SIZE] = {
- {EUpleft, EUpleft, EUpleft, EUp, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUp, EUpright, EUpright, EUpright},
-     {EUpleft, ELeft, ELeft, EUp, ERight, ERight, EUpright},
-      {ELeft, ELeft, ELeft, EUnknown, ERight, ERight, ERight},
-    {EDownleft, ELeft, ELeft,  EDown, ERight, ERight, EDownright},
- {EDownleft, EDownleft, EDownleft, EDown, EDownright, EDownright, EDownright},
- {EDownleft, EDownleft, EDownleft, EDown, EDownright, EDownright, EDownright}
+ {EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright},
+     {EUpleft, ELeft, ELeft, EUp, EUp, ERight, ERight, EUpright},
+      {ELeft, ELeft, ELeft, ELeft, ERight, ERight, ERight, ERight},
+	  {ELeft, ELeft, ELeft, ELeft, ERight, ERight, ERight, ERight},
+    {EDownleft, ELeft, ELeft,  EDown, EDown, ERight, ERight, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright, EDownright}
 };
 
 #define FAR_DIST_OFFSET 80
-#define NEAR_DIST_OFFSET 20
+//#define NEAR_DIST_OFFSET 20
+
+#define NEAR_DIST_OFFSET 32
 
 void handleFarDistance(int distanceX, int distanceY, EDirections *goDirection) {
 	if (abs(distanceX) > abs(distanceY)) {
@@ -143,47 +203,17 @@ void findInScreen(Position *current, Position *targetPos, EDirections *goDirecti
 	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
 	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
 	
-	offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
-	offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
-
-	*goDirection = FAR_TARGET[offsetDistanceY][offsetDistanceX];
-	if (*goDirection == EUnknown) {
-		distanceX = targetPos->x - current->x + NEAR_DIST_OFFSET;
-		distanceY = targetPos->y - current->y + NEAR_DIST_OFFSET;
-		distanceX = DIVIDE_BY_8(distanceX);
-		distanceY = DIVIDE_BY_8(distanceY);
-		*isNear = true;
-		*goDirection = NEAR_TARGET[distanceY][distanceX];
-		return;
-	}
-	*isNear = false;
-}
-
-void findInScreenFine(Position *current, Position *targetPos, EDirections *goDirection, bool *isNear) {
-	int distanceX = targetPos->x - current->x;
-	int distanceY = targetPos->y - current->y;
-	
-	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
-	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
-	
-	mprinter_printf("IN SCREEN RAW %d,%d\n", offsetDistanceX, offsetDistanceY);
-	//mprinter_printf("");
-	//offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
-	//offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
 	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
 	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
 
-	mprinter_printf("IN SCREEN CONVERTED %d,%d\n", offsetDistanceX, offsetDistanceY);
-	
-	//*goDirection = FAR_TARGET[offsetDistanceY][offsetDistanceX];
-	*goDirection = FINER_FAR_TARGET[offsetDistanceY][offsetDistanceX];
+	*goDirection = FAR_TARGET_8x8[offsetDistanceY][offsetDistanceX];
 	if (*goDirection == EUnknown) {
 		distanceX = targetPos->x - current->x + NEAR_DIST_OFFSET;
 		distanceY = targetPos->y - current->y + NEAR_DIST_OFFSET;
 		distanceX = DIVIDE_BY_8(distanceX);
 		distanceY = DIVIDE_BY_8(distanceY);
 		*isNear = true;
-		*goDirection = NEAR_TARGET[distanceY][distanceX];
+		*goDirection = MIDRANGE_NEAR_TARGET[distanceY][distanceX];
 		return;
 	}
 	*isNear = false;
@@ -677,7 +707,6 @@ void common_movingRightOffset(CharacterAttr* character,
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
 	
-	mprinter_printf("%d\n", CONVERT_2MOVE(xoffset));
 	character->position.x -= CONVERT_2MOVE(xoffset);
 	
 	if (character->free->type == EControlAiType) {

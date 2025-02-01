@@ -136,7 +136,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	
 	common_findDirectionOfTargetCharacterInScreen(&character->position, 
 		&charControl->target, &goDirection, &isNear);
-	if (goDirection == EUnknown) {
+	if (!isNear && goDirection == EUnknown) {
 		charControl->currentAction = MAXACTIONS;
 		charControl->currentStatus = ESkullDemonAIStateWalkAround;
 		character->nextAction = ESkullDemonWalk;
