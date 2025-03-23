@@ -72,13 +72,84 @@ bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent
 //const CharacterAttr openSlot = {&commonControllerDummy, &commonActionDummy, &commonSetPositionDummy, &commonGetBoundsDummy, 
  //   &funcCollisionCheckDummy, &funcMapCollisionDummy, &funcActionCollisionDummy, NULL, 0, NONE,0,0,0,0,0, NULL, {0, -1, 0}, NULL, NULL };
 #define FARTARGET_SIZE 5
-
-const EDirections FAR_TARGET[FARTARGET_SIZE][FARTARGET_SIZE] = {
+const EDirections FAR_TARGET[FARTARGET_SIZE ][FARTARGET_SIZE] = {
  {EUpleft, EUpleft, EUp, EUpright, EUpright},
  {EUpleft, EUpleft, EUp, EUpright, EUpright},
  {ELeft, ELeft, EUnknown, ERight, ERight},
  {EDownleft, EDownleft, EDown, EDownright, EDownright},
  {EDownleft, EDownleft, EDown, EDownright, EDownright}
+};
+
+//UL UL UL U  U  U  U  UR UR UR
+//UL UL UL U  U  U  U  UR UR UR 
+//UL UL UL UL U  U  UR UR UR UR 
+//L  L  UL UL X  X  UR UR R  R
+//L  L  L  X  X  X  X  R  R  R
+//L  L  L  X  X  X  X  R  R  R
+//L  L  DL DL X  X  DR DR R  R
+//DL DL DL DL D  D  DR DR DR DR
+//DL DL DL D  D  D  D  DR DR DR
+//DL DL DL D  D  D  D  DR DR DR
+
+#define FARTARGET_16x16_SIZE 10
+
+const EDirections FAR_TARGET_16x16[FARTARGET_16x16_SIZE][FARTARGET_16x16_SIZE] = {
+ {EUpleft, EUpleft, EUpleft, EUp,  EUp,  EUp,  EUp, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright, EUpright},
+ {ELeft, ELeft, EUpleft, EUpleft, EUnknown, EUnknown, EUpright, EUpright, ERight, ERight},
+ {ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight},
+ {ELeft, ELeft, EDownleft, EDownleft, EUnknown, EUnknown, EDownright, EDownright, ERight, ERight},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright}
+};
+
+//UL UL UL UL UL UL U  U  U  U  U  U  U  U  UR UR UR UR UR UR
+//UL UL UL UL UL UL U  U  U  U  U  U  U  U  UR UR UR UR UR UR
+//UL UL UL UL UL UL UL U  U  U  U  U  U  UR UR UR UR UR UR UR
+//UL UL UL UL UL UL UL U  U  U  U  U  U  UR UR UR UR UR UR UR
+//UL UL UL UL UL UL UL UL U  U  U  U  UR UR UR UR UR UR UR UR
+//UL UL UL UL UL UL UL UL U  U  U  U  UR UR UR UR UR UR UR UR
+//L  L  UL UL UL UL UL UL UL U  U  UR UR UR UR UR UR UR R  R 
+//L  L  L  L  UL UL UL UL UL U  U  UR UR UR UR UR R  R  R  R 
+//L  L  L  L  L  L  UL UL UL X  X  UR UR UR R  R  R  R  R  R
+//L  L  L  L  L  L  L  L  X  X  X  X  R  R  R  R  R  R  R  R
+//L  L  L  L  L  L  L  L  X  X  X  X  R  R  R  R  R  R  R  R
+//L  L  L  L  L  L  DL DL DL X  X  DR DR DR R  R  R  R  R  R
+//L  L  L  L  DL DL DL DL DL D  D  DR DR DR DR DR R  R  R  R
+//L  L  DL DL DL DL DL DL DL D  D  DR DR DR DR DR DR DR R  R
+//DL DL DL DL DL DL DL DL D  D  D  D  DR DR DR DR DR DR DR DR
+//DL DL DL DL DL DL DL DL D  D  D  D  DR DR DR DR DR DR DR DR
+//DL DL DL DL DL DL DL D  D  D  D  D  D  DR DR DR DR DR DR DR
+//DL DL DL DL DL DL DL D  D  D  D  D  D  DR DR DR DR DR DR DR
+//DL DL DL DL DL DL D  D  D  D  D  D  D  D  DR DR DR DR DR DR
+//DL DL DL DL DL DL D  D  D  D  D  D  D  D  DR DR DR DR DR DR
+
+#define FARTARGET_8x8_SIZE 20
+
+const EDirections FAR_TARGET_8x8[FARTARGET_8x8_SIZE][FARTARGET_8x8_SIZE] = {
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {ELeft, ELeft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUnknown, EUnknown, EUpright, EUpright, EUpright, EUpright, EUpright, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUpleft, EUpleft, EUpleft, EUnknown, EUnknown, EUpright, EUpright, EUpright, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EDownleft, EDownleft, EDownleft, EUnknown, EUnknown, EDownright, EDownright, EDownright, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft,  EDownleft, EDownleft,  EDownleft, EDownleft, EDownleft, EUnknown, EUnknown, EDownright, EDownright,  EDownright, EDownright,  EDownright, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, EDownleft, EDownleft,  EDownleft, EDownleft,  EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright,  EDownright, EDownright,  EDownright, EDownright, EDownright, ERight, ERight},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright}
 };
 
 #define NEARTARGET_SIZE 5
@@ -91,8 +162,23 @@ const EDirections NEAR_TARGET[NEARTARGET_SIZE][NEARTARGET_SIZE] = {
  {EDownleft, EDownleft, EDown, EDownright, EDownright}
 };
 
+#define MIDRANGE_NEARTARGET_SIZE 8
+
+const EDirections MIDRANGE_NEAR_TARGET[MIDRANGE_NEARTARGET_SIZE][MIDRANGE_NEARTARGET_SIZE] = {
+ {EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright},
+     {EUpleft, ELeft, ELeft, EUp, EUp, ERight, ERight, EUpright},
+      {ELeft, ELeft, ELeft, ELeft, ERight, ERight, ERight, ERight},
+	  {ELeft, ELeft, ELeft, ELeft, ERight, ERight, ERight, ERight},
+    {EDownleft, ELeft, ELeft,  EDown, EDown, ERight, ERight, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDown, EDown, EDownright, EDownright, EDownright}
+};
+
 #define FAR_DIST_OFFSET 80
-#define NEAR_DIST_OFFSET 20
+//#define NEAR_DIST_OFFSET 20
+
+#define NEAR_DIST_OFFSET 32
 
 void handleFarDistance(int distanceX, int distanceY, EDirections *goDirection) {
 	if (abs(distanceX) > abs(distanceY)) {
@@ -110,9 +196,33 @@ void handleFarDistance(int distanceX, int distanceY, EDirections *goDirection) {
 	}
 }
 
+void findInScreen(Position *current, Position *targetPos, EDirections *goDirection, bool *isNear) {
+	int distanceX = targetPos->x - current->x;
+	int distanceY = targetPos->y - current->y;
+	
+	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
+	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
+	
+	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
+
+	*goDirection = FAR_TARGET_8x8[offsetDistanceY][offsetDistanceX];
+	if (*goDirection == EUnknown) {
+		distanceX = targetPos->x - current->x + NEAR_DIST_OFFSET;
+		distanceY = targetPos->y - current->y + NEAR_DIST_OFFSET;
+		distanceX = DIVIDE_BY_8(distanceX);
+		distanceY = DIVIDE_BY_8(distanceY);
+		*isNear = true;
+		*goDirection = MIDRANGE_NEAR_TARGET[distanceY][distanceX];
+		return;
+	}
+	*isNear = false;
+}
+
 void findDirection(Position *current, Position *targetPos, EDirections *goDirection) {	
 	int distanceX = targetPos->x - current->x;
 	int distanceY = targetPos->y - current->y;
+	bool isNear;
 	
 	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
 	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
@@ -125,15 +235,7 @@ void findDirection(Position *current, Position *targetPos, EDirections *goDirect
 		return;
 	}
 	
-	*goDirection = FAR_TARGET[offsetDistanceY][offsetDistanceX];
-	if (*goDirection == EUnknown) {
-		distanceX = targetPos->x - current->x + NEAR_DIST_OFFSET;
-		distanceY = targetPos->y - current->y + NEAR_DIST_OFFSET;
-		distanceX = DIVIDE_BY_8(distanceX);
-		distanceY = DIVIDE_BY_8(distanceY);
-
-		*goDirection = NEAR_TARGET[distanceY][distanceX];
-	}
+	findInScreen(current, targetPos, goDirection, &isNear);
 }
 
 void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection) {
@@ -143,7 +245,30 @@ void common_findDirectionOfTargetCharacter(Position *current, Position *target, 
 	findDirection(&currentConverted, &targetConverted, goDirection);
 }
 
-void common_findDirectionOfPosition(Position *current, Position *targetPos, EDirections *goDirection) {
+void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target, 
+	EDirections *goDirection, bool *isNear) {
+	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetPos = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	int distanceX = targetPos.x - currentPos.x;
+	int distanceY = targetPos.y - currentPos.y;
+	
+	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
+	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
+	
+	offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
+	//mprinter_printf("CHECKING %d,%d\n", offsetDistanceX, offsetDistanceY);
+	if (offsetDistanceX >= FARTARGET_SIZE || offsetDistanceY >= FARTARGET_SIZE || offsetDistanceX < 0 || offsetDistanceY < 0) {
+		*goDirection = EUnknown;
+		*isNear = false;
+		return;
+	}
+	
+	findInScreen(&currentPos, &targetPos, goDirection, isNear);
+}
+
+void common_findDirectionOfPosition(const Position *current, const Position *targetPos, EDirections *goDirection) {
 	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
 	
 	findDirection(&currentConverted, targetPos, goDirection);
@@ -582,7 +707,6 @@ void common_movingRightOffset(CharacterAttr* character,
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
 	
-	mprinter_printf("%d\n", CONVERT_2MOVE(xoffset));
 	character->position.x -= CONVERT_2MOVE(xoffset);
 	
 	if (character->free->type == EControlAiType) {
@@ -601,7 +725,7 @@ void common_movingLeftOffset(CharacterAttr* character,
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
 	
-	mprinter_printf("qwe %d\n", CONVERT_2MOVE(xoffset));
+	//mprinter_printf("qwe %d\n", CONVERT_2MOVE(xoffset));
 	character->position.x += CONVERT_2MOVE(xoffset);
 	
 	if (character->free->type == EControlAiType) {
@@ -1335,7 +1459,15 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 		}
 	}
 }
-
+void commonInitializeAISetActions(CharacterAIControl *charControl) {
+	int i;
+	for (i = 0; i < charControl->countAction; ++i) {
+		charControl->actions[i].currentFrame = 0;
+		charControl->actions[i].doForNumFrames = 0;
+	}
+	charControl->countAction = 0;
+	charControl->currentAction = 0;
+}
 int commonGetCurrentAnimationFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.currentAnimationFrame;
 }
@@ -1344,7 +1476,7 @@ int commonGetCurrentDisplayFrame(const CharacterAttr* character) {
 	return character->spriteDisplay.numberOfFramesPassed;
 }
 
-bool commonDoNextAction(CharacterAttr* character) {
+bool common_shouldDoNextAction(CharacterAttr* character) {
     int nextScreenFrame, nextAnimationFrame;
 	bool isLastFrame = false;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
@@ -1357,10 +1489,10 @@ bool commonDoNextAction(CharacterAttr* character) {
 			charControl->actions[charControl->currentAction].doForNumFrames);
 }
 
-bool commonDoIntializeActions(CharacterAttr* character) {
+bool common_shouldDoIntializeActions(CharacterAttr* character) {
    CharacterAIControl *charControl = (CharacterAIControl*)character->free;
    return charControl->currentAction >= MAXACTIONS | ((charControl->currentAction + 1) >= charControl->countAction &
-	commonDoNextAction(character));
+	common_shouldDoNextAction(character));
 }
 
 const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
@@ -1469,4 +1601,66 @@ bool commonIsFoundPosition(const Position* position) {
 
 EDirections commonReverseDirection(EDirections direction) {
  return (direction+4)&EDirectionsMax;
+}
+
+void common_findPosition(const Position *current, const Position *target, 
+	const EDirections blocked, EDirections *direction) {
+	if (blocked == ELeft || blocked == ERight) {
+		int yDirection = current->y - target->y;
+		if (yDirection < 0) {
+			*direction = EDown;
+		} else {
+			*direction = EUp;
+		}	
+	} else if (blocked == EUp || blocked == EDown) {
+		int xDirection = current->x - target->x;
+		if (xDirection < 0) {
+			*direction = ERight;
+		} else {
+			*direction = ELeft;
+		}
+	} 
+}
+
+void common_doGoAroundObstacle(const Position *current, const Position *target, 
+	CharacterAIControl *charControl, int action, int duration) {
+	EDirections goTarget;
+	if (charControl->leftBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, ELeft, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->leftBlocked = false;
+	} else if (charControl->rightBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, ERight, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->rightBlocked = false;
+	} else if (charControl->upBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, EUp, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->upBlocked = false;
+	} else if (charControl->downBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		common_findPosition(current, target, EDown, &goTarget);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->downBlocked = false;
+	}
+}
+
+void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* character)  {
+	if (charControl->currentAction < charControl->countAction) {
+		character->nextAction = charControl->actions[charControl->currentAction].action;
+		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+		++charControl->actions[charControl->currentAction].currentFrame;
+		if (charControl->actions[charControl->currentAction].currentFrame >= 
+			charControl->actions[charControl->currentAction].doForNumFrames) {
+			charControl->actions[charControl->currentAction].currentFrame = 0;
+			++charControl->currentAction;
+		}
+	}
 }

@@ -35,7 +35,7 @@ extern const EDirections directions[EDirectionsCount];
 
 #define skulldemon_WALK_MVMNT_CTRL_MAX 4
 
-#define MAX_DIST_FOR_CHASE 80
+//#define MAX_DIST_FOR_CHASE 80
 
 #define SKULLDEMON_ATTACK_ANIMATIONFRAME_START 3
 #define SKULLDEMON_ATTACK_ANIMATIONFRAME_END 4
@@ -122,9 +122,9 @@ bool skulldemon_isHit(CharacterAttr *character, CharacterActionEvent *actionEven
 	
 const CharFuncAction skulldemon_actions[] = {
 	&skulldemon_actionWalk,
-	//&skulldemon_actionChaseTarget,
-	//&skulldemon_actionAttack,
-	//&skulldemon_actionStunned
+	&skulldemon_actionChaseTarget,
+	&skulldemon_actionAttack,
+	&skulldemon_actionStunned
 };
 
 
@@ -207,6 +207,45 @@ void skulldemon_actionWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	int nextScreenFrame, nextAnimationFrame;
 	Position *position = &character->position;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	BoundingBox searchArea;
+	
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	if (character->action != character->nextAction) {
+	    character->movementCtrl.maxFrames = skulldemon_WALK_MVMNT_CTRL_MAX;
+		character->movementCtrl.currentFrame = 0;
+	}
+			
+	if (character->movementCtrl.currentFrame >= character->movementCtrl.maxFrames) {
+	    character->movementCtrl.currentFrame = 0;
+	}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
+	character->position.x += character->delta.x;
+		
+	character->delta.y = skulldemon_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
+	character->position.y += character->delta.y;
+	
+	commonGravityEffect(character, common_zOffsetDown);
+	
+	++character->movementCtrl.currentFrame;
+	character->spriteDisplay.spriteSet = skulldemonWalking[character->direction];
+}
+
+void skulldemon_actionChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	bool isLastFrame = false;
+	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
+	Position *position = &character->position;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	BoundingBox boundingBox;
 	
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
@@ -220,46 +259,69 @@ void skulldemon_actionWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	    character->movementCtrl.maxFrames = skulldemon_WALK_MVMNT_CTRL_MAX;
 		character->movementCtrl.currentFrame = 0;
 	}
-	
+		
 	character->action = character->nextAction;
 	character->direction = character->nextDirection;
 	
 	if (character->movementCtrl.currentFrame >= character->movementCtrl.maxFrames) {
 	    character->movementCtrl.currentFrame = 0;
 	}
-	
+
 	character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
 	character->position.x += character->delta.x;
-		
+	
 	character->delta.y = skulldemon_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
 	character->position.y += character->delta.y;
-	/*if (commonGetCurrentAnimationFrame(character) == 0 || commonGetCurrentAnimationFrame(character) == 2) {
-		character->delta.x = skulldemon_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
-		character->position.x += character->delta.x;
-		
-		character->delta.y = skulldemon_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
-		character->position.y += character->delta.y;
-	} else {
-		character->delta.x = 0;
-		character->delta.y = 0;
-	}
 	
-	commonGravityEffect(character, common_zOffsetDown);*/
+	commonGravityEffect(character, common_zOffsetDown);
 	
 	++character->movementCtrl.currentFrame;
 	character->spriteDisplay.spriteSet = skulldemonWalking[character->direction];
-	
-	boundingBox.startX = CONVERT_2POS(position->x) + skulldemon_scanSurroundingOffset[character->direction][0].x;
-	boundingBox.startY = CONVERT_2POS(position->y) + skulldemon_scanSurroundingOffset[character->direction][0].y;
-	boundingBox.endX = CONVERT_2POS(position->x) + skulldemon_scanSurroundingOffset[character->direction][1].x;
-	boundingBox.endY = CONVERT_2POS(position->y) + skulldemon_scanSurroundingOffset[character->direction][1].y;
+}
 
-	/*charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &boundingBox, 
-		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
+void skulldemon_actionAttack(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	bool isLastFrame = false;
+	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
+	Position *position = &character->position;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	BoundingBox boundingBox;
 		
-	if (commonIsFoundPosition(&charControl->target)) {
-		//charControl->currentStatus = EZombieStatusHuntTarget;
-	}*/
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+		character->delta.x = 0;
+		character->delta.y = 0;
+		character->delta.z = 0;
+	}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	commonGravityEffect(character, common_zOffsetDown);
+	
+	++character->movementCtrl.currentFrame;
+	character->spriteDisplay.spriteSet = skulldemonAttacking[character->direction];
+	
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	//currentAnimationFrame = commonGetCurrentAnimationFrame(character);
+	if (isLastFrame) {
+		character->nextAction = ESkullDemonChaseTarget;
+	}
+}
+
+void skulldemon_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	++charControl->actions[charControl->currentAction].currentFrame;
+	if (charControl->actions[charControl->currentAction].currentFrame >= 
+		charControl->actions[charControl->currentAction].doForNumFrames) {
+		commonInitializeAISetActions(charControl);
+		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
+		charControl->currentAction = MAXACTIONS;
+	}
 }
 
 void skulldemon_getBoundingBoxMoving(const CharacterAttr* character, 
@@ -274,9 +336,6 @@ void skulldemon_getBoundingBoxMoving(const CharacterAttr* character,
 	boundingBox->endY = y + skulldemon_boundingBoxMeasurements[EBBCnvrtWidth];
 	boundingBox->startZ = z;
 	boundingBox->endZ = z + SKULLDEMON_HEIGHT;
-	/*boundingBox->direction = character->direction;
-	boundingBox->isMoving = true;
-	boundingBox->isMovable = false;*/
 }
 
 int skulldemon_setPosition(CharacterAttr* character,
@@ -298,8 +357,6 @@ int skulldemon_setPosition(CharacterAttr* character,
 	charEndX = CONVERT_2POS(character->position.x) + SKULLDEMON_SCREENDISPLAYOFFSET_X;
 	charEndY = charStartY - SKULLDEMON_SCREENDISPLAYOFFSET_Y;
 	
-	//mprinter_printf("%d %d %d %d\n", charStartX, charStartY, charEndX, charEndY);
-	//mprinter_printf("%d %d\n", CONVERT_2POS(character->position.y), CONVERT_2POS(character->position.z));
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
 		character->spriteDisplay.imageUpdateStatus = ((!character->spriteDisplay.isInScreen)*EUpdate) + 
 		    (character->spriteDisplay.isInScreen*character->spriteDisplay.imageUpdateStatus);
@@ -342,7 +399,7 @@ bool skulldemon_isHit(CharacterAttr *character, CharacterActionEvent *actionEven
 	}
 	character->stats.currentLife -= 1;
 	//character->stats.currentStatus = EStatusNoActionCollision;
-	//charControl->currentStatus = ESkullDemonAIStateStunned;
+	charControl->currentStatus = ESkullDemonAIStateStunned;
 	//add hit animation
 	if (character->stats.currentLife <= 0) {
 		commonRemoveCharacter(character);

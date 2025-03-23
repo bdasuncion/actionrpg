@@ -4,14 +4,16 @@
 typedef enum SkullDemonAction {
 	ESkullDemonInitialize = -1,
 	ESkullDemonWalk,
-	//ESkullDemonChaseTarget,
-	//ESkullDemonAttack,
-	//ESkullDemonStunned,
+	ESkullDemonChaseTarget,
+	ESkullDemonAttack,
+	ESkullDemonStunned,
 	ESkullDemonActionCount
 } SkullDemonAction;
 typedef enum SkullDemonAIState {
 	ESkullDemonAIStateWalkAround,
-	//ESkullDemonAIStateHuntTarget,
+	ESkullDemonAIStateHuntTarget,
 	ESkullDemonAIStateStunned
 } SkullDemonAIState;
+
+extern const OffsetPoints skulldemon_scanSurroundingOffset[8][2];
 #endif

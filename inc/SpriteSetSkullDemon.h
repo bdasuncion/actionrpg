@@ -1,3 +1,4 @@
 #include "GBATypes.h"
 
-extern const SpriteSet *skulldemonWalking[];
+extern const SpriteSet *const skulldemonWalking[];
+extern const SpriteSet *const skulldemonAttacking[];
