@@ -73,3 +73,11 @@ extern const SpriteSet alisa_fallingdown_up;
 
 const SpriteSet * const alisaFallingDownSet[] = { &alisa_fallingdown_down, &alisa_fallingdown_down, &alisa_fallingdown_right, 
     &alisa_fallingdown_up, &alisa_fallingdown_up, &alisa_fallingdown_up, &alisa_fallingdown_left, &alisa_fallingdown_down };
+
+extern const SpriteSet alisa_reverseswordslash_down;
+extern const SpriteSet alisa_reverseswordslash_left;
+extern const SpriteSet alisa_reverseswordslash_right;	
+extern const SpriteSet alisa_reverseswordslash_up;
+
+const SpriteSet * const alisaReverseSwordSlashSet[] = { &alisa_reverseswordslash_down, &alisa_reverseswordslash_down, &alisa_reverseswordslash_right, 
+    &alisa_reverseswordslash_up, &alisa_reverseswordslash_up, &alisa_reverseswordslash_up, &alisa_reverseswordslash_left, &alisa_reverseswordslash_down };

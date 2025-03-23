@@ -187,4 +187,22 @@ extern const unsigned short sword_vertical_set_pal[];
 extern const unsigned int sword_vertical_set_image0[];
 extern const unsigned int sword_vertical_set_image1[];
 extern const unsigned int sword_vertical_set_image2[];
+
+extern const unsigned short alisa_reverseswordslash_down_pal[];
+extern const unsigned int alisa_reverseswordslash_down_image0[];
+extern const unsigned int alisa_reverseswordslash_down_image1[];
+extern const unsigned int alisa_reverseswordslash_down_image2[];
+extern const unsigned int alisa_reverseswordslash_down_image3[];
+
+extern const unsigned short alisa_reverseswordslash_side_pal[];
+extern const unsigned int alisa_reverseswordslash_side_image0[];
+extern const unsigned int alisa_reverseswordslash_side_image1[];
+extern const unsigned int alisa_reverseswordslash_side_image2[];
+extern const unsigned int alisa_reverseswordslash_side_image3[];
+
+extern const unsigned short alisa_reverseswordslash_up_pal[];
+extern const unsigned int alisa_reverseswordslash_up_image0[];
+extern const unsigned int alisa_reverseswordslash_up_image1[];
+extern const unsigned int alisa_reverseswordslash_up_image2[];
+extern const unsigned int alisa_reverseswordslash_up_image3[];
 #endif
