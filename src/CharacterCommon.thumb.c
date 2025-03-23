@@ -196,9 +196,20 @@ void handleFarDistance(int distanceX, int distanceY, EDirections *goDirection) {
 	}
 }
 
-void findInScreen(Position *current, Position *targetPos, EDirections *goDirection, bool *isNear) {
+void findInScreen(Position *current, Position *targetPos, int height, EDirections *goDirection, bool *isNear) {
 	int distanceX = targetPos->x - current->x;
 	int distanceY = targetPos->y - current->y;
+	
+	if (height > 0) {
+		int min = current->z;
+		int max = current->z + height;
+		if (!(targetPos->z <= max && targetPos->z >= min)) {
+			*isNear = false;
+			*goDirection = EUnknown;
+			return;
+		}
+	}
+	mprinter_printf("Z TARGET %d\n", targetPos->z);
 	
 	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
 	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
@@ -235,15 +246,15 @@ void findDirection(Position *current, Position *targetPos, EDirections *goDirect
 		return;
 	}
 	
-	findInScreen(current, targetPos, goDirection, &isNear);
+	findInScreen(current, targetPos, -1, goDirection, &isNear);
 }
 
-void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection) {
+/*void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection) {
 	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
 	Position targetConverted = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
 	
 	findDirection(&currentConverted, &targetConverted, goDirection);
-}
+}*/
 
 void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target, 
 	EDirections *goDirection, bool *isNear) {
@@ -265,7 +276,7 @@ void common_findDirectionOfTargetCharacterInScreen(Position const *current, Posi
 		return;
 	}
 	
-	findInScreen(&currentPos, &targetPos, goDirection, isNear);
+	findInScreen(&currentPos, &targetPos, 24, goDirection, isNear);
 }
 
 void common_findDirectionOfPosition(const Position *current, const Position *targetPos, EDirections *goDirection) {

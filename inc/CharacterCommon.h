@@ -157,7 +157,7 @@ bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent
 extern const EDirections FAR_TARGET[5][5];
 extern const EDirections NEAR_TARGET[5][5];
 void common_findDirectionOfPosition(const Position *current, const Position *targetPos, EDirections *goDirection);
-void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection);
+//void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection);
 void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target,
 	EDirections *goDirection, bool *isNear);
 void common_findPosition(const Position *current, const Position *target, 
