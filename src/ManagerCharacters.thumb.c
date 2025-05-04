@@ -63,9 +63,11 @@ void mchar_initTransferableCharacters(CharacterCollection *charCollection, int s
 	}
 }
 
-void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc) {
+void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc,
+	FuncCharacterGetScrPos charGetScrPosFunc) {
 	if (charCollection) {
-		charCollection->characterTransfer[charCollection->countCharacterTransfer] = charInitFunc;
+		charCollection->characterTransfer[charCollection->countCharacterTransfer].init = charInitFunc;
+		charCollection->characterTransfer[charCollection->countCharacterTransfer].getScreenPos = charGetScrPosFunc;
 		++charCollection->countCharacterTransfer;
 	}
 }	

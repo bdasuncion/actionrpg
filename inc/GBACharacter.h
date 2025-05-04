@@ -85,10 +85,11 @@ typedef struct SpriteDisplay {
 	u32 numberOfFramesPassed:8;//Count from last update
 	u32 currentAnimationFrame:7;
 	bool isInScreen:1;
+	bool isTrasnparent:1;
 	u32 baseY:8;
 	u32 baseX:9;
 	//u32 shadow:8;
-	u32 dummy:7;
+	u32 dummy:14;
 }ALIGN4 SpriteDisplay;
 
 typedef struct AttackEffect {
@@ -281,9 +282,27 @@ typedef struct ControlTypePool {
   ControlTypeUnion *collection;
 } ALIGN4 ControlTypePool;
 
+typedef struct ScreenCharPosition {
+	u32 x;
+	u32 y;
+}ALIGN4 ScreenCharPosition;
+
+typedef struct MoveScrPosition {
+	s32 offsetX;
+	s32 offsetY;
+	u32 count;
+}ALIGN4 MoveScrPosition;
+
 typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* collection, CharacterWaypoints *charWaypoints);
 typedef void (*FuncCharacterSet)(CharacterAttr *character);
-
+typedef void (*FuncCharacterGetScrPos)(const CharacterAttr* character, const Position *scr_pos,
+	ScreenCharPosition *scrPos);
+	
+typedef struct TransferCharacter {
+	FuncCharacterInit init;
+	FuncCharacterGetScrPos getScreenPos;
+} ALIGN4 TransferCharacter;
+	
 typedef struct CharacterCollection {
     u32 poolSize:6;
 	u32 currentSize:6;
@@ -293,7 +312,7 @@ typedef struct CharacterCollection {
 	CharacterAttr **characters;//Collection for all processing
 	CharacterAttr **charactersForDisplay;//Collection for diplay, includes sprite masks
 	CharacterAttr **charactersDoEvent;
-	FuncCharacterInit *characterTransfer;
+	TransferCharacter *characterTransfer;
 } ALIGN4 CharacterCollection;
 
 #define MOVEFRACTION 8

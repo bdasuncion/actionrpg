@@ -131,7 +131,8 @@ int main() {
 	
 	mchar_init(&characterCollection, MAX_CHARCOUNT);
 	mchar_initTransferableCharacters(&characterCollection, 1);
-	mchar_addTransferableCharacters(&characterCollection, &alisa_init);
+	//mchar_addTransferableCharacters(&characterCollection, &alisa_init);
+	mchar_addTransferableCharacters(&characterCollection, &alisa_transfer, &alisa_getScreenPosition);
 	
 	mchar_actione_init(&charActionCollection, MAX_CHARACTIONEVENT);
 	

@@ -22,6 +22,7 @@ void commonCharacterInit(CharacterAttr* character, int initialize, int action, E
 bool commonIsInScreen(int charStartX, int charEndX, int charStartY, int charEndY, 
     const Position *scr_pos, const ScreenDimension *scr_dim);
 bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
+bool commonIsInside(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox);
 bool commonCollissionPointInBounds(const Position *collisionPoint, const BoundingBox *boundingBox);
 bool commonPositionInBounds(const Position *position, const BoundingBox *boundingBox);
 void commonCharacterMapEdgeCheck(CharacterAttr* character, const MapInfo* mapInfo);
@@ -165,4 +166,5 @@ void common_findPosition(const Position *current, const Position *target,
 void common_doGoAroundObstacle(const Position *current, const Position *target, 
 	CharacterAIControl *charControl, int action, int duration);
 void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* character);
+void common_removeSpriteMask(CharacterCollection *characterCollection);
 #endif

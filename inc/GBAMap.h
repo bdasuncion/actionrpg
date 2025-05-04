@@ -76,6 +76,14 @@ typedef struct ScreenEffect {
 	FuncMap processScreenEffect;
 }ALIGN4 ScreenEffect;
 
+typedef struct AreaMask {
+	u32 xStart;
+	u32 yStart;
+	u32 width;
+	u32 height;
+	u16 const *tileMasks;
+} AreaMask;
+
 typedef struct MapInfo {
 	u16 width;
 	u16 height;

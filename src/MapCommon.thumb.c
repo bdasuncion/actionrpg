@@ -11,6 +11,7 @@
 #include "ManagerVram.h"
 #include "ManagerCharacters.h"
 #include "ManagerCharacterActionEvents.h"
+#include "ManagerPrinter.h"
 
 #include "MapCommon.h"
 //#include "CharacterAlisa.h"
@@ -25,6 +26,8 @@
 EWRAM int blendVal = 0;
 EWRAM int current = 0;
 EWRAM bool update = true;
+EWRAM ScreenCharPosition transferToScrPos[1];
+EWRAM MoveScrPosition moveCharacter[1];
 
 //extern const MapInfo mapTest;
 
@@ -40,6 +43,25 @@ void mapCommon_effectSpriteMasking(ScreenAttr *screenAttribute, CharacterCollect
 	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection, Track *track);
 
 void map_nofunction(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo) {
+}
+
+void mapCommon_calculateMovement(const ScreenCharPosition *from, const ScreenCharPosition *to, 
+	CharacterAttr *character, MoveScrPosition *move) {
+	s8 xDiff = to->y - from->x;
+	s8 yDiff = to->y - from->y;
+	int xdiffAbs = abs(xDiff), ydiffAbs = abs(yDiff);
+	if (xdiffAbs > ydiffAbs) {
+		move->offsetY = (MOVE_STR*ydiffAbs)/xdiffAbs;
+		move->offsetX = MOVE_STR;
+		move->count = xdiffAbs;
+	} else {
+		move->offsetX = (MOVE_STR*xdiffAbs)/ydiffAbs;
+		move->offsetY = MOVE_STR;
+		move->count = ydiffAbs;
+	}
+	
+	mprinter_printf("xdiff:%d ydiff:%d\n", xDiff, yDiff);
+	
 }
 
 void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
@@ -58,21 +80,39 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	sprite_vram_init_sections();
 	sprite_palette_init();
 	mchar_reinit(characterCollection, &character);
+
+	ScreenCharPosition from, to;
+	from.x = character->spriteDisplay.baseX;
+	from.y = character->spriteDisplay.baseY;
+	mprinter_printf("POS X:%d Y:%d\n", from.x, from.y);
 	
 	mchar_resetControlTypeAndSetCount(controlPool, characterCollection->countCharacterTransfer + 
 		((MapInfo*)eventTransfer->mapInfo)->characterCount);
-	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
-		characterCollection->characterTransfer[i](character, controlPool, NULL);
-	}
-	
+
+	//mprinter_printf("BEFORE ACTION current %d next %d\n", character->action, character->nextAction);
     commonCharacterSetPosition(character, 
-	   eventTransfer->transferToX, eventTransfer->transferToY, eventTransfer->transferToZ, eventTransfer->directionOnTransfer);
+	   eventTransfer->transferToX, eventTransfer->transferToY, eventTransfer->transferToZ, 
+	   eventTransfer->directionOnTransfer);
+	
+   
+	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
+		characterCollection->characterTransfer[i].init(character, controlPool, NULL);
+	}
+
 	character->doAction(character, mapInfo, characterCollection, charActionCollection);
+	
+	//mprinter_printf("ACTION current %d next %d\n", character->action, character->nextAction);
 	
 	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
 	mscr_initCharMoveRef(screenAttribute, mapInfo,
 		&character->position, DEFAULT_SCREEN_BOUNDING_BOX);
-
+		
+	characterCollection->characterTransfer[0].getScreenPos(character, 
+			&screenAttribute->position, &to);
+			
+	mapCommon_calculateMovement(&from, &to, character, moveCharacter);
+			
+	mprinter_printf("NEXT POS X:%d Y:%d\n", to.x, to.y);
 	mapInfo->transferTo = eventTransfer;
 	
 	character->checkMapCollision(character, mapInfo);
@@ -102,6 +142,10 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
 	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 	Track *track) {
+	if (blendVal == 0) {
+		common_removeSpriteMask(characterCollection);
+	}
+	
     ++current;
 	if (current >= DELAY) {
 	    current = 0;
@@ -111,7 +155,7 @@ void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterColl
 		mapInfo->mapFunction = &mapCommon_transferToMap;
 	}
     //blendBlack(blendVal);
-	blendBlack(BLENDVAL_MAX);
+	blendBlackBGOnly(blendVal);
 }
 
 void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
@@ -123,12 +167,13 @@ void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterC
 	    current = 0;
 		--blendVal;
 	}
-	
+	blendBlackBGOnly(blendVal);
 	if (blendVal <= 0) {
 		mapInfo->mapFunction = ((MapInfo*)mapInfo->transferTo->mapInfo)->mapFunction;
 		mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 	    mapInfo->transferTo = NULL;
-		blendBlack(0);
+		blendBlackBGOnly(0);
+		//blendBlackBGOnly(blendVal);
 		mapCommon_effectSpriteMasking(screenAttribute, characterCollection, mapInfo, controlPool, charActionCollection, track);
 	}
 }
@@ -147,7 +192,7 @@ void mapCommon_defaultEffect(ScreenAttr *screenAttribute, CharacterCollection *c
 void mapCommon_returnToNormal(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
 	MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 	Track *track) {
-    blendBlack(0);
+    blendBlackBGOnly(0);
 	++mapInfo->screenEffect.currentFrame;
 	if (mapInfo->screenEffect.currentFrame >= mapInfo->screenEffect.durationFrames) {
 	    //mapInfo->screenEffect.durationFrames = 3;
@@ -160,7 +205,7 @@ void mapCommon_returnToNormal(ScreenAttr *screenAttribute, CharacterCollection *
 void mapCommon_goDark(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
 	MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 	Track *track) {
-    blendBlack(BLENDVAL_MAX);
+    blendBlackBGOnly(BLENDVAL_MAX);
 	++mapInfo->screenEffect.currentFrame;
 	if (mapInfo->screenEffect.currentFrame >= mapInfo->screenEffect.durationFrames) {
 	    //mapInfo->screenEffect.durationFrames = 5;

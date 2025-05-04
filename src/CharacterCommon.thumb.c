@@ -674,6 +674,14 @@ bool hasCollision(const BoundingBox *charBoundingBox, const BoundingBox *otherCh
 		inBounds(otherCharBoundingBox->endZ, charBoundingBox->startZ, charBoundingBox->endZ)); 
 }
 
+bool commonIsInside(const BoundingBox *charBoundingBox, const BoundingBox *otherCharBoundingBox) {
+    return (inBounds(charBoundingBox->startX, otherCharBoundingBox->startX, otherCharBoundingBox->endX) &
+	    inBounds(charBoundingBox->endX, otherCharBoundingBox->startX, otherCharBoundingBox->endX))
+		&
+		(inBounds(charBoundingBox->startY, otherCharBoundingBox->startY, otherCharBoundingBox->endY) & 
+		inBounds(charBoundingBox->endY, otherCharBoundingBox->startY, otherCharBoundingBox->endY)); 
+}
+
 void convertWaypointToBoundingBox(const Position *wayPoint, BoundingBox *boundingBox) {
 	boundingBox->startX = wayPoint->x + 8;
 	boundingBox->endX =  wayPoint->x - 8;
@@ -1462,7 +1470,7 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 	character->getBounds(character, &boundBoxCount, &characterBoundingBox);
 	for (i = 0; i < mapInfo->eventTransferCount; ++i) {
 		transferToBoundingBox(&mapInfo->tranfers[i], &eventBox);
-		if (hasCollision(&characterBoundingBox, &eventBox)) {
+		if (commonIsInside(&characterBoundingBox, &eventBox)) {
 			mapInfo->transferTo = &mapInfo->tranfers[i];
 			mapInfo->mapFunction = &fadeToBlack;
 			mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
@@ -1674,4 +1682,16 @@ void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* charact
 			++charControl->currentAction;
 		}
 	}
+}
+
+void common_removeSpriteMask(CharacterCollection *characterCollection) {
+	int idx;
+	for (idx = 0; idx < characterCollection->currentSize; ++idx) {
+		CharacterAttr *character = characterCollection->characters[idx];
+		if (character->spriteDisplay.baseImageId == EVramMapIdMaskStandard) {
+			character->spriteDisplay.isInScreen = false;
+			commonRemoveCharacter(character);
+		}
+	}
+	
 }
