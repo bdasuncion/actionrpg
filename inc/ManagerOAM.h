@@ -10,5 +10,4 @@ void moam_initBuffer(OAMCollection *oamCollection);
 void moam_setUpdate(OAMCollection *ref);
 void moam_update();
 extern const STRUCT_OBJ_ATT moam_removeObj;
-
 #endif

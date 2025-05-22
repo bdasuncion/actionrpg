@@ -317,6 +317,9 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool, CharacterWay
 	alisa->checkCollision = &alisa_checkCollision;
 	alisa->checkMapCollision = &alisa_checkMapCollision;
 	alisa->isHit = &alisa_isHit;
+	
+	alisa->spriteDisplay.baseX = SPRITE_OFFSCREEN_X;
+	alisa->spriteDisplay.baseY = SPRITE_OFFSCREEN_Y;
 	//alisa->free = NULL;
 	//CharacterPlayerControl *charControl = mchar_getControlType(controlPool);
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)mchar_findFreeControlType(controlPool);
@@ -346,8 +349,13 @@ void alisa_doAction(CharacterAttr* alisa,
 	commonCheckForEvents(alisa, mapInfo);
 }
 
+void alisa_setScreenPosition(const CharacterAttr* alisa, Position *scr_pos) {
+	scr_pos->y = (CONVERT_2POS(alisa->position.y) - alisa_scrConversionMeasurements[EScrCnvrtHeight]) - alisa->spriteDisplay.baseY - CONVERT_2POS(alisa->position.z);
+	scr_pos->x = (CONVERT_2POS(alisa->position.x) - (alisa_scrConversionMeasurements[EScrCnvrtWidth] >> 1)) - alisa->spriteDisplay.baseX;
+}
+
 void alisa_getScreenPosition(const CharacterAttr* alisa, const Position *scr_pos, 
-	ScreenCharPosition *pos) {
+	ScreenCharPosition *pos) {	
 	
 	pos->y = CONVERT_TO_SCRYPOS(alisa->position.y, 
 		scr_pos->y, alisa_scrConversionMeasurements);
@@ -362,13 +370,13 @@ int alisa_setPosition(CharacterAttr* alisa,
 	const ScreenDimension *scr_dim) 
 {
 	int numberOfShadow = 0, currentAnimation;
-
 	alisa->spriteDisplay.baseY = CONVERT_TO_SCRYPOS(alisa->position.y, 
 		scr_pos->y, alisa_scrConversionMeasurements);
 	alisa->spriteDisplay.baseX = CONVERT_TO_SCRXPOS(alisa->position.x, 
 		scr_pos->x, alisa_scrConversionMeasurements);
 	alisa->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(alisa->position.z);
-	
+	//mprinter_printf("ALISA SET POSITION %d %d %d\n", CONVERT_2POS(alisa->position.x), 
+		//CONVERT_2POS(alisa->position.y), CONVERT_2POS(alisa->position.z));
 	//TODO add in screen check
 	commonSetToOamBuffer(&alisa->spriteDisplay, oamBuf);
 	alisa->spriteDisplay.isInScreen = true;
@@ -863,6 +871,7 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)alisa->free;
 	int fallingDown = 1024;
 	alisa->direction &= EDirectionsMax;
+	//mprinter_printf("ALISA MAP COLLISION\n");
 	
 	if (alisa->action == EAlisaFallingDown ||  
 		alisa->action == EAlisaFallingDownForward) {

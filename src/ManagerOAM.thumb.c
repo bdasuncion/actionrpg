@@ -9,8 +9,7 @@
 #define MAXCHAROFFSCR 32
 
 EWRAM OAMCollection *moam_vreference = NULL;
-#define SPRITE_OFFSCREEN_Y 161
-#define SPRITE_OFFSCREEN_X 241
+
 #define OBJ_MODE_DISABLE 2
 const STRUCT_OBJ_ATT moam_removeObj = {
 	{ SPRITE_OFFSCREEN_Y, OBJ_MODE_DISABLE,0,0,0,0 },

@@ -8,7 +8,13 @@
 void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
 MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 	Track *track);
+void mapCommon_transferToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track);
 void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
+	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+	Track *track);
+void fadeToBlackForScreenTransfer(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
 	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 	Track *track);
 void returnToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,

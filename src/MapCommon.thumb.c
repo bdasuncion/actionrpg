@@ -1,3 +1,7 @@
+#include<string.h>
+#include<stdio.h>
+#include "DebugLogMgba.h"
+
 #include <stdlib.h>
 #include  <stdarg.h>
 #include  <stdbool.h>
@@ -27,7 +31,7 @@ EWRAM int blendVal = 0;
 EWRAM int current = 0;
 EWRAM bool update = true;
 EWRAM ScreenCharPosition transferToScrPos[1];
-EWRAM MoveScrPosition moveCharacter[1];
+EWRAM MoveScrPosition moveCharacter[] = {{0,0,0}};
 
 //extern const MapInfo mapTest;
 
@@ -47,24 +51,121 @@ void map_nofunction(ScreenAttr *screenAttribute, CharacterCollection *characterC
 
 void mapCommon_calculateMovement(const ScreenCharPosition *from, const ScreenCharPosition *to, 
 	CharacterAttr *character, MoveScrPosition *move) {
-	s8 xDiff = to->y - from->x;
-	s8 yDiff = to->y - from->y;
-	int xdiffAbs = abs(xDiff), ydiffAbs = abs(yDiff);
-	if (xdiffAbs > ydiffAbs) {
-		move->offsetY = (MOVE_STR*ydiffAbs)/xdiffAbs;
-		move->offsetX = MOVE_STR;
-		move->count = xdiffAbs;
+	if (from->x != SPRITE_OFFSCREEN_X && from->y != SPRITE_OFFSCREEN_Y) {
+		s8 xDiff = to->x - from->x;
+		s8 yDiff = to->y - from->y;
+		int xdiffAbs = abs(xDiff), ydiffAbs = abs(yDiff);
+		
+		if (xdiffAbs > ydiffAbs) {
+			move->offsetY = (MOVE_STR*yDiff)/xdiffAbs;
+			move->offsetX = (MOVE_STR*xDiff)/xdiffAbs;
+			move->count = xdiffAbs;
+		} else {
+			move->offsetX = (MOVE_STR*xDiff)/ydiffAbs;
+			move->offsetY = (MOVE_STR*yDiff)/ydiffAbs;
+			move->count = ydiffAbs;
+		}
+		
+		character->position.x -= xDiff*MOVE_STR;
+		character->position.y -= yDiff*MOVE_STR;
 	} else {
-		move->offsetX = (MOVE_STR*xdiffAbs)/ydiffAbs;
-		move->offsetY = MOVE_STR;
-		move->count = ydiffAbs;
+		move->offsetY = 0;
+		move->offsetX = 0;
+		move->count = 0;
 	}
-	
-	mprinter_printf("xdiff:%d ydiff:%d\n", xDiff, yDiff);
-	
 }
 
-void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+void moveCharacterByOne(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+        MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+		Track *track) {
+	CharacterAttr *character;
+	mchar_reinit(characterCollection, &character);
+	character->position.x += moveCharacter[0].offsetX;
+	character->position.y += moveCharacter[0].offsetY;
+
+	--moveCharacter[0].count;
+	
+	if (moveCharacter[0].count <= 0) {
+		character->checkMapCollision(character, mapInfo);
+
+		if (mapInfo->music && track->musicTrack != mapInfo->music) {
+			track->musicTrack = mapInfo->music;
+			track->trackIndex = 0;
+			track->framesPassed = 0;
+		} else if (!mapInfo->music) {
+			track->musicTrack = NULL;
+			track->trackIndex = 0;
+			track->framesPassed = 0;
+		}
+		
+		if (mapInfo->onInitMap) {
+			mapInfo->onInitMap(screenAttribute, characterCollection, 
+			mapInfo, controlPool, charActionCollection, track);
+		}
+		mbg_init(screenAttribute, mapInfo, characterCollection, controlPool, charActionCollection);
+		mapInfo->mapFunction = &returnToScreen;
+		mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
+	}
+}
+
+void mapCommon_transferToScreenInPlace(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+        MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+		Track *track) {
+	CharacterAttr *character;
+	EventTransfer *eventTransfer = mapInfo->transferTo;
+	int i;
+
+	mchar_actione_reinit(charActionCollection);
+	if (mapInfo->onExitMap) {
+		mapInfo->onExitMap(screenAttribute, characterCollection, 
+        mapInfo, controlPool, charActionCollection, track);
+	}
+
+	sprite_vram_init_sections();
+	sprite_palette_init();
+	mchar_reinit(characterCollection, &character);
+		
+	mchar_resetControlTypeAndSetCount(controlPool, characterCollection->countCharacterTransfer + 
+		((MapInfo*)eventTransfer->mapInfo)->characterCount);
+
+    commonCharacterSetPosition(character, 
+	   eventTransfer->transferToX, eventTransfer->transferToY, eventTransfer->transferToZ, 
+	   eventTransfer->directionOnTransfer);
+		
+	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
+		characterCollection->characterTransfer[i].init(character, controlPool, NULL);
+	}
+	
+	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
+	mscr_initCharMoveRef(screenAttribute, mapInfo,
+		&character->position, DEFAULT_SCREEN_BOUNDING_BOX);
+		
+	characterCollection->characterTransfer[0].setScreenPos(character, &screenAttribute->position);
+			
+	mapInfo->transferTo = eventTransfer;
+	
+	character->checkMapCollision(character, mapInfo);
+
+	if (mapInfo->music && track->musicTrack != mapInfo->music) {
+		track->musicTrack = mapInfo->music;
+		track->trackIndex = 0;
+		track->framesPassed = 0;
+	} else if (!mapInfo->music) {
+		track->musicTrack = NULL;
+		track->trackIndex = 0;
+		track->framesPassed = 0;
+	}
+	
+	if (mapInfo->onInitMap) {
+		mapInfo->onInitMap(screenAttribute, characterCollection, 
+		mapInfo, controlPool, charActionCollection, track);
+	}
+	mbg_init(screenAttribute, mapInfo, characterCollection, controlPool, charActionCollection);
+	mapInfo->mapFunction = &returnToScreen;
+	mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
+}
+
+void mapCommon_transferToScreen(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
         MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 		Track *track) {
 	CharacterAttr *character;
@@ -84,24 +185,17 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	ScreenCharPosition from, to;
 	from.x = character->spriteDisplay.baseX;
 	from.y = character->spriteDisplay.baseY;
-	mprinter_printf("POS X:%d Y:%d\n", from.x, from.y);
 	
 	mchar_resetControlTypeAndSetCount(controlPool, characterCollection->countCharacterTransfer + 
 		((MapInfo*)eventTransfer->mapInfo)->characterCount);
 
-	//mprinter_printf("BEFORE ACTION current %d next %d\n", character->action, character->nextAction);
     commonCharacterSetPosition(character, 
 	   eventTransfer->transferToX, eventTransfer->transferToY, eventTransfer->transferToZ, 
 	   eventTransfer->directionOnTransfer);
 	
-   
 	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
 		characterCollection->characterTransfer[i].init(character, controlPool, NULL);
 	}
-
-	character->doAction(character, mapInfo, characterCollection, charActionCollection);
-	
-	//mprinter_printf("ACTION current %d next %d\n", character->action, character->nextAction);
 	
 	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
 	mscr_initCharMoveRef(screenAttribute, mapInfo,
@@ -111,8 +205,46 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 			&screenAttribute->position, &to);
 			
 	mapCommon_calculateMovement(&from, &to, character, moveCharacter);
-			
-	mprinter_printf("NEXT POS X:%d Y:%d\n", to.x, to.y);
+	mapInfo->transferTo = eventTransfer;
+	
+	mapInfo->mapFunction = &moveCharacterByOne;
+	mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
+}
+
+void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, 
+        MapInfo *mapInfo, ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
+		Track *track) {
+	CharacterAttr *character;
+	EventTransfer *eventTransfer = mapInfo->transferTo;
+	int i;
+
+	mchar_actione_reinit(charActionCollection);
+	if (mapInfo->onExitMap) {
+		mapInfo->onExitMap(screenAttribute, characterCollection, 
+        mapInfo, controlPool, charActionCollection, track);
+	}
+
+	sprite_vram_init_sections();
+	sprite_palette_init();
+	mchar_reinit(characterCollection, &character);
+ 	
+	mchar_resetControlTypeAndSetCount(controlPool, characterCollection->countCharacterTransfer + 
+		((MapInfo*)eventTransfer->mapInfo)->characterCount);
+
+    commonCharacterSetPosition(character, 
+	   eventTransfer->transferToX, eventTransfer->transferToY, eventTransfer->transferToZ, 
+	   eventTransfer->directionOnTransfer);
+	
+	for (i = 0; i < characterCollection->countCharacterTransfer; ++i) {
+		characterCollection->characterTransfer[i].init(character, controlPool, NULL);
+	}
+
+	character->doAction(character, mapInfo, characterCollection, charActionCollection);
+	
+	*mapInfo = *((MapInfo*)eventTransfer->mapInfo);
+	mscr_initCharMoveRef(screenAttribute, mapInfo,
+		&character->position, DEFAULT_SCREEN_BOUNDING_BOX);
+		
 	mapInfo->transferTo = eventTransfer;
 	
 	character->checkMapCollision(character, mapInfo);
@@ -139,7 +271,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
 	mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 }
 
-void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
+void fadeToBlackForScreenTransfer(ScreenAttr *screenAttribute, CharacterCollection *characterCollection, MapInfo *mapInfo,
 	ControlTypePool* controlPool, CharacterActionCollection *charActionCollection,
 	Track *track) {
 	if (blendVal == 0) {
@@ -152,7 +284,9 @@ void fadeToBlack(ScreenAttr *screenAttribute, CharacterCollection *characterColl
         ++blendVal;
 	}
     if (blendVal >= BLENDVAL_MAX) {
-		mapInfo->mapFunction = &mapCommon_transferToMap;
+		//mapInfo->mapFunction = &mapCommon_transferToMap;
+		//mapInfo->mapFunction = &mapCommon_transferToScreen;
+		mapInfo->mapFunction = &mapCommon_transferToScreenInPlace;
 	}
     //blendBlack(blendVal);
 	blendBlackBGOnly(blendVal);

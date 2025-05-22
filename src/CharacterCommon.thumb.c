@@ -1472,7 +1472,8 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 		transferToBoundingBox(&mapInfo->tranfers[i], &eventBox);
 		if (commonIsInside(&characterBoundingBox, &eventBox)) {
 			mapInfo->transferTo = &mapInfo->tranfers[i];
-			mapInfo->mapFunction = &fadeToBlack;
+			//mapInfo->mapFunction = &fadeToBlack;
+			mapInfo->mapFunction = &fadeToBlackForScreenTransfer;
 			mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 			break;
 		}

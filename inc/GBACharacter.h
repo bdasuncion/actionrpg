@@ -297,10 +297,12 @@ typedef void (*FuncCharacterInit)(CharacterAttr *character, ControlTypePool* col
 typedef void (*FuncCharacterSet)(CharacterAttr *character);
 typedef void (*FuncCharacterGetScrPos)(const CharacterAttr* character, const Position *scr_pos,
 	ScreenCharPosition *scrPos);
+typedef void (*FuncCharacterSetScrPos)(const CharacterAttr* alisa, Position *scr_pos);
 	
 typedef struct TransferCharacter {
 	FuncCharacterInit init;
 	FuncCharacterGetScrPos getScreenPos;
+	FuncCharacterSetScrPos setScreenPos;
 } ALIGN4 TransferCharacter;
 	
 typedef struct CharacterCollection {
