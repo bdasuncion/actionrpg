@@ -25,7 +25,8 @@ void mchar_resetControlPool(ControlTypePool *freeType);
 void mchar_initControlPool(ControlTypePool *freeType);
 void mchar_initControlType(ControlTypePool *controlPool);
 void mchar_initTransferableCharacters(CharacterCollection *charCollection, int size);
-void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc);
+void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc,
+	FuncCharacterGetScrPos charGetScrPosFunc, FuncCharacterSetScrPos charSetScrPosFunc);
 ControlTypeUnion* mchar_getControlType(ControlTypePool *freeType);
 ControlTypeUnion* mchar_findFreeControlType(ControlTypePool *controlPool);
 void mchar_removeControl(CharacterBaseControl *control);

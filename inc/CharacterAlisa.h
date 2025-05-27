@@ -47,6 +47,10 @@ void alisa_getBoundingBoxStanding(const CharacterAttr* alisa,
 	int *count, BoundingBox *boundingBox);
 void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 
 	int *count, BoundingBox *boundingBox);
-	
+void alisa_transfer(CharacterAttr* alisa, ControlTypePool* controlPool, 
+	CharacterWaypoints *charWaypoints);
+void alisa_getScreenPosition(const CharacterAttr* alisa, const Position *scr_pos, 
+	ScreenCharPosition *pos);
+void alisa_setScreenPosition(const CharacterAttr* alisa, Position *scr_pos);
 #define ALISA_DASH_STARTMOVE_FRAME 1
 #endif

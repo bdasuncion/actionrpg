@@ -63,9 +63,12 @@ void mchar_initTransferableCharacters(CharacterCollection *charCollection, int s
 	}
 }
 
-void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc) {
+void mchar_addTransferableCharacters(CharacterCollection *charCollection, FuncCharacterInit charInitFunc,
+	FuncCharacterGetScrPos charGetScrPosFunc, FuncCharacterSetScrPos charSetScrPosFunc) {
 	if (charCollection) {
-		charCollection->characterTransfer[charCollection->countCharacterTransfer] = charInitFunc;
+		charCollection->characterTransfer[charCollection->countCharacterTransfer].init = charInitFunc;
+		charCollection->characterTransfer[charCollection->countCharacterTransfer].getScreenPos = charGetScrPosFunc;
+		charCollection->characterTransfer[charCollection->countCharacterTransfer].setScreenPos = charSetScrPosFunc;
 		++charCollection->countCharacterTransfer;
 	}
 }	
@@ -272,9 +275,7 @@ void mchar_setPosition(CharacterCollection *charCollection,
 		scr_pos, scr_dim);
 	currentOAMIdx = commonCharacterSetToOAMBuffer(charCollection, oamCollection, currentOAMIdx,
 		scr_pos, scr_dim); 
-	mgba_log("AFTER SETPOS",12);
 	mchar_removeOAMExcess(oamCollection, currentOAMIdx);
-	mgba_log("REMOVE EXCESS",13);
 }
 
 CharacterAttr* mchar_findCharacterType(CharacterCollection *charCollection, int type) {

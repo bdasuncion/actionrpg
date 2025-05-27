@@ -231,6 +231,7 @@ typedef struct OffsetPoints {
     s16 x;
 	s16 y;
 }ALIGN4  OffsetPoints;
+
 typedef struct Control {
     CONTROLTYPE type:1;
 } Control;
@@ -389,4 +390,7 @@ typedef struct BG_object2Layers
 #define ATTR2_SET(spriteid, palleteid, priority)     ( ATTR2_ID(spriteid) | ATTR2_PRIO(priority) | ATTR2_PAL(palleteid) )	
 
 #define ARM_IWRAM __attribute__((noinline, target("arm"), section(".iwram"), long_call))
+
+#define SPRITE_OFFSCREEN_Y 161
+#define SPRITE_OFFSCREEN_X 241
 #endif

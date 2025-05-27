@@ -1,3 +1,8 @@
+#include<string.h>
+#include<stdio.h>
+#include "DebugLogMgba.h"
+
+
 #include "GBAObject.h"
 #include "GBABG.h"
 #include "GBADMA.h"
@@ -9,6 +14,7 @@
 #include "UtilCommonValues.h"
 #include "CharacterCommon.h"
 #include "CharacterSpriteMask.h"
+
 
 #define MAP_BLOCK_WIDTH 256
 #define MAP_BLOCK_HEIGHT 256
@@ -72,13 +78,24 @@ void mbg_initializeMapOnScreen(const ScreenAttr *scrAtt, const MapInfo *mapInfo,
 	int widthInTiles = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	
 	for(i = 0; i < MAPBLOCK_HEIGHT; ++i) {
+		mgba_log("\n", 1);
 		for (j = 0; j < MAPBLOCK_WIDTH; ++j) {
+			int xIdx = mapStartXIdx + j;
+			int yIdx = mapStartYIdx + i;
+			
 			bgIdx = ((j + bgStartXIdx) & MAPBLOCK_WIDTH_MAXIDX) + 
 			    (((bgStartYIdx + i) & MAPBLOCK_WIDTH_MAXIDX)*MAPBLOCK_WIDTH);
-			mapIdx = (mapStartXIdx + j) + ((mapStartYIdx + i)*widthInTiles);
-			mapIdx2 = mapIdx + widthInTiles*DIVIDE_BY_TILE_HEIGHT(mapInfo->height);
-			screntryBG0[bgIdx] = mapInfo->mapEntry[0][mapIdx];
-			screntryBG1[bgIdx] = mapInfo->mapEntry[0][mapIdx2];
+			if (xIdx >= 0 && xIdx < DIVIDE_BY_TILE_WIDTH(mapInfo->width) && 
+				yIdx >= 0 && yIdx < DIVIDE_BY_TILE_HEIGHT(mapInfo->height)) {
+				
+				mapIdx = xIdx + (yIdx*widthInTiles);
+				mapIdx2 = mapIdx + widthInTiles*DIVIDE_BY_TILE_HEIGHT(mapInfo->height);
+				screntryBG0[bgIdx] = mapInfo->mapEntry[0][mapIdx];
+				screntryBG1[bgIdx] = mapInfo->mapEntry[0][mapIdx2];
+			} else {
+				screntryBG0[bgIdx] = 0;
+				screntryBG1[bgIdx] = 0;
+			}
 		}
 	}
 }
@@ -140,16 +157,28 @@ void mbg_setVerticalTiles(const MapInfo *mapInfo,
 	u16 bg_width_tile_count = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	u16 layeroffset = DIVIDE_BY_TILE_HEIGHT(mapInfo->height)*bg_width_tile_count;
 	
-	s32 i,layeridx;
+	s16 limit = DIVIDE_BY_TILE_HEIGHT(mapInfo->height);
+	s16 xS = x;
 	
+	s32 i,layeridx;
+
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
 		u16 *mapblock = (u16*)&SCR_ENTRY->entry[mapblock_id + layeridx];
+		s16 yCheck = y;
+		yCheck = DIVIDE_BY_TILE_HEIGHT(yCheck);
 		for (i = 0; i < count; ++i) {
-			mapblock[mapblock_xidx + 
-				((mapblock_yidx + i)&MAPBLOCK_HEIGHT_MAXIDX)*
-				(mapblock_width)] =
-			mapInfo->mapEntry[0]
-					[(layeridx*layeroffset) + (bg_width_tile_count*(bg_tile_y_idx + i)) + bg_tile_x_idx];
+			if (yCheck >= 0 && yCheck < limit && x < mapInfo->width) {
+				mapblock[mapblock_xidx + 
+					((mapblock_yidx + i)&MAPBLOCK_HEIGHT_MAXIDX)*
+					(mapblock_width)] =
+				mapInfo->mapEntry[0]
+						[(layeridx*layeroffset) + (bg_width_tile_count*(yCheck)) + bg_tile_x_idx];
+			} else {
+				mapblock[mapblock_xidx + 
+					((mapblock_yidx + i)&MAPBLOCK_HEIGHT_MAXIDX)*
+					(mapblock_width)] = 0;
+			}
+			++yCheck;
 		}
 	}
 }
@@ -171,85 +200,24 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 	u16 layeroffset = DIVIDE_BY_TILE_HEIGHT(mapInfo->height)*bg_width_tile_count;
 	s32 i,layeridx;
 	
+	s16 limit = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
+	s16 yS = y;
+	
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
 		u16 *mapblock = (u16*)&SCR_ENTRY->entry[mapblock_id + layeridx];
+		s16 xCheck = x;
+		xCheck = DIVIDE_BY_TILE_WIDTH(xCheck);
 		for (i = 0; i < count; ++i) {
-			mapblock[((mapblock_xidx + i)&MAPBLOCK_WIDTH_MAXIDX) +
-				(mapblock_yidx*mapblock_width)] =
-			mapInfo->mapEntry[0]
-					[(layeridx*layeroffset) + bg_width_tile_count*(bg_tile_y_idx) + 
-					bg_tile_x_idx + i];
-		}
-	}
-}
-/*
-ECollisionStatus mbg_checkBoundary(
-	const MapInfo *mapInfo,
-	const CharacterAttr *charAttr)
-{
-	int boundBoxCount = 0, i = 0;
-	CharBoundingBox boundingBox[3];
-	mapInfo->width;
-	mapInfo->height;
-	//mapInfo->collisionTable;
-	charAttr->getBounds(charAttr, &boundBoxCount, boundingBox);
-	
-	return ENoCollide;
-}*/
-//TODO Remove?
-/*void mbg_checkCollision(
-	const MapInfo *mapInfo,
-	const CharBoundingBox *charBoundingBox,
-	const EDirections direction)
-{
-	Position point;
-	int collisionValueOnPosition;
-	
-	if (direction == ERight) {
-		int i;
-		int total = DIVIDE_BY_8(charBoundingBox->width);
-		int x_move = 0;
-		point.x = charBoundingBox->upperLeftPt.x + charBoundingBox->length;
-		point.y = charBoundingBox->upperLeftPt.y;
-
-		for (i = 0; i < total; ++i) {
-			point.y += i*TILE_HEIGHT;
-			mbg_collisionAtPosition(mapInfo, &point, &collisionValueOnPosition);
-			if (collisionValueOnPosition) {
-				GET_REMAINDER_8(charBoundingBox->upperLeftPt.x);
+			if (xCheck >= 0 && xCheck < limit && y < mapInfo->height) {
+				mapblock[((mapblock_xidx + i)&MAPBLOCK_WIDTH_MAXIDX) +
+					(mapblock_yidx*mapblock_width)] =
+				mapInfo->mapEntry[0]
+						[(layeridx*layeroffset) + bg_width_tile_count*(bg_tile_y_idx) + xCheck];
+			} else {
+				mapblock[((mapblock_xidx + i)&MAPBLOCK_WIDTH_MAXIDX) +
+					(mapblock_yidx*mapblock_width)] = 0;
 			}
+			++xCheck;
 		}
 	}
-	//mbg_collisionAtPosition(mapInfo, &centerPt, &collisionValueOnPosition);
-	
-})*/
-
-#define BITS_PER_COLLISION_ENTRY 4
-/*/8 bits per entry
-#define TILE_IDX(x) (DIVIDE_BY_8(GET_REMAINDER_16(x)))
-#define GET_COLLISION_FROM_ENTRY(entry, xpos)\
- ((entry >> (TILE_IDX(xpos)*BITS_PER_COLLISION_ENTRY))&0xF)
-#define DIVIDE_BY_TILES_PER_ENTRY(x) DIVIDE_BY_2(x)
-//*/
-
-//*/32 bits per entry
-//Thanks to the weird way I built my collision table,
-//we need to complement the tile idx. Visually, the table makes sense
-//to a person but not to a computer.
-//This should e fixed in the map tool
-#define TILE_IDX(x) ((~DIVIDE_BY_8(GET_REMAINDER_64(x)))&0x7)
-#define GET_COLLISION_FROM_ENTRY(entry, xpos)\
- ((entry >> (TILE_IDX(xpos)*BITS_PER_COLLISION_ENTRY))&0xF)
-#define DIVIDE_BY_TILES_PER_ENTRY(x) DIVIDE_BY_8(x)
-//*/
-
-
-void mbg_collisionAtPosition(const MapInfo *mapInfo, 
-	const Position * position, int *collisionValueOnPosition) {
-	u32 arrayWidth = 
-		DIVIDE_BY_TILES_PER_ENTRY(DIVIDE_BY_TILE_WIDTH(mapInfo->width));
-	u32 horizontalIdx = 
-		DIVIDE_BY_TILES_PER_ENTRY(DIVIDE_BY_TILE_WIDTH(position->x));
-	u32 verticaloffsetIdx = 
-		DIVIDE_BY_TILE_HEIGHT(position->y)*arrayWidth;
 }

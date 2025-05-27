@@ -37,6 +37,11 @@ static void blendBlack(u32 blendVal) {
 	*REG_BLDY = blendVal;
 }
 
+static void blendBlackBGOnly(u32 blendVal) {
+    *REG_BLDMOD = BLENDMODE_BLACK | BGF_0 |  BGF_1 | BDF;
+	*REG_BLDY = blendVal;
+}
+
 static void setBlendTest2(u32 blendVal) {
     *REG_BLDMOD = BLENDMODE_NORMAL |  BGF_0 |  BGF_1  | OBJB | BDB;
 	*REG_BLDALPHA = blendVal | 8 << 8;

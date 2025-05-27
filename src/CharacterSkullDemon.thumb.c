@@ -140,7 +140,8 @@ void skulldemon_checkMapCollision(CharacterAttr* character, const MapInfo* mapIn
 void skulldemon_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
 	
-void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints) {
+void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool, 
+	CharacterWaypoints *charWaypoints) {
 //use library to get id
 	character->id = 0;
 	//use enum of character type

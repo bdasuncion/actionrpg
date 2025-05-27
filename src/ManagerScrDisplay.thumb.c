@@ -53,7 +53,8 @@ void mscr_initCharMoveRef(ScreenAttr *scrAtt, const MapInfo *mapInfo,
 	scrAtt->position.y = CONVERT_2POS(moveReference->y) - DIVIDE_BY_2(GBA_SCREEN_HEIGHT);
 	scrAtt->position.y -= CONVERT_2POS(moveReference->z);
 	
-	mscr_adjustScreenToMapLimits(scrAtt, mapInfo);
+	//mprinter_printf("%d %d\n", scrAtt->position.x, scrAtt->position.y);
+	//mscr_adjustScreenToMapLimits(scrAtt, mapInfo);
 	
 	scrAtt->moveReference = moveReference;
 	scrAtt->controller = &mscr_moveScr;
@@ -123,13 +124,13 @@ void mscr_checkMoveLeft(ScreenAttr *scrAtt, u16 x,
 	
 	if (x < leftLimit) {
 		s32 movex = leftLimit - x;
-		if (movex > X_MOVE_LIMIT) {
-			movex = X_MOVE_LIMIT;
-		}
+		//if (movex > X_MOVE_LIMIT) {
+		//	movex = X_MOVE_LIMIT;
+		//}
 		s32 newPositionx = scrAtt->position.x - movex;
-		if (newPositionx < left_max) {
-			newPositionx = left_max;
-		}
+		//if (newPositionx < left_max) {
+		//	newPositionx = left_max;
+		//}
 		
 		scrAtt->position.x = newPositionx;
 	}
@@ -144,13 +145,13 @@ void mscr_checkMoveRight(ScreenAttr *scrAtt, u16 x,
 		
 	if (x > rightLimit) {
 		s32 movex = x - rightLimit;
-		if (movex > X_MOVE_LIMIT) {
-			movex = X_MOVE_LIMIT;
-		}
+		//if (movex > X_MOVE_LIMIT) {
+		//	movex = X_MOVE_LIMIT;
+		//}
 		s32 newPositionx = scrAtt->position.x + movex;
-		if (newPositionx > right_max) {
-			newPositionx = right_max;
-		}
+		//if (newPositionx > right_max) {
+		//	newPositionx = right_max;
+		//}
 		
 		scrAtt->position.x = newPositionx;
 	}
@@ -164,13 +165,13 @@ void mscr_checkMoveUp(ScreenAttr *scrAtt, u16 y,
 		
 	if (y < upLimit) {
 		s32 movey = upLimit - y;
-		if (movey > Y_MOVE_LIMIT) {
-			movey = Y_MOVE_LIMIT;
-		}
+		//if (movey > Y_MOVE_LIMIT) {
+		//	movey = Y_MOVE_LIMIT;
+		//}
 		s32 newPositiony = scrAtt->position.y - movey;
-		if (newPositiony < up_max) {
-			newPositiony = up_max;
-		}
+		//if (newPositiony < up_max) {
+		//	newPositiony = up_max;
+		//}
 		
 		scrAtt->position.y = newPositiony;
 	}
@@ -185,13 +186,13 @@ void mscr_checkMoveDown(ScreenAttr *scrAtt, s16 y,
 	s16 conY = y;
 	if (conY > downLimit) {
 		s32 movey = y - downLimit;
-		if (movey > Y_MOVE_LIMIT) {
-			movey = Y_MOVE_LIMIT;
-		}
+		//if (movey > Y_MOVE_LIMIT) {
+		//	movey = Y_MOVE_LIMIT;
+		//}
 		s32 newPositiony = scrAtt->position.y + movey;
-		if (newPositiony > down_max) {
-			newPositiony = down_max;
-		}
+		//if (newPositiony > down_max) {
+		//	newPositiony = down_max;
+		//}
 		
 		scrAtt->position.y = newPositiony;
 	}
@@ -201,8 +202,9 @@ void mscr_setHorizontalMove(ScreenAttr *scrAtt,
 	MapInfo *mapInfo,
 	u16 startXPos)
 {
-	u16 inital_xtileidx = DIVIDE_BY_TILE_WIDTH(startXPos);
-	u16 new_xtileidx = DIVIDE_BY_TILE_WIDTH(scrAtt->position.x);
+	s16 startXS = startXPos;
+	s16 inital_xtileidx = DIVIDE_BY_TILE_WIDTH(startXS);
+	s16 new_xtileidx = DIVIDE_BY_TILE_WIDTH(scrAtt->position.x);
 	s16 xtilemove = new_xtileidx - inital_xtileidx;
 	
 	if (xtilemove > 0) {
@@ -220,8 +222,9 @@ void mscr_setVerticalMove(ScreenAttr *scrAtt,
 	MapInfo *mapInfo,
 	u16 startYPos)
 {
-	u16 inital_ytileidx = DIVIDE_BY_TILE_HEIGHT(startYPos);
-	u16 new_ytileidx = DIVIDE_BY_TILE_HEIGHT(scrAtt->position.y);
+	s16 startYS = startYPos;
+	s16 inital_ytileidx = DIVIDE_BY_TILE_HEIGHT(startYS);
+	s16 new_ytileidx = DIVIDE_BY_TILE_HEIGHT(scrAtt->position.y);
 	s16 ytilemove = new_ytileidx - inital_ytileidx;
 	
 	if (ytilemove > 0) {
