@@ -203,12 +203,24 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 	s16 limit = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	s16 yS = y;
 	
+	bool doprint = true;
+	bool doprint2 = true;
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
 		u16 *mapblock = (u16*)&SCR_ENTRY->entry[mapblock_id + layeridx];
 		s16 xCheck = x;
 		xCheck = DIVIDE_BY_TILE_WIDTH(xCheck);
+		//if (doprint) {
+		//	mprinter_printf("y:%d mapHeight:%d\n", y, mapInfo->height);
+		//	doprint = false;
+		//}
+		
 		for (i = 0; i < count; ++i) {
+			//mprinter_printf("xCheck:%d y:%d ", xCheck, y);
+			//mprinter_printf("xCheck: y: ");
 			if (xCheck >= 0 && xCheck < limit && y < mapInfo->height) {
+				//if (doprint2) {
+				//	mprinter_printf("y");
+				//}
 				mapblock[((mapblock_xidx + i)&MAPBLOCK_WIDTH_MAXIDX) +
 					(mapblock_yidx*mapblock_width)] =
 				mapInfo->mapEntry[0]
@@ -219,5 +231,6 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 			}
 			++xCheck;
 		}
+		doprint2 = false;
 	}
 }

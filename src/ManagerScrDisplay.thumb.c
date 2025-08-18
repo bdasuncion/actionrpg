@@ -40,7 +40,7 @@ void mscr_setHorizontalMove(ScreenAttr *scrAtt,
 	MapInfo *mapInfo, u16 startXPos);
 void mscr_setVerticalMove(ScreenAttr *scrAtt,
 	MapInfo *mapInfo,
-	u16 startYPos);
+	s16 startYPos);
 
 void initDisplay2BG(){
 	*REG_DISPCNT = DCNT_MODE0|DCNT_OBJ_1D|DCNT_OBJENB|DCNT_BG0|DCNT_BG1|DCNT_BG2;
@@ -53,7 +53,7 @@ void mscr_initCharMoveRef(ScreenAttr *scrAtt, const MapInfo *mapInfo,
 	scrAtt->position.y = CONVERT_2POS(moveReference->y) - DIVIDE_BY_2(GBA_SCREEN_HEIGHT);
 	scrAtt->position.y -= CONVERT_2POS(moveReference->z);
 	
-	//mprinter_printf("%d %d\n", scrAtt->position.x, scrAtt->position.y);
+	mprinter_printf("SET SCRATTR %d %d\n", scrAtt->position.x, scrAtt->position.y);
 	//mscr_adjustScreenToMapLimits(scrAtt, mapInfo);
 	
 	scrAtt->moveReference = moveReference;
@@ -93,17 +93,23 @@ void mscr_moveScr(ScreenAttr *scrAtt, MapInfo *mapInfo) {
 		u16 y = CONVERT_2POS(ref->y);
 		y -= CONVERT_2POS(ref->z);
 		u16 startXPos = scrAtt->position.x;
-		u16 startYPos = scrAtt->position.y;
+		//mprinter_printf("POS %d\n", scrAtt->position.y);	
+		//u16 startYPos = scrAtt->position.y;
+		s16 startYPos = scrAtt->position.y;
+		//mprinter_printf("START POS %d\n", startYPos);	
 		s32 maxHorizontal = mapInfo->width - GBA_SCREEN_WIDTH;
 		s32 maxVertical = mapInfo->height - GBA_SCREEN_HEIGHT;
 
 		mscr_checkMoveLeft(scrAtt, x, 0);
 		mscr_checkMoveRight(scrAtt, x, maxHorizontal);
-			
-		mscr_checkMoveUp(scrAtt, y, 0);
-		mscr_checkMoveDown(scrAtt, y, maxVertical);	
 		
+		//mprinter_printf("POS %d\n", scrAtt->position.y);	
+		mscr_checkMoveUp(scrAtt, y, 0);
+		//mprinter_printf("AFTER UP POS %d\n", scrAtt->position.y);
+		mscr_checkMoveDown(scrAtt, y, maxVertical);	
+		//mprinter_printf("AFTER DOWN POS %d\n", scrAtt->position.y);
 		mscr_setHorizontalMove(scrAtt, mapInfo, startXPos);
+		//mprinter_printf("POS %d\n", scrAtt->position.y);
 		mscr_setVerticalMove(scrAtt, mapInfo, startYPos);
 	}
 }
@@ -162,9 +168,11 @@ void mscr_checkMoveUp(ScreenAttr *scrAtt, u16 y,
 {
 	u16 upLimit = scrAtt->position.y +
 		scrAtt->moveRefBox.offset_y;
-		
+	//mprinter_printf("- %d ", upLimit);
 	if (y < upLimit) {
-		s32 movey = upLimit - y;
+		//s32 movey = upLimit - y;
+		s32 movey = scrAtt->position.y + scrAtt->moveRefBox.offset_y - y;
+		//mprinter_printf("- %d ", movey);
 		//if (movey > Y_MOVE_LIMIT) {
 		//	movey = Y_MOVE_LIMIT;
 		//}
@@ -220,19 +228,24 @@ void mscr_setHorizontalMove(ScreenAttr *scrAtt,
 
 void mscr_setVerticalMove(ScreenAttr *scrAtt,
 	MapInfo *mapInfo,
-	u16 startYPos)
+	s16 startYPos)
 {
-	s16 startYS = startYPos;
-	s16 inital_ytileidx = DIVIDE_BY_TILE_HEIGHT(startYS);
+	//s16 startYS = startYPos;
+	//s16 inital_ytileidx = DIVIDE_BY_TILE_HEIGHT(startYS);
+	s16 inital_ytileidx = DIVIDE_BY_TILE_HEIGHT(startYPos);
+	//s16 new_ytileidx = DIVIDE_BY_TILE_HEIGHT((u16)scrAtt->position.y);
 	s16 new_ytileidx = DIVIDE_BY_TILE_HEIGHT(scrAtt->position.y);
+	//mprinter_printf("INSIDE POS %d\n", scrAtt->position.y);
 	s16 ytilemove = new_ytileidx - inital_ytileidx;
 	
 	if (ytilemove > 0) {
+		//mprinter_printf("TILEMOVE > 0 %d %d %d %d\n", new_ytileidx, inital_ytileidx, scrAtt->position.y, startYS);
 		mbg_setHorizontalTiles(mapInfo, ETileMap0,
 		scrAtt->position.x,
 		scrAtt->position.y + scrAtt->dimension.height,
 		SCR_HORIZONTAL_TILE_COUNT + 1);
 	} else if (ytilemove < 0) {
+		//mprinter_printf("TILEMOVE ELSE %d %d %d %d\n", new_ytileidx, inital_ytileidx, scrAtt->position.y, startYS);
 		mbg_setHorizontalTiles(mapInfo, ETileMap0,
 		scrAtt->position.x,
 		scrAtt->position.y, 
