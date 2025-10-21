@@ -1461,7 +1461,8 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 	boundingBox->endX = transfer->x + transfer->width;
 	boundingBox->endY = transfer->y + transfer->length;
 	boundingBox->startZ = transfer->zOffset;
-	boundingBox->endZ = transfer->zOffset + 32;
+	//boundingBox->endZ = transfer->zOffset + 32;
+	boundingBox->endZ = transfer->zOffset + 1;
 }
 
  void commonCheckForEvents(CharacterAttr* character, MapInfo *mapInfo) {
