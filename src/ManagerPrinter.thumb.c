@@ -4,7 +4,7 @@
 #include "GBADMA.h"
 #include "GBABG.h"
 #include "GBAVideo.h"
-#include "GBACharacterType.h"
+#include "CharacterType.h"
 #include "ManagerVram.h"
 
 #define MAX_LINELENGTH 30

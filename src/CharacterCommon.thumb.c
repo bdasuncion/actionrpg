@@ -6,7 +6,7 @@
 #include "GBADMA.h"
 #include "GBATimer.h"
 #include "GBACharacter.h"
-#include "GBACharacterType.h"
+#include "CharacterType.h"
 #include "ManagerCharacterActionEvents.h"
 #include "ManagerCharacters.h"
 #include "ManagerVram.h"

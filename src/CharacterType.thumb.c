@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "GBAObject.h"
 #include "GBACharacter.h"
-#include "GBACharacterType.h"
+#include "CharacterType.h"
 
 void alisa_init(CharacterAttr *character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void alisa_setCharacter(CharacterAttr *character);

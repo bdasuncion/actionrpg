@@ -3,7 +3,7 @@
 
 #include "GBAObject.h"
 #include "GBACharacter.h"
-#include "GBACharacterType.h"
+#include "CharacterType.h"
 #include "GBAMap.h"
 #include <stdbool.h>
 

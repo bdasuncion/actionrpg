@@ -2,7 +2,7 @@
 #include "GBATypes.h"
 #include"GBADMA.h"
 #include"GBAObject.h"
-#include "GBACharacterType.h"
+#include "CharacterType.h"
 #include "ManagerVram.h"
 
 #define BLOCKSPERCHARACTER 32 //1KB(1024) for every character
