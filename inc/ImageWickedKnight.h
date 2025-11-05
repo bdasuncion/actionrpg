@@ -21,8 +21,6 @@ extern const unsigned int wickedknight_body_walk_side_image3[];
 extern const unsigned int wickedknight_head_down_image0[];
 extern const unsigned int wickedknight_head_side_image0[];
 extern const unsigned int wickedknight_head_up_image0[];
-extern const unsigned int wickedknight_sword_image0[];
-extern const unsigned int wickedknight_sword_image1[];
 
 extern const unsigned int wickedknight_armsholdingswordattack_down_image0[];
 extern const unsigned int wickedknight_armsholdingswordattack_down_image1[];
@@ -40,9 +38,12 @@ extern const unsigned int wickedknight_armsholdingswordattack_up_image3[];
 extern const unsigned int wickedknight_body_attack_down_image0[];
 extern const unsigned int wickedknight_body_attack_side_image0[];
 extern const unsigned int wickedknight_body_attack_up_image0[];
-extern const unsigned int wickedknight_swordattack_image0[];
-extern const unsigned int wickedknight_swordattack_image1[];
-extern const unsigned int wickedknight_swordprepareattack_side_image0[];
-extern const unsigned int wickedknight_swordprepareattack_side_image1[];
-extern const unsigned int wickedknight_swordprepareattack_side_image2[];
+
+extern const unsigned int wickedknight_sword_horizontal_image0[];
+extern const unsigned int wickedknight_sword_horizontal_image1[];
+extern const unsigned int wickedknight_sword_horizontal_image2[];
+extern const unsigned int wickedknight_sword_vertical_image0[];
+extern const unsigned int wickedknight_sword_vertical_image1[];
+extern const unsigned int wickedknight_sword_vertical_image2[];
+extern const unsigned int wickedknight_sword_vertical_image3[];
 #endif

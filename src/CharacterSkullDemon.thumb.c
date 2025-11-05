@@ -428,4 +428,3 @@ void skulldemon_checkMapCollision(CharacterAttr* character, const MapInfo* mapIn
 	common_mapCollision[character->direction](character, mapInfo, 
 	    common_mapCollisionReactions[character->direction]);
 }
-

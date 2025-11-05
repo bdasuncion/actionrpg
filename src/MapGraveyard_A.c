@@ -290,6 +290,7 @@ const u16 *mapentryset_mapgraveyard_a[] = { mapentry_mapgraveyard_a[0], mapentry
 const CharacterWaypoints charwaypoint1_mapgraveyard_a = {2, {{141, 77, 1}, {141, 200, 1}}};
 
 const CharacterInit actors_mapgraveyard_a[] = {
+	//{ 136, 152, 1, SKULLDEMON, &charwaypoint1_mapgraveyard_a }, 
 	{ 136, 152, 1, WICKEDKNIGHT, &charwaypoint1_mapgraveyard_a }, 
 };
 extern const MapInfo mapgraveyard_b;
@@ -302,7 +303,7 @@ const SpriteMaskImage spritemaskimage_mapgraveyard_a[] = {
 const SpriteMaskInit spritemask_mapgraveyard_a[] = {
 
 };
-const MapInfo mapgraveyard_a = { 816, 576, 2, 116, 3, 1, 0, 0, 0, NULL , mapentryset_mapgraveyard_a, vram_mapgraveyard_a, pallette_mapgraveyard_a,
+const MapInfo mapgraveyard_a = { 816, 576, 2, 116, 3, 1, 1, 0, 0, NULL , mapentryset_mapgraveyard_a, vram_mapgraveyard_a, pallette_mapgraveyard_a,
 transfer_mapgraveyard_a, heightMap_mapgraveyard_a, actors_mapgraveyard_a, spritemask_mapgraveyard_a, spritemaskimage_mapgraveyard_a, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
 
 const EventTransfer startAt_graveyard_a = { 400, 400, 26, 234, 1, &mapgraveyard_a, 16, 48, 0, ERight};

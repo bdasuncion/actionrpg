@@ -21,15 +21,15 @@
 
 extern const EDirections directions[EDirectionsCount];
 
-#define SKULLDEMON_LENGTH 14
-#define SKULLDEMON_WIDTH 10
-#define SKULLDEMON_HEIGHT 36
+#define WICKEDKNIGHT_LENGTH 14
+#define WICKEDKNIGHT_WIDTH 10
+#define WICKEDKNIGHT_HEIGHT 36
 
-#define SKULLDEMON_SCRCNVRTWIDTH 16
-#define SKULLDEMON_SCRCNVRTHEIGHT 28
+#define WICKEDKNIGHT_SCRCNVRTWIDTH 16
+#define WICKEDKNIGHT_SCRCNVRTHEIGHT 28
 
-#define SKULLDEMON_SCREENDISPLAYOFFSET_X 10
-#define SKULLDEMON_SCREENDISPLAYOFFSET_Y 28
+#define WICKEDKNIGHT_SCREENDISPLAYOFFSET_X 10
+#define WICKEDKNIGHT_SCREENDISPLAYOFFSET_Y 28
 
 #define WICKEDKNIGHT_PAL_CNT 1
 
@@ -37,20 +37,20 @@ extern const EDirections directions[EDirectionsCount];
 
 //#define MAX_DIST_FOR_CHASE 80
 
-#define SKULLDEMON_ATTACK_ANIMATIONFRAME_START 3
-#define SKULLDEMON_ATTACK_ANIMATIONFRAME_END 4
+#define WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_START 3
+#define WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_END 4
 
-#define SKULLDEMON_NATTACK_ZPOS_OFFSET 16
+#define WICKEDKNIGHT_NATTACK_ZPOS_OFFSET 16
 
 const u8 wickedknight_scrConversionMeasurements[EScrCnvrtMeasureCount] = {
-	SKULLDEMON_SCRCNVRTWIDTH,
-	SKULLDEMON_SCRCNVRTHEIGHT
+	WICKEDKNIGHT_SCRCNVRTWIDTH,
+	WICKEDKNIGHT_SCRCNVRTHEIGHT
 };
 
 const u8 wickedknight_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
-	SKULLDEMON_LENGTH,
-	SKULLDEMON_WIDTH,
-	SKULLDEMON_HEIGHT,
+	WICKEDKNIGHT_LENGTH,
+	WICKEDKNIGHT_WIDTH,
+	WICKEDKNIGHT_HEIGHT,
 };
 
 const s32 wickedknight_walkOffsetX[EDirectionsCount][wickedknight_WALK_MVMNT_CTRL_MAX] = {
@@ -145,7 +145,7 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 //use library to get id
 	character->id = 0;
 	//use enum of character type
-	character->type = SKULLDEMON;
+	character->type = WICKEDKNIGHT;
 	
 	//set to 0
 	commonCharacterInit(character, EWickedKnightInitialize, EWickedKnightWalk, EDown);
@@ -336,7 +336,7 @@ void wickedknight_getBoundingBoxMoving(const CharacterAttr* character,
 	boundingBox->endX = x + wickedknight_boundingBoxMeasurements[EBBCnvrtLength];
 	boundingBox->endY = y + wickedknight_boundingBoxMeasurements[EBBCnvrtWidth];
 	boundingBox->startZ = z;
-	boundingBox->endZ = z + SKULLDEMON_HEIGHT;
+	boundingBox->endZ = z + WICKEDKNIGHT_HEIGHT;
 }
 
 int wickedknight_setPosition(CharacterAttr* character,
@@ -353,10 +353,10 @@ int wickedknight_setPosition(CharacterAttr* character,
 		scr_pos->x, wickedknight_scrConversionMeasurements);
 	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
 	
-	charStartX = CONVERT_2POS(character->position.x) - SKULLDEMON_SCREENDISPLAYOFFSET_X;
+	charStartX = CONVERT_2POS(character->position.x) - WICKEDKNIGHT_SCREENDISPLAYOFFSET_X;
 	charStartY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.z);
-	charEndX = CONVERT_2POS(character->position.x) + SKULLDEMON_SCREENDISPLAYOFFSET_X;
-	charEndY = charStartY - SKULLDEMON_SCREENDISPLAYOFFSET_Y;
+	charEndX = CONVERT_2POS(character->position.x) + WICKEDKNIGHT_SCREENDISPLAYOFFSET_X;
+	charEndY = charStartY - WICKEDKNIGHT_SCREENDISPLAYOFFSET_Y;
 	
 	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
 		character->spriteDisplay.imageUpdateStatus = ((!character->spriteDisplay.isInScreen)*EUpdate) + 
@@ -365,7 +365,7 @@ int wickedknight_setPosition(CharacterAttr* character,
 		commonSetToOamBuffer(&character->spriteDisplay, oamBuf);
 		
 		numberOfShadow = commonSetShadow(character->spriteDisplay.baseX, 
-			character->spriteDisplay.baseY + character->distanceFromGround + SKULLDEMON_SCRCNVRTHEIGHT,
+			character->spriteDisplay.baseY + character->distanceFromGround + WICKEDKNIGHT_SCRCNVRTHEIGHT,
 			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
 			
 		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
@@ -428,4 +428,3 @@ void wickedknight_checkMapCollision(CharacterAttr* character, const MapInfo* map
 	common_mapCollision[character->direction](character, mapInfo, 
 	    common_mapCollisionReactions[character->direction]);
 }
-
