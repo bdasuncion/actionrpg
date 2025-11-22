@@ -260,9 +260,10 @@ typedef struct CharacterAttr {
 	u8 action;
 	EDirections direction:4;
 	EDirections faceDirection:4;
-	u8 nextAction;
+	bool hasNewFaceDirection:1;
+	u8 nextAction:8;
 	EDirections nextDirection:4;
-	EVerticalDirections verticalDirection:4;
+	EVerticalDirections verticalDirection:3;
 	MovementControl movementCtrl;
 	Position position;//3HW
 	Position delta;//3HW

@@ -253,7 +253,7 @@ void alisa_transfer(CharacterAttr* alisa, ControlTypePool* controlPool, Characte
 	alisa->id = 0;
 	//use enum of character type
 	alisa->type = ALISA;
-	
+	alisa->hasNewFaceDirection = false;
 	alisa->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 	alisa->spriteDisplay.basePalleteId = sprite_palette_findId(ALISA, ALISA_PAL_CNT);

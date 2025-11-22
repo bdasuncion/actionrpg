@@ -132,8 +132,8 @@ const EDirections FAR_TARGET_16x16[FARTARGET_16x16_SIZE][FARTARGET_16x16_SIZE] =
 const EDirections FAR_TARGET_8x8[FARTARGET_8x8_SIZE][FARTARGET_8x8_SIZE] = {
  {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
  {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
  {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
  {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
  {ELeft, ELeft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, ERight, ERight},
@@ -196,6 +196,57 @@ void handleFarDistance(int distanceX, int distanceY, EDirections *goDirection) {
 	}
 }
 
+void common_findDirectionOfTargetLeftRight(const Position *current, const Position *target, 
+	EDirections *faceDirection) {
+	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetPos = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	int distX = currentPos.x - targetPos.x;
+	if (distX < 0) {
+		*faceDirection = ERight;
+	} else {
+		*faceDirection = ELeft;
+	}
+}
+
+void common_findDirectionOfTargetUpDown(const Position *current, const Position *target, 
+	EDirections *faceDirection) {
+	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetPos = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	int distY = currentPos.y - targetPos.y;
+	if (distY < 0) {
+		*faceDirection = EDown;
+	} else {
+		*faceDirection = EUp;
+	}
+}
+
+void common_findDirectionOfTarget(const Position *current, const Position *target, 
+	EDirections *faceDirection) {
+	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetPos = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	int distX = currentPos.x - targetPos.x;
+	int distY = currentPos.y - targetPos.y;
+	int absDistX = abs(distX);
+	int absDistY = abs(distY);
+
+	if (absDistX < absDistY) {
+		if (distX < 0) {
+			*faceDirection = ERight;
+		} else {
+			*faceDirection = ELeft;
+		}
+	} else {
+		if (distY < 0) {
+			*faceDirection = EDown;
+		} else {
+			*faceDirection = EUp;
+		}
+	}
+}
+
 void findInScreen(Position *current, Position *targetPos, int height, EDirections *goDirection, bool *isNear) {
 	int distanceX = targetPos->x - current->x;
 	int distanceY = targetPos->y - current->y;
@@ -230,6 +281,68 @@ void findInScreen(Position *current, Position *targetPos, int height, EDirection
 	*isNear = false;
 }
 
+void findInScreenCustom(Position *current, Position *targetPos, int height,
+	const EDirections *inScreen, const int inScreenDistance, const int inScreenArrayWidth,
+	const EDirections *closerange, const u8 *closeRangeActions,
+	const int closerangeOffset, const int closerangeArrayWidth,
+	EDirections *goDirection, char *setAction,
+	bool *isNear) {
+	int distanceX = targetPos->x - current->x;
+	int distanceY = targetPos->y - current->y;
+	
+	if (height > 0) {
+		int min = current->z;
+		int max = current->z + height;
+		if (!(targetPos->z <= max && targetPos->z >= min)) {
+			*isNear = false;
+			*goDirection = EUnknown;
+			return;
+		}
+	}
+	
+	int offsetDistanceX = distanceX + closerangeOffset;
+	int offsetDistanceY = distanceY + closerangeOffset;
+	
+	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
+	
+	if (offsetDistanceX >= 0 && offsetDistanceX < closerangeArrayWidth &&
+		offsetDistanceY >= 0 && offsetDistanceY < closerangeArrayWidth) {
+		*isNear = true;
+		*goDirection = closerange[(offsetDistanceY*closerangeArrayWidth) + offsetDistanceX];
+		*setAction = closeRangeActions[(offsetDistanceY*closerangeArrayWidth) + offsetDistanceX];
+		return;
+	}
+	
+	offsetDistanceX = distanceX + inScreenDistance;
+	offsetDistanceY = distanceY + inScreenDistance;
+	
+	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
+	
+	*goDirection = inScreen[(offsetDistanceY*inScreenArrayWidth) + offsetDistanceX];
+	*isNear = false;
+	/*int offsetDistanceX = distanceX + inScreenDistance;
+	int offsetDistanceY = distanceY + inScreenDistance;
+	
+	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
+
+	*goDirection = inScreen[(offsetDistanceY*inScreenArrayWidth) + offsetDistanceX];
+	if (*goDirection == EUnknown) {
+		distanceX = targetPos->x - current->x + closerangeOffset;
+		distanceY = targetPos->y - current->y + closerangeOffset;
+		distanceX = DIVIDE_BY_8(distanceX);
+		distanceY = DIVIDE_BY_8(distanceY);
+		*isNear = true;
+		*goDirection = closerange[(distanceY*closerangeArrayWidth) + distanceX];
+		return;
+	}
+	*isNear = false;
+	*/
+	
+}
+
 void findDirection(Position *current, Position *targetPos, EDirections *goDirection) {	
 	int distanceX = targetPos->x - current->x;
 	int distanceY = targetPos->y - current->y;
@@ -256,6 +369,7 @@ void findDirection(Position *current, Position *targetPos, EDirections *goDirect
 	findDirection(&currentConverted, &targetConverted, goDirection);
 }*/
 
+const s32 HEIGHT_FOR_TARGET_HUNT = 24;
 void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target, 
 	EDirections *goDirection, bool *isNear) {
 	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
@@ -276,7 +390,37 @@ void common_findDirectionOfTargetCharacterInScreen(Position const *current, Posi
 		return;
 	}
 	
-	findInScreen(&currentPos, &targetPos, 24, goDirection, isNear);
+	findInScreen(&currentPos, &targetPos, HEIGHT_FOR_TARGET_HUNT, goDirection, isNear);
+}
+
+void common_findDirectionOfTargetCharacterInScreenCustom(Position const *current, Position const *target, 
+	const EDirections *inScreen, const int inScreenOffset, const int inScreenArrayWidth,
+	const EDirections *inclose, const s8 *incloseActions, 
+	const int incloseOffset, const int incloseArrayWidth,
+	EDirections *goDirection, s8 *setAction, bool *isNear) {
+	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetPos = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	int distanceX = targetPos.x - currentPos.x;
+	int distanceY = targetPos.y - currentPos.y;
+	
+	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
+	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
+	
+	offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
+	//mprinter_printf("CHECKING %d,%d\n", offsetDistanceX, offsetDistanceY);
+	if (offsetDistanceX >= FARTARGET_SIZE || offsetDistanceY >= FARTARGET_SIZE || offsetDistanceX < 0 || offsetDistanceY < 0) {
+		*goDirection = EUnknown;
+		*isNear = false;
+		mprinter_printf("CHECKING %d,%d\n", offsetDistanceX, offsetDistanceY);
+		return;
+	}
+	
+	findInScreenCustom(&currentPos, &targetPos, HEIGHT_FOR_TARGET_HUNT, 
+		inScreen, inScreenOffset, inScreenArrayWidth,
+		inclose, incloseActions, incloseOffset, incloseArrayWidth,
+		goDirection, setAction, isNear);
 }
 
 void common_findDirectionOfPosition(const Position *current, const Position *targetPos, EDirections *goDirection) {
@@ -537,7 +681,9 @@ UpdateStatus commonInitializeAction(CharacterAttr* character) {
 		character->spriteDisplay.currentAnimationFrame = 0;
 		character->spriteDisplay.numberOfFramesPassed = 0; 
 	    return EUpdate;
-	} else if (character->nextDirection != character->direction) {
+	} else if (character->nextDirection != character->direction ||
+		character->hasNewFaceDirection == true) {
+		character->hasNewFaceDirection = false;
 		return EUpdate;
 	}
 	

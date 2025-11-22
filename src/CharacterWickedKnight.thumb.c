@@ -55,24 +55,24 @@ const u8 wickedknight_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
 
 const s32 wickedknight_walkOffsetX[EDirectionsCount][wickedknight_WALK_MVMNT_CTRL_MAX] = {
     {0,0,0,0,0},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
-	{1*MOVE_STR,0,1*MOVE_STR,0,1*MOVE_STR},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+	{1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
-	{-1*MOVE_STR,0,-1*MOVE_STR,0,-1*MOVE_STR},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG}
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG}
 };
 
 const s32 wickedknight_walkOffsetY[EDirectionsCount][wickedknight_WALK_MVMNT_CTRL_MAX] = {
-    {1*MOVE_STR,0,1*MOVE_STR,0,1*MOVE_STR},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
+    {1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
-	{-1*MOVE_STR,0,-1*MOVE_STR,0,-1*MOVE_STR},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG}
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG}
 };
 
 const OffsetPoints wickedknight_scanSurroundingOffset[8][2] = {
@@ -255,6 +255,7 @@ void wickedknight_actionChaseTarget(CharacterAttr* character, const MapInfo *map
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
+	mprinter_printf("UPDATE %s\n", character->spriteDisplay.imageUpdateStatus ? "TRUE":"FALSE");
 	
 	if (character->action != character->nextAction) {
 	    character->movementCtrl.maxFrames = wickedknight_WALK_MVMNT_CTRL_MAX;
@@ -277,7 +278,9 @@ void wickedknight_actionChaseTarget(CharacterAttr* character, const MapInfo *map
 	commonGravityEffect(character, common_zOffsetDown);
 	
 	++character->movementCtrl.currentFrame;
-	character->spriteDisplay.spriteSet = wickedknightWalking[character->direction];
+	mprinter_printf("FACE %d\n", character->faceDirection);
+	character->spriteDisplay.spriteSet = wickedknightWalking[character->faceDirection];
+	//character->spriteDisplay.spriteSet = wickedknightWalking[character->direction];
 }
 
 void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -367,7 +370,8 @@ int wickedknight_setPosition(CharacterAttr* character,
 		numberOfShadow = commonSetShadow(character->spriteDisplay.baseX, 
 			character->spriteDisplay.baseY + character->distanceFromGround + WICKEDKNIGHT_SCRCNVRTHEIGHT,
 			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
-			
+		
+		mprinter_printf("ANIM %d", character->spriteDisplay.currentAnimationFrame);
 		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
 	}
 	
