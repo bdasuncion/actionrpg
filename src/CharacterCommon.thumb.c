@@ -1796,25 +1796,25 @@ void common_doGoAroundObstacle(const Position *current, const Position *target,
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		common_findPosition(current, target, ELeft, &goTarget);
-		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->leftBlocked = false;
 	} else if (charControl->rightBlocked) {
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		common_findPosition(current, target, ERight, &goTarget);
-		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->rightBlocked = false;
 	} else if (charControl->upBlocked) {
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		common_findPosition(current, target, EUp, &goTarget);
-		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->upBlocked = false;
 	} else if (charControl->downBlocked) {
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		common_findPosition(current, target, EDown, &goTarget);
-		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, action});
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->downBlocked = false;
 	}
 }
@@ -1823,6 +1823,7 @@ void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* charact
 	if (charControl->currentAction < charControl->countAction) {
 		character->nextAction = charControl->actions[charControl->currentAction].action;
 		character->nextDirection = charControl->actions[charControl->currentAction].direction;
+		character->faceDirection = charControl->actions[charControl->currentAction].faceDirection;
 		++charControl->actions[charControl->currentAction].currentFrame;
 		if (charControl->actions[charControl->currentAction].currentFrame >= 
 			charControl->actions[charControl->currentAction].doForNumFrames) {

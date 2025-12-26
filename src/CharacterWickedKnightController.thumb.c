@@ -83,22 +83,72 @@ const EDirections CIRCLE_TARGET_CLOCKWISE_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_
 const WickedKnightAction CIRCLE_ACTION_CLOCKWISE_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
 {EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
 {EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
 {EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
-{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
-{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
-{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
-{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
-{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
-{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightAttack, EWickedKnightAttack, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+};
+
+const EDirections ATTACKRANGE_TARGET_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
+ {EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright},
+ {EUpleft, EUpleft, EUpleft, EUpleft, ELeft, EUp, EUp, ERight, EUpright, EUpright, EUpright, EUpright},
+ {ELeft, EUpleft, EUpleft, EUpleft, EDownleft, EUp, EUp, EDownright, EUpright, EUpright, EUpright, ERight},
+ {ELeft, ELeft, EUp, EUpright, ERight, EUp, EUp, ELeft, EUpleft, EUp, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ERight, EDown, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, EUp, ELeft, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, EDown, EDownright, ERight, EDown, EDown, ELeft, EDownleft, EDown, ERight, ERight},
+ {ELeft, EDownleft,  EDownleft, EDownleft, EUpleft, EDown, EDown, EUpright, EDownright,  EDownright, EDownright,  ERight},
+ {EDownleft, EDownleft,  EDownleft, EDownleft, ELeft, EDown, EDown, ERight, EDownright,  EDownright, EDownright,  EDownright},
+ {EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDownright, EDownright, EDownright, EDownright},
+ {EDownleft, EDownleft, EDownleft, EDown, EDown, EDown,  EDown, EDown, EDown, EDownright, EDownright, EDownright},
+};
+
+const WickedKnightAction ACTION_MOVEONLY_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
+{EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
 {EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
 {EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
 {EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget, EWickedKnightChaseTarget},
 };
 
+const EDirections BACKOFF_TARGET_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
+ {EDownright, EDownright, EDownright, EDown, EDown, EDown, EDown, EDown, EDown, EDownleft, EDownleft, EDownleft},
+ {EDownright, EDownright, EDownright, EDownright, EDown, EDown, EDown, EDown, EDownleft, EDownleft, EDownleft, EDownleft},
+ {EDownright, EDownright, EDownright, EDownright, EDownright, EDown, EDown, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft},
+ {ERight , EDownright, EDownright, EDownright, EDownright, EDown, EDown, EDownleft, EDownleft, EDownleft, EDownleft, ELeft},
+ {ERight , ERight , EDownright, EDownright, EDownright, EDown, EDown, EDownleft, EDownleft, EDownleft, ELeft, ELeft},
+ {ERight , ERight , ERight , ERight , ERight , ERight, EDown, ELeft, ELeft, ELeft, ELeft, ELeft},
+ {ERight , ERight , ERight , ERight , ERight , EUp, ELeft , ELeft, ELeft, ELeft, ELeft, ELeft},
+ {ERight , ERight , EUpright, EUpright, EUpright, EUp, EUp, EUpleft, EUpleft, EUpleft, ELeft, ELeft},
+ {ERight , EUpright,  EUpright, EUpright, EUpright, EUp, EUp, EUpleft, EUpleft,  EUpleft, EUpleft,  ELeft},
+ {EUpright, EUpright,  EUpright, EUpright, EUpright, EUp, EUp, EUpleft, EUpleft,  EUpleft, EUpleft,  EUpleft},
+ {EUpright, EUpright, EUpright, EUpright, EUp, EUp,  EUp, EUp, EUpleft, EUpleft, EUpleft, EUpleft},
+ {EUpright, EUpright, EUpright, EUp, EUp, EUp,  EUp, EUp, EUp, EUpleft, EUpleft, EUpleft},
+
+};
+
+
 void wickedknight_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection);
 
 void wickedknight_huntController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+	
+void wickedknight_backoffController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection);
 	
 void wickedknight_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -136,7 +186,7 @@ void wickedknight_walkAroundController(CharacterAttr* character, const MapInfo *
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int i;
 	//EDirections goDirection;
-   
+	mprinter_printf("WALK AROUND CONTROLLER\n");
 	if (charControl->currentStatus == EWickedKnightAIStateHuntTarget) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &wickedknight_huntController;
@@ -194,23 +244,107 @@ void wickedknight_walkAroundController(CharacterAttr* character, const MapInfo *
 
 void wickedknight_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
-	bool isNear;
-	EDirections goDirection;
+	bool isNear = false;
+	EDirections goDirection = EUnknown;
 	s8 doAction;
 
 	charControl->target = *commonFindCharTypePositionByDistance(characterCollection,
 		&character->position, MAX_DIST_FOR_CHASE, STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 	
 	if (!commonIsFoundPosition(&charControl->target)) {
+		mprinter_printf("NOT FOUND\n!");
 		charControl->currentStatus = EWickedKnightAIStateWalkAround;
 		character->nextAction = EWickedKnightWalk;
 		return;
 	}
+	mprinter_printf("FIND TARGET\n");
 	
 	common_findDirectionOfTargetCharacterInScreenCustom(&character->position,
 		&charControl->target, 
 		&FAR_TARGET_WICKEDKNIGHT_8x8[0][0], INSCREEN_DIST, INSCREEN_ARRAYWIDTH,
 		&CIRCLE_TARGET_CLOCKWISE_8x8[0][0], (s8*)&CIRCLE_ACTION_CLOCKWISE_8x8[0][0],
+			MOVACT_INRANGE_DIST, MOVACT_INRANGE_ARRAYWIDTH,
+		&goDirection, &doAction, &isNear);
+	
+	if (!isNear) {
+		if (goDirection == EUnknown) {
+			charControl->currentAction = MAXACTIONS;
+			charControl->currentStatus = EWickedKnightAIStateWalkAround;
+			character->nextAction = EWickedKnightWalk;
+			return;
+		}
+		charControl->actions[charControl->currentAction].direction = goDirection;
+		if (character->faceDirection != goDirection) {
+			character->hasNewFaceDirection = true;
+		}
+		character->faceDirection = goDirection;
+	} else {
+		EDirections faceDirection;
+		//character->nextAction = EWickedKnightAttack;
+		//character->nextAction = doAction;
+		charControl->actions[charControl->currentAction].action = doAction;
+		if (goDirection == ELeft || goDirection == ERight) {
+			common_findDirectionOfTargetUpDown(&character->position, &charControl->target, 
+			&faceDirection);
+		} else {
+			common_findDirectionOfTargetLeftRight(&character->position, &charControl->target, 
+				&faceDirection);		
+		} /*else {
+			common_findDirectionOfTarget(&character->position, &charControl->target, 
+				&faceDirection);
+		}*/
+		//character->nextDirection = goDirection;
+		charControl->actions[charControl->currentAction].direction = goDirection;
+		if (character->faceDirection != faceDirection) {
+			character->hasNewFaceDirection = true;
+		}
+		character->faceDirection = faceDirection;
+		charControl->actions[charControl->currentAction].faceDirection = faceDirection;
+	}
+	
+	//character->nextAction = EWickedKnightChaseTarget;
+	charControl->actions[charControl->currentAction].action = EWickedKnightChaseTarget;
+	
+	/*if (charControl->leftBlocked | charControl->rightBlocked | 
+		charControl->upBlocked | charControl->downBlocked) {
+		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
+			EWickedKnightChaseTarget, 60);
+		common_doSetActions(charControl, character);
+		mprinter_printf("???3 %d\n", character->nextAction);
+		return;
+	} else if (charControl->currentAction >= charControl->countAction) {
+		//charControl->countAction = 0;
+		commonInitializeAISetActions(charControl);
+		charControl->currentAction = MAXACTIONS;
+		character->nextDirection = goDirection;
+		character->faceDirection = goDirection;
+		mprinter_printf("???2 %d\n", character->faceDirection);
+		return;
+	}*/
+	
+	//mprinter_printf("???1 %d\n", character->faceDirection);
+	common_doSetActions(charControl, character);
+	//mprinter_printf("ACTION AFTER SET %d\n", character->nextAction);
+}
+
+void wickedknight_doAttack(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
+	bool isNear;
+	EDirections goDirection;
+	s8 doAction;
+	charControl->target = *commonFindCharTypePositionByDistance(characterCollection,
+	&character->position, MAX_DIST_FOR_CHASE, STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
+	
+	if (!commonIsFoundPosition(&charControl->target)) {
+		charControl->currentStatus = EWickedKnightAIStateWalkAround;
+		character->nextAction = EWickedKnightWalk;
+		return;
+	}
+		
+	common_findDirectionOfTargetCharacterInScreenCustom(&character->position,
+		&charControl->target, 
+		&FAR_TARGET_WICKEDKNIGHT_8x8[0][0], INSCREEN_DIST, INSCREEN_ARRAYWIDTH,
+		&ATTACKRANGE_TARGET_8x8[0][0], (s8*)&CIRCLE_ACTION_CLOCKWISE_8x8[0][0],
 			MOVACT_INRANGE_DIST, MOVACT_INRANGE_ARRAYWIDTH,
 		&goDirection, &doAction, &isNear);
 	if (!isNear && goDirection == EUnknown) {
@@ -225,30 +359,220 @@ void wickedknight_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo
 		if (goDirection == ELeft || goDirection == ERight) {
 			common_findDirectionOfTargetUpDown(&character->position, &charControl->target, 
 			&faceDirection);
-		} else if  (goDirection == EUp || goDirection == EDown){
+		} else {
+			common_findDirectionOfTargetLeftRight(&character->position, 
+				&charControl->target, &faceDirection);		
+		}
+		character->nextDirection = goDirection;
+		character->faceDirection = goDirection;
+		
+		//++charControl->actions[0].currentFrame;
+		return;
+	}
+}
+
+void wickedknight_attackController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int distanceX, distanceY, i;
+	
+	mprinter_printf("ATTACK CONTROLLER\n");
+	
+	if (charControl->currentStatus == EWickedKnightAIStateWalkAround) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &wickedknight_walkAroundController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
+	if (charControl->currentStatus == EWickedKnightAIStateStunned) {
+		charControl->currentAction = MAXACTIONS;
+		charControl->previousAction = character->nextAction;
+		charControl->previousSpriteDisplay = character->spriteDisplay;
+		character->controller = &wickedknight_stunnedController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
+	if (common_shouldDoIntializeActions(character)) {
+		commonInitializeAISetActions(charControl);
+		charControl->actions[0].currentFrame = 0;
+		character->nextAction = EWickedKnightChaseTarget;
+		wickedknight_doAttack(character, mapInfo, characterCollection, charControl);
+	}
+	
+	if (character->nextAction == EWickedKnightAttack) {
+		//wickedknight_doAttack(character, mapInfo, characterCollection, charControl);
+		charControl->actions[0].currentFrame = MAXCNTFRAMES;
+	}
+	
+	if (character->nextAction == EWickedKnightChaseTarget) {
+		if (charControl->actions[charControl->currentAction].currentFrame >= MAXCNTFRAMES) {
+			charControl->currentAction = MAXACTIONS;
+			character->controller = &wickedknight_backoffController;
+			character->controller(character, mapInfo, characterCollection);
+			return;
+		}
+		wickedknight_doAttack(character, mapInfo, characterCollection, charControl);
+	}
+	
+	//++charControl->actions[charControl->currentAction].currentFrame;
+}
+
+void wickedknight_huntController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int distanceX, distanceY, i;
+	
+	mprinter_printf("HUNT CONTROLLER\n");
+	if (charControl->currentStatus == EWickedKnightAIStateWalkAround) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &wickedknight_walkAroundController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
+	if (charControl->currentStatus == EWickedKnightAIStateStunned) {
+		charControl->currentAction = MAXACTIONS;
+		charControl->previousAction = character->nextAction;
+		character->controller = &wickedknight_stunnedController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
+	if (common_shouldDoIntializeActions(character)) {
+		//mprinter_printf("XXXXXXX INIT HUNT CONTROLLER!\n");
+		commonInitializeAISetActions(charControl);
+		character->nextAction = EWickedKnightChaseTarget;
+		charControl->countAction = 1;
+		charControl->currentAction = 0;
+		//charControl->actions[charControl->currentAction].doForNumFrames = MAXCNTFRAMES;
+		charControl->actions[charControl->currentAction].doForNumFrames = 64 + rand()&127;
+		charControl->actions[charControl->currentAction].currentFrame = 0;
+		wickedknight_doChaseTarget(character, mapInfo, characterCollection, charControl);
+		return;
+	}
+	
+	if (charControl->actions[charControl->currentAction].currentFrame >= 
+		charControl->actions[charControl->currentAction].doForNumFrames) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &wickedknight_attackController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
+	if (character->action == EWickedKnightChaseTarget) {
+		wickedknight_doChaseTarget(character, mapInfo, characterCollection, charControl);
+	} /*else if (character->action == EWickedKnightAttack) {
+		wickedknight_doAttack(character, mapInfo, characterCollection, charControl);
+	}*/ else if (character->action == EWickedKnightAttack){
+		mprinter_printf("ATTACK\n");
+	}
+	//++charControl->actions[charControl->currentAction].currentFrame;
+}
+
+void wickedknight_doStun(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
+}
+
+void wickedknight_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int distanceX, distanceY, i;
+	if (charControl->currentStatus == EWickedKnightAIStateHuntTarget) {
+		if (charControl->previousAction == EWickedKnightAttack) {
+			character->controller = &wickedknight_attackController;
+			charControl->currentAction = 0;
+			character->nextAction = charControl->previousAction;
+			character->spriteDisplay = charControl->previousSpriteDisplay;
+		} else {
+			charControl->currentAction = MAXACTIONS;
+			character->controller = &wickedknight_huntController;
+		}
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+		
+	if (common_shouldDoIntializeActions(character)) {
+		charControl->countAction = 1;
+		charControl->currentAction = 0;
+		charControl->actions[charControl->currentAction] = ((ActionControl){25, 0, character->direction, character->direction, EWickedKnightStunned});
+	}
+	common_doSetActions(charControl, character);
+	/*if (character->nextAction == EWickedKnightStunned) {
+		wickedknight_doStun(character, mapInfo, characterCollection, charControl);
+	} else {
+		charControl->currentStatus = EWickedKnightAIStateHuntTarget;
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &wickedknight_huntController;
+		character->controller(character, mapInfo, characterCollection);
+	}*/
+}
+
+void wickedknight_doBackOff(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
+	bool isNear = false;
+	EDirections goDirection = EUnknown;
+	s8 doAction;
+	charControl->target = *commonFindCharTypePositionByDistance(characterCollection,
+		&character->position, MAX_DIST_FOR_CHASE, STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
+	
+	if (!commonIsFoundPosition(&charControl->target)) {
+		charControl->currentStatus = EWickedKnightAIStateWalkAround;
+		character->nextAction = EWickedKnightWalk;
+		return;
+	}
+	
+	common_findDirectionOfTargetCharacterInScreenCustom(&character->position,
+		&charControl->target, 
+		&FAR_TARGET_WICKEDKNIGHT_8x8[0][0], INSCREEN_DIST, INSCREEN_ARRAYWIDTH,
+		&BACKOFF_TARGET_8x8[0][0], (s8*)&ACTION_MOVEONLY_8x8[0][0],
+			MOVACT_INRANGE_DIST, MOVACT_INRANGE_ARRAYWIDTH,
+		&goDirection, &doAction, &isNear);
+	
+	//mprinter_printf("NEAR %s DIRECTION %d\n", isNear ? "TRUE":"FALSE", goDirection);
+	if (!isNear && goDirection == EUnknown) {
+		//mprinter_printf("NOT NEAR\n");
+		charControl->currentAction = MAXACTIONS;
+		charControl->currentStatus = EWickedKnightAIStateWalkAround;
+		character->nextAction = EWickedKnightWalk;
+		return;
+	} else if (isNear) {
+		EDirections faceDirection;
+		//mprinter_printf("NEAR\n");
+		//character->nextAction = EWickedKnightAttack;
+		//character->nextAction = doAction;
+		charControl->actions[charControl->currentAction].action = doAction;
+		if (goDirection == ELeft || goDirection == ERight) {
+			common_findDirectionOfTargetUpDown(&character->position, &charControl->target, 
+			&faceDirection);
+		} else //(goDirection == EUp || goDirection == EDown){
+		{
 			common_findDirectionOfTargetLeftRight(&character->position, &charControl->target, 
 				&faceDirection);		
-		} else {
+		} /*else {
 			common_findDirectionOfTarget(&character->position, &charControl->target, 
 				&faceDirection);
-		}
+		}*/
 
-		character->nextDirection = goDirection;
+		//character->nextDirection = goDirection;
+		charControl->actions[charControl->currentAction].direction = goDirection;
 		if (character->faceDirection != faceDirection) {
 			character->hasNewFaceDirection = true;
 		}
 		character->faceDirection = faceDirection;
-		return;
+		charControl->actions[charControl->currentAction].faceDirection = faceDirection;
 	}
 	
-	character->nextAction = EWickedKnightChaseTarget;
+	//character->nextAction = EWickedKnightChaseTarget;
+	charControl->actions[charControl->currentAction].action = EWickedKnightChaseTarget;
 	
-	if (charControl->leftBlocked | charControl->rightBlocked | 
+	/*if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
 			EWickedKnightChaseTarget, 60);
 		common_doSetActions(charControl, character);
-		mprinter_printf("???3 %d\n", character->faceDirection);
+		mprinter_printf("???3 %d\n", character->nextAction);
 		return;
 	} else if (charControl->currentAction >= charControl->countAction) {
 		//charControl->countAction = 0;
@@ -258,19 +582,14 @@ void wickedknight_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo
 		character->faceDirection = goDirection;
 		mprinter_printf("???2 %d\n", character->faceDirection);
 		return;
-	}
+	}*/
 	
-	character->nextDirection = goDirection;
-	character->faceDirection = goDirection;
-	mprinter_printf("???1 %d\n", character->faceDirection);
+	//mprinter_printf("???1 %d\n", character->faceDirection);
 	common_doSetActions(charControl, character);
+	//mprinter_printf("ACTION AFTER SET %d\n", character->nextAction);
 }
 
-void wickedknight_doAttack(CharacterAttr* character, const MapInfo *mapInfo, 
-	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
-}
-
-void wickedknight_huntController(CharacterAttr* character, const MapInfo *mapInfo, 
+void wickedknight_backoffController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	int distanceX, distanceY, i;
@@ -292,50 +611,23 @@ void wickedknight_huntController(CharacterAttr* character, const MapInfo *mapInf
 	if (common_shouldDoIntializeActions(character)) {
 		commonInitializeAISetActions(charControl);
 		character->nextAction = EWickedKnightChaseTarget;
-		wickedknight_doChaseTarget(character, mapInfo, characterCollection, charControl);
+		charControl->countAction = 1;
+		charControl->currentAction = 0;
+		charControl->actions[charControl->currentAction].doForNumFrames = 20;
+		charControl->actions[charControl->currentAction].currentFrame = 0;
+		wickedknight_doBackOff(character, mapInfo, characterCollection, charControl);
+		return;
 	}
 	
-	if (character->action == EWickedKnightChaseTarget) {
-		wickedknight_doChaseTarget(character, mapInfo, characterCollection, charControl);
-	} else if (character->action == EWickedKnightAttack) {
-		wickedknight_doAttack(character, mapInfo, characterCollection, charControl);
-	}
-	++charControl->actions[charControl->currentAction].currentFrame;
-}
-
-void wickedknight_doStun(CharacterAttr* character, const MapInfo *mapInfo, 
-	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
-}
-
-void wickedknight_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
-	const CharacterCollection *characterCollection) {
-	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
-	int distanceX, distanceY, i;
-	
-	if (charControl->currentStatus == EWickedKnightAIStateHuntTarget) {
+	if (charControl->actions[charControl->currentAction].currentFrame >= 
+		charControl->actions[charControl->currentAction].doForNumFrames) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &wickedknight_huntController;
 		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
 	
-	if (common_shouldDoIntializeActions(character)) {
-		charControl->countAction = 1;
-		charControl->currentAction = 0;
-		charControl->actions[0] = ((ActionControl){30, 0, character->direction, EWickedKnightStunned});
-		character->nextAction = EWickedKnightStunned;
+	if (character->action == EWickedKnightChaseTarget) {
+		wickedknight_doBackOff(character, mapInfo, characterCollection, charControl);
 	}
-	
-	/*if (character->nextAction == EWickedKnightStunned) {
-		wickedknight_doStun(character, mapInfo, characterCollection, charControl);
-	} else {
-		charControl->currentStatus = EWickedKnightAIStateHuntTarget;
-		charControl->currentAction = MAXACTIONS;
-		character->controller = &wickedknight_huntController;
-		character->controller(character, mapInfo, characterCollection);
-	}*/
-}
-
-void wickedknight_circleAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
-	const CharacterCollection *characterCollection) {
 }

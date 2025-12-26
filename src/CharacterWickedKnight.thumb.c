@@ -98,7 +98,7 @@ const OffsetPoints wickedknight_strike_offsetValues[8][2] = {
 };
 
 const BoundingBox wickedknight_strikeCollisionBox[8] = {
-	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
+	/*{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
 	{ 8, 24, -8, 8, 8, 18, 0,0,0,0},
 	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
@@ -106,6 +106,15 @@ const BoundingBox wickedknight_strikeCollisionBox[8] = {
 	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
 	{ -24, -8, -8, 8, 8, 18, 0,0,0,0},
 	{ -8, 8, 8, 24, 8, 18, 0,0,0,0}
+	*/
+	{ -8, 8, 8, 32, 8, 18},
+	{ -8, 8, 8, 32, 8, 18},
+	{ 8, 32, -8, 8, 8, 18},
+	{ -8, 8, -8, -32, 8, 18},
+	{ -8, 8, -8, -32, 8, 18},
+	{ -8, 8, -8, -32, 8, 18},
+	{ -8, -32, -8, 8, 8, 18},
+	{ -8, 8, 8, 32, 8, 18}
 };
 
 const OffsetPoints wickedknight_scanLastKnownPosition = { 16, 16 };
@@ -196,6 +205,7 @@ void wickedknight_doAction(CharacterAttr* character,
 	int boundBoxCount = 0;
 	CharBoundingBox boundingBox;
 	
+	mprinter_printf("DO ACTION %d\n", character->nextAction);
 	if (character->nextAction < EWickedKnightActionCount) {
 		wickedknight_actions[character->nextAction](character, mapInfo, 
 		    characterCollection, charActionCollection);
@@ -255,7 +265,7 @@ void wickedknight_actionChaseTarget(CharacterAttr* character, const MapInfo *map
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	}
-	mprinter_printf("UPDATE %s\n", character->spriteDisplay.imageUpdateStatus ? "TRUE":"FALSE");
+//	mprinter_printf("UPDATE %s\n", character->spriteDisplay.imageUpdateStatus ? "TRUE":"FALSE");
 	
 	if (character->action != character->nextAction) {
 	    character->movementCtrl.maxFrames = wickedknight_WALK_MVMNT_CTRL_MAX;
@@ -278,7 +288,7 @@ void wickedknight_actionChaseTarget(CharacterAttr* character, const MapInfo *map
 	commonGravityEffect(character, common_zOffsetDown);
 	
 	++character->movementCtrl.currentFrame;
-	mprinter_printf("FACE %d\n", character->faceDirection);
+	//mprinter_printf("FACE %d\n", character->faceDirection);
 	character->spriteDisplay.spriteSet = wickedknightWalking[character->faceDirection];
 	//character->spriteDisplay.spriteSet = wickedknightWalking[character->direction];
 }
@@ -286,7 +296,7 @@ void wickedknight_actionChaseTarget(CharacterAttr* character, const MapInfo *map
 void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
-	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
+	int nextScreenFrame, nextAnimationFrame, xDist, yDist, currentAnimationFrame;
 	Position *position = &character->position;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	BoundingBox boundingBox;
@@ -310,7 +320,26 @@ void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 	character->spriteDisplay.spriteSet = wickedknightAttacking[character->direction];
 	
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
-	//currentAnimationFrame = commonGetCurrentAnimationFrame(character);
+	currentAnimationFrame = commonGetCurrentAnimationFrame(character);
+	//if (currentAnimationFrame >= WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_START && 
+	//	currentAnimationFrame <= WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_END) {
+	if (currentAnimationFrame == WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_START) {
+		BoundingBox collisionBox;
+		int attackVal = 1;
+		//mprinter_printf("ATTACK FRAMES\n");
+		collisionBox.startX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->direction].startX;
+		collisionBox.startY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->direction].startY;
+		collisionBox.startZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->direction].startZ;
+		collisionBox.endX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->direction].endX;
+		collisionBox.endY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->direction].endY;
+		collisionBox.endZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->direction].endZ;
+		mprinter_printf("%d %d %d %d\n", collisionBox.startX, collisionBox.endX, collisionBox.startY, collisionBox.endY);
+		mchar_actione_add(character, charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
+	} else if (currentAnimationFrame >= WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_END) {
+		mprinter_printf("NOT ATTACK FRAMES\n");
+		mchar_actione_remove(character, charActionCollection);
+	}
+	
 	if (isLastFrame) {
 		character->nextAction = EWickedKnightChaseTarget;
 	}
@@ -319,7 +348,8 @@ void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 void wickedknight_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
-	++charControl->actions[charControl->currentAction].currentFrame;
+	//++charControl->actions[charControl->currentAction].currentFrame;
+	mprinter_printf("STUNNDED\n");
 	if (charControl->actions[charControl->currentAction].currentFrame >= 
 		charControl->actions[charControl->currentAction].doForNumFrames) {
 		commonInitializeAISetActions(charControl);
@@ -371,7 +401,7 @@ int wickedknight_setPosition(CharacterAttr* character,
 			character->spriteDisplay.baseY + character->distanceFromGround + WICKEDKNIGHT_SCRCNVRTHEIGHT,
 			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
 		
-		mprinter_printf("ANIM %d", character->spriteDisplay.currentAnimationFrame);
+//		mprinter_printf("ANIM %d", character->spriteDisplay.currentAnimationFrame);
 		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
 	}
 	
@@ -407,7 +437,7 @@ bool wickedknight_isHit(CharacterAttr *character, CharacterActionEvent *actionEv
 	charControl->currentStatus = EWickedKnightAIStateStunned;
 	//add hit animation
 	if (character->stats.currentLife <= 0) {
-		commonRemoveCharacter(character);
+		//commonRemoveCharacter(character);
 	}
 	return true;
 }
