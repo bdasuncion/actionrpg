@@ -20,7 +20,7 @@ const SpriteLayerSet alisa_reverseswordslash_down_layerSet[] = {
     {alisa_reverseswordslash_down_layerSet0,10,2},
     {alisa_reverseswordslash_down_layerSet1,2,2},
     {alisa_reverseswordslash_down_layerSet2,2,2},
-    {alisa_reverseswordslash_down_layerSet3,10,2},
+    {alisa_reverseswordslash_down_layerSet3,20,2},
 };
 
 const SpriteSet alisa_reverseswordslash_down = {alisa_reverseswordslash_down_layerSet,4};
