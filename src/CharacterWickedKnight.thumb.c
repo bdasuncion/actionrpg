@@ -33,7 +33,7 @@ extern const EDirections directions[EDirectionsCount];
 
 #define WICKEDKNIGHT_PAL_CNT 1
 
-#define wickedknight_WALK_MVMNT_CTRL_MAX 4
+#define wickedknight_WALK_MVMNT_CTRL_MAX 5
 
 //#define MAX_DIST_FOR_CHASE 80
 
@@ -176,6 +176,8 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->spriteDisplay.palleteUpdateStatus = EUpdate;
 	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
 	CharacterAIControl *charControl = (CharacterAIControl*)mchar_findFreeControlType(controlPool);
+	character->free = (ControlTypeUnion*)charControl;
+	
 	charControl->type = EControlAiType;
 	//charControl->countAction = 0;
 	//charControl->currentAction = MAXACTIONS;
@@ -191,8 +193,6 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 	charControl->wayPointCnt = charWaypoints->wayPointCnt;
 	charControl->wayPointCurrent = 0;
 	charControl->wayPoints = charWaypoints->wayPoints;
-	
-	character->free = (ControlTypeUnion*)charControl;
 	
 	character->stats.maxLife = 10;
 	character->stats.currentLife = 3;
@@ -217,7 +217,6 @@ void wickedknight_actionWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	bool isLastFrame = false;
 	int nextScreenFrame, nextAnimationFrame;
 	Position *position = &character->position;
-	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	BoundingBox searchArea;
 	
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
@@ -401,7 +400,7 @@ int wickedknight_setPosition(CharacterAttr* character,
 			character->spriteDisplay.baseY + character->distanceFromGround + WICKEDKNIGHT_SCRCNVRTHEIGHT,
 			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
 		
-//		mprinter_printf("ANIM %d", character->spriteDisplay.currentAnimationFrame);
+		//mprinter_printf("ANIM %d", character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow);
 		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
 	}
 	
