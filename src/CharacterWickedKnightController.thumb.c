@@ -202,7 +202,11 @@ void wickedknight_walkAroundController(CharacterAttr* character, const MapInfo *
 	}
 		
 	if (common_shouldDoIntializeActions(character)) {
-		character->getBounds = &wickedknight_getBoundingBoxMoving;
+	//	character->getBounds = &wickedknight_getBoundingBoxMoving;
+		mprinter_printf("INITIALIZE ACT\n");
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		charControl->actions[charControl->currentAction] = ((ActionControl){25, 0, character->direction, character->direction, EWickedKnightWalk});
 	}
 	
 	int count;
@@ -217,27 +221,31 @@ void wickedknight_walkAroundController(CharacterAttr* character, const MapInfo *
 		}
 	}
 		
-	EDirections direction;
+	EDirections direction = EUp;
 	common_findDirectionOfPosition(&character->position, &charControl->wayPoints[charControl->wayPointCurrent], &direction);
-	character->nextAction = EWickedKnightWalk;
-	character->nextDirection = direction;
-	character->faceDirection = direction;
+	//character->nextAction = EWickedKnightWalk;
+	//character->nextDirection = direction;
+	//character->faceDirection = direction;
+	charControl->actions[charControl->currentAction].action = EWickedKnightWalk;
+	charControl->actions[charControl->currentAction].direction = direction;
+	charControl->actions[charControl->currentAction].faceDirection = direction;
+	charControl->actions[charControl->currentAction].currentFrame = 0;
 	
-	if (charControl->leftBlocked | charControl->rightBlocked | 
+	/*if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
 			EWickedKnightWalk, 60);
-	}
-	
+	}*/
+	//mprinter_printf("CURRENT ACTION %d WAY POINT %d\n", charControl->currentAction, charControl->wayPointCurrent);
 	common_doSetActions(charControl, character);
 	
-	if (charControl->currentAction >= charControl->countAction) {
+	/*if (charControl->currentAction >= charControl->countAction) {
 		//charControl->countAction = 0;
 		commonInitializeAISetActions(charControl);
 		charControl->currentAction = MAXACTIONS;
 		//character->nextDirection = direction;
 		//return;
-	}
+	}*/
 		
 	wickedknight_doWalk(character, mapInfo, characterCollection, charControl);
 }
@@ -364,7 +372,10 @@ void wickedknight_doAttack(CharacterAttr* character, const MapInfo *mapInfo,
 				&charControl->target, &faceDirection);		
 		}
 		character->nextDirection = goDirection;
-		character->faceDirection = goDirection;
+		if (character->faceDirection != goDirection) {
+			character->hasNewFaceDirection = true;
+			character->faceDirection = goDirection;
+		}
 		
 		//++charControl->actions[0].currentFrame;
 		return;
