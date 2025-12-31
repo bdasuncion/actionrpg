@@ -325,6 +325,7 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool, CharacterWay
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)mchar_findFreeControlType(controlPool);
 	charControl->type = EControlControlType;
 	charControl->currentStatus = EAlisaStatusNormal;
+	charControl->action = ((ActionControl){0, 0, alisa->direction, alisa->direction, EAlisaInitialize});
 	charControl->buttonB_PressInterval = 0;
 	charControl->buttonA_PressInterval = 0;
 	charControl->buttonL_Ready = true;
