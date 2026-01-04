@@ -110,10 +110,10 @@ const BoundingBox wickedknight_strikeCollisionBox[8] = {
 	{ -8, 8, 8, 32, 8, 18},
 	{ -8, 8, 8, 32, 8, 18},
 	{ 8, 32, -8, 8, 8, 18},
-	{ -8, 8, -8, -32, 8, 18},
-	{ -8, 8, -8, -32, 8, 18},
-	{ -8, 8, -8, -32, 8, 18},
-	{ -8, -32, -8, 8, 8, 18},
+	{ -8, 8, -32, -8, 8, 18},
+	{ -8, 8, -32, -8, 8, 18},
+	{ -8, 8, -32, -8, 8, 18},
+	{ -32, -8, -8, 8, 8, 18},
 	{ -8, 8, 8, 32, 8, 18}
 };
 
@@ -332,10 +332,8 @@ void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 		collisionBox.endX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->direction].endX;
 		collisionBox.endY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->direction].endY;
 		collisionBox.endZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->direction].endZ;
-		mprinter_printf("%d %d %d %d\n", collisionBox.startX, collisionBox.endX, collisionBox.startY, collisionBox.endY);
 		mchar_actione_add(character, charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
 	} else if (currentAnimationFrame >= WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_END) {
-		mprinter_printf("NOT ATTACK FRAMES\n");
 		mchar_actione_remove(character, charActionCollection);
 	}
 	
