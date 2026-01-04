@@ -33,7 +33,7 @@ extern const EDirections directions[EDirectionsCount];
 
 #define SKULLDEMON_PAL_CNT 1
 
-#define skulldemon_WALK_MVMNT_CTRL_MAX 4
+#define skulldemon_WALK_MVMNT_CTRL_MAX 5
 
 //#define MAX_DIST_FOR_CHASE 80
 
