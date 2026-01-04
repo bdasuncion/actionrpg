@@ -190,7 +190,8 @@ typedef struct CharacterPlayerControl {
     ControlType type:3;
 	u32 poolId:5;
 	u32 currentStatus:4;
-	u32 dumy:8;
+	u32 numberOfEnemyHits:4;
+	u32 dumy:4;
 	u32 buttonB_PressInterval:5;
 	u32 buttonA_PressInterval:5;
 	bool buttonL_Ready:1;

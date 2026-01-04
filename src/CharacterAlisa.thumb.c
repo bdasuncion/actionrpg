@@ -286,6 +286,7 @@ void alisa_transfer(CharacterAttr* alisa, ControlTypePool* controlPool, Characte
 	charControl->controlMap.buttonA = &alisa_prepareDashController;
 	charControl->controlMap.buttonL = &alisa_jumpController;
 	charControl->controlMap.buttonR = NULL;
+	charControl->numberOfEnemyHits = 0;
 	alisa->free = (ControlTypeUnion*)charControl;
 	alisa->stats.maxLife = 10;
 	alisa->stats.currentLife = 10;
@@ -508,6 +509,16 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->faceDirection&EDirectionsMax];
+	
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)alisa->free;
+	if (charControl->type == EControlControlType) {
+		CharacterActionEvent *action = mchar_actione_find(alisa, charActionCollection);
+		if (action != NULL && action->maxHit <= 0) {
+			charControl->numberOfEnemyHits = 1;
+		} else {
+			charControl->numberOfEnemyHits = 0;
+		}
+	}
 }
 
 void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -566,6 +577,10 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
     bool isLastFrame = false;
 	mprinter_printf("PREPARE DASH\n");
+	
+	//In case attack was frame cancelled, we remove the attack here
+	mchar_actione_remove(alisa, charActionCollection);
+	
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
