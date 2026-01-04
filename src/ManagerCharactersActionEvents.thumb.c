@@ -135,3 +135,14 @@ void mchar_actione_remove(CharacterAttr *source, CharacterActionCollection *char
 		}
 	}
 }
+
+CharacterActionEvent* mchar_actione_find(CharacterAttr *source, CharacterActionCollection *charActionCollection) {
+	int i;
+	for (i = 0; i < charActionCollection->count; ++i) {
+		CharacterActionEvent *charAction = &charActionCollection->currentActions[i];
+		if (charAction->source == source) {
+			return charAction;
+		}
+	}
+	return NULL;
+}

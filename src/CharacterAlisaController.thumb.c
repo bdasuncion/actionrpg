@@ -214,7 +214,8 @@ void alisa_controller(CharacterAttr* character, const MapInfo *mapInfo,
 	character->nextAction = EAlisaStand;
 }
 
-#define ALISA_LASTFRAME_NSLASH 3
+#define ALISA_LASTANIMATIONFRAME_NSLASH 3
+#define ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH 20
 
 void alisa_normalSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
@@ -233,30 +234,40 @@ void alisa_normalSlashController(CharacterAttr* character, const MapInfo *mapInf
 	
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
-	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTFRAME_NSLASH) {
-		mprinter_printf("LAST FRAME\n");
+	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_NSLASH) {
+		mprinter_printf("LAST FRAME %d\n", nextScreenFrame);
 		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
+			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
+		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController) && charControl->numberOfEnemyHits > 0) {
+			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaStrongSwordSlash});
+		}
+		
+		if (nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH - 5 && 
+			charControl->action.action  == EAlisaStrongSwordSlash) {
+			charControl->action.action = EAlisaInitialize;
+			charControl->numberOfEnemyHits = 0;
+			character->controller = &alisa_strongSlashController;
+			character->controller(character, mapInfo, characterCollection);
+			return;
+		} else if (nextScreenFrame >= 4 && 
+			charControl->action.action  == EAlisaPrepareDash) {
+			charControl->action.action = EAlisaInitialize;
 			character->controller = &alisa_prepareDashController;
 			character->controller(character, mapInfo, characterCollection);
 			return;
-		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController)) {
-			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaStrongSwordSlash});
 		}
 	}
 	character->nextAction = EAlisaNormalSwordSlash;
 	
 	if (isLastFrame) {
-		if (charControl->action.action == EAlisaStrongSwordSlash) {
-			charControl->action.action = EAlisaInitialize;
-			character->controller = &alisa_strongSlashController;
-			character->controller(character, mapInfo, characterCollection);
-		} else {
-			character->controller = &alisa_controller;
-			character->controller(character, mapInfo, characterCollection);
-		}
+		character->controller = &alisa_controller;
+		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
 }
+
+#define ALISA_LASTANIMATIONFRAME_SSLASH 3
+#define ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH 20
 
 void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
@@ -274,6 +285,24 @@ void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInf
 	}
 	character->nextAction = EAlisaStrongSwordSlash;
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
+	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_SSLASH - 2) {
+		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
+			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
+		}
+	}
+	
+	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_SSLASH) {
+		mprinter_printf("LAST FRAME %d\n", nextScreenFrame);		
+		if ((nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH - 10) && 
+			charControl->action.action  == EAlisaPrepareDash) {
+			charControl->action.action = EAlisaInitialize;
+			character->controller = &alisa_prepareDashController;
+			character->controller(character, mapInfo, characterCollection);
+			return;
+		}
+	}
+	
 	if (isLastFrame) {
 		character->controller = &alisa_controller;
 		character->controller(character, mapInfo, characterCollection);
