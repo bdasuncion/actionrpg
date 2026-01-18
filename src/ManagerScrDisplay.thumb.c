@@ -10,12 +10,15 @@
 #include "ManagerScrDisplay.h"
 #include "ManagerPrinter.h"
 
-#define OFFSET_X 100
-#define OFFSET_Y 60
+//#define OFFSET_X 100
+#define OFFSET_X 120
+//#define OFFSET_Y 60
+#define OFFSET_Y 90
 //#define OFFSET_Y 160
-#define BOUND_LENGTH 40
+//#define BOUND_LENGTH 40
+#define BOUND_LENGTH 20
 //#define BOUND_HEIGHT 40
-#define BOUND_HEIGHT 40
+#define BOUND_HEIGHT 10
 #define X_MOVE_LIMIT 8
 #define Y_MOVE_LIMIT 8
 #define SCR_VERTICAL_TILE_COUNT 20
