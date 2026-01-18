@@ -59,7 +59,7 @@ void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollect
 	}
 	
 	mbg_initializeMapOnScreen(scrAtt, mapInfo, 
-	    (u16*)&SCR_ENTRY->entry[ETileMap0], (u16*)&SCR_ENTRY->entry[ETileMap1]);
+	   (u16*)&SCR_ENTRY->entry[ETileMap0], (u16*)&SCR_ENTRY->entry[ETileMap1]);
 
     mbg_initializeCharacters(mapInfo, characterCollection, controlPool, charActionCollection);
 	mbg_copySpriteMaskImageToVram(mapInfo);

@@ -292,6 +292,7 @@ const CharacterWaypoints charwaypoint1_mapgraveyard_a = {2, {{170, 77, 1}, {177,
 const CharacterInit actors_mapgraveyard_a[] = {
 	//{ 136, 152, 1, SKULLDEMON, &charwaypoint1_mapgraveyard_a }, 
 	{ 136, 152, 1, WICKEDKNIGHT, &charwaypoint1_mapgraveyard_a }, 
+	//{ 136, 152, 1, ZOMBIE, &charwaypoint1_mapgraveyard_a }, 
 };
 extern const MapInfo mapgraveyard_b;
 const EventTransfer transfer_mapgraveyard_a[] = {
