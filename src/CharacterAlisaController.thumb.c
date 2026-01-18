@@ -234,8 +234,8 @@ void alisa_normalSlashController(CharacterAttr* character, const MapInfo *mapInf
 	
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
-	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_NSLASH) {
-		mprinter_printf("LAST FRAME %d\n", nextScreenFrame);
+	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_NSLASH - 2) {
+		//mprinter_printf("LAST FRAME %d\n", nextScreenFrame);
 		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
 		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController) && charControl->numberOfEnemyHits > 0) {
@@ -293,7 +293,7 @@ void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInf
 	}
 	
 	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_SSLASH) {
-		mprinter_printf("LAST FRAME %d\n", nextScreenFrame);		
+		//mprinter_printf("LAST FRAME %d\n", nextScreenFrame);		
 		if ((nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH - 10) && 
 			charControl->action.action  == EAlisaPrepareDash) {
 			charControl->action.action = EAlisaInitialize;
@@ -331,16 +331,16 @@ void alisa_slashController(CharacterAttr* character, const MapInfo *mapInfo,
 	if (controlButtonHold(charControl, &alisa_slashController, &hold, ALISA_NORMALATTACK_INTERVALMAX) &&
 		(character->nextAction != EAlisaNormalSwordSlash && character->nextAction != EAlisaStrongSwordSlash)) {
 		//TODO Add strong attack for when normal attack threshhold is reached
-		if (hold >= ALISA_NORMALATTACK_INTERVALMAX) {
-			character->nextAction = EAlisaStrongSwordSlash;
-			character->controller = &alisa_strongSlashController;
-			character->controller(character, mapInfo, characterCollection);
-			return;
-		} else {
+		//if (hold >= ALISA_NORMALATTACK_INTERVALMAX) {
+		//	character->nextAction = EAlisaStrongSwordSlash;
+		//	character->controller = &alisa_strongSlashController;
+		//	character->controller(character, mapInfo, characterCollection);
+		//	return;
+		//} else {
 			character->nextAction = EAlisaNormalSwordSlash;
 			character->controller = &alisa_normalSlashController;
 			character->controller(character, mapInfo, characterCollection);
-		}
+		//}
 	}
 	
 	character->nextAction = EAlisaStand;
