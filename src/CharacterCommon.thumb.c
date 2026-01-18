@@ -222,6 +222,56 @@ void common_findDirectionOfTargetUpDown(const Position *current, const Position 
 	}
 }
 
+const EDirections FACE_TARGET[12][12] = {
+ {EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp},
+ {ELeft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, ERight},
+ {ELeft, ELeft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, ERight, ERight},
+ {ELeft, ELeft, ELeft, EUp, EUp, EUp, EUp, EUp, EUp, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, EUp, EUp, EUp, EUp, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, EUp, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EDown, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, EDown, EDown, EDown, EDown, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft,  ELeft, EDown, EDown, EDown, EDown, EDown, EDown,  ERight, ERight,  ERight},
+ {ELeft, ELeft,  EDown, EDown, EDown, EDown, EDown, EDown, EDown,  EDown, ERight,  ERight},
+ {ELeft, EDown, EDown, EDown, EDown, EDown,  EDown, EDown, EDown, EDown, EDown, ERight},
+ {EDown, EDown, EDown, EDown, EDown, EDown,  EDown, EDown, EDown, EDown, EDown, EDown},
+};
+
+void common_faceTarget(Position const *current, Position const *target, EDirections *faceDirection) {
+	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	Position targetPos = {CONVERT_2POS(target->x), CONVERT_2POS(target->y), CONVERT_2POS(target->z)};
+	
+	int distanceX = targetPos.x - currentPos.x;
+	int distanceY = targetPos.y - currentPos.y;	
+	int absDistX = abs(distanceX);
+	int absDistY = abs(distanceY);
+	
+	if (absDistX < 8 && absDistY < 8) {
+		if (absDistX < absDistY) {
+			if (distanceX < 0) {
+				*faceDirection = ERight;
+			} else {
+				*faceDirection = ELeft;
+			}
+		} else {
+			if (distanceY < 0) {
+				*faceDirection = EDown;
+			} else {
+				*faceDirection = EUp;
+			}
+		}
+		return;
+	}
+	int offsetDistanceX = distanceX + 48;
+	int offsetDistanceY = distanceY + 48;
+	
+	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
+	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
+	
+	//*faceDirection = FACE_TARGET[(offsetDistanceY*12) + offsetDistanceX];
+	*faceDirection = FACE_TARGET[offsetDistanceY][offsetDistanceX]&7;
+}
+
 void common_findDirectionOfTarget(const Position *current, const Position *target, 
 	EDirections *faceDirection) {
 	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
@@ -305,7 +355,7 @@ void findInScreenCustom(Position *current, Position *targetPos, int height,
 	
 	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
 	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
-	
+
 	if (offsetDistanceX >= 0 && offsetDistanceX < closerangeArrayWidth &&
 		offsetDistanceY >= 0 && offsetDistanceY < closerangeArrayWidth) {
 		*isNear = true;
@@ -409,11 +459,10 @@ void common_findDirectionOfTargetCharacterInScreenCustom(Position const *current
 	
 	offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
 	offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
-	//mprinter_printf("CHECKING %d,%d\n", offsetDistanceX, offsetDistanceY);
+
 	if (offsetDistanceX >= FARTARGET_SIZE || offsetDistanceY >= FARTARGET_SIZE || offsetDistanceX < 0 || offsetDistanceY < 0) {
 		*goDirection = EUnknown;
 		*isNear = false;
-		mprinter_printf("CHECKING %d,%d\n", offsetDistanceX, offsetDistanceY);
 		return;
 	}
 	
@@ -758,10 +807,10 @@ bool commonIsInScreen(int charStartX, int charEndX, int charStartY, int charEndY
 	int screenStartX = scr_pos->x, screenEndX = scr_pos->x + scr_dim->width;
 	int screenStartY = scr_pos->y, screenEndY = scr_pos->y + scr_dim->height;
 	
-	return (charStartX >= screenStartX && charStartX <= screenEndX ||
-	    charEndX >= screenStartX && charEndX <= screenEndX) &&
-		(charStartY >= screenStartY && charStartY <= screenEndY ||
-		charEndY >= screenStartY && charEndY <= screenEndY);
+	return ((charStartX >= screenStartX && charStartX <= screenEndX) ||
+	    (charEndX >= screenStartX && charEndX <= screenEndX)) &&
+		((charStartY >= screenStartY && charStartY <= screenEndY) ||
+		(charEndY >= screenStartY && charEndY <= screenEndY));
 }
 
 bool common_checkNext(bool isOtherCharBelow, const Position *characterPos, 
@@ -1658,7 +1707,7 @@ bool common_shouldDoNextAction(CharacterAttr* character) {
 
 bool common_shouldDoIntializeActions(CharacterAttr* character) {
    CharacterAIControl *charControl = (CharacterAIControl*)character->free;
-   return charControl->currentAction >= MAXACTIONS | ((charControl->currentAction + 1) >= charControl->countAction &
+   return charControl->currentAction >= MAXACTIONS | (((charControl->currentAction + 1) >= charControl->countAction) &
 	common_shouldDoNextAction(character));
 }
 

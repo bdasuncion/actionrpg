@@ -179,4 +179,6 @@ void common_findDirectionOfTargetUpDown(const Position *current,
 	const Position *target, EDirections *faceDirection);
 void common_findDirectionOfTargetLeftRight(const Position *current, 
 	const Position *target, EDirections *faceDirection);
+void common_faceTarget(Position const *current, Position const *target, 
+	EDirections *faceDirection);
 #endif
