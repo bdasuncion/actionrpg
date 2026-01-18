@@ -316,7 +316,7 @@ void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 	commonGravityEffect(character, common_zOffsetDown);
 	
 	++character->movementCtrl.currentFrame;
-	character->spriteDisplay.spriteSet = wickedknightAttacking[character->direction];
+	character->spriteDisplay.spriteSet = wickedknightAttacking[character->faceDirection];
 	
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	currentAnimationFrame = commonGetCurrentAnimationFrame(character);
@@ -326,12 +326,12 @@ void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 		BoundingBox collisionBox;
 		int attackVal = 1;
 		//mprinter_printf("ATTACK FRAMES\n");
-		collisionBox.startX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->direction].startX;
-		collisionBox.startY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->direction].startY;
-		collisionBox.startZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->direction].startZ;
-		collisionBox.endX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->direction].endX;
-		collisionBox.endY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->direction].endY;
-		collisionBox.endZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->direction].endZ;
+		collisionBox.startX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->faceDirection].startX;
+		collisionBox.startY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->faceDirection].startY;
+		collisionBox.startZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->faceDirection].startZ;
+		collisionBox.endX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->faceDirection].endX;
+		collisionBox.endY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->faceDirection].endY;
+		collisionBox.endZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->faceDirection].endZ;
 		mchar_actione_add(character, charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
 	} else if (currentAnimationFrame >= WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_END) {
 		mchar_actione_remove(character, charActionCollection);
