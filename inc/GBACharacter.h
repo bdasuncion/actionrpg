@@ -214,7 +214,7 @@ typedef struct CharacterAIControl {
 	bool downBlocked:1;
 	u32 wayPointCnt:4;
 	u32 wayPointCurrent:4;
-	s8 previousAction;
+	s8 previousActionType;
 	u16 dummy;
 	const Position *wayPoints;
     Position target;
