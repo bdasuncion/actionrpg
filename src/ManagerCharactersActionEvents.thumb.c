@@ -66,6 +66,10 @@ void mchar_actione_resolveonetarget(CharacterActionEvent *actionEvent, Character
 			if (actionEvent->source == character) {
 				continue;
 			}
+			if (actionEvent->source->type > ENDPLAYABLECHARACTERTYPE && 
+				character->type > ENDPLAYABLECHARACTERTYPE) {
+				continue;
+			}
 			character->getBounds(character, &count, &charBoundingBox);
 			isHit = hasCollision(&actionEvent->collisionBox, &charBoundingBox);
 			if (isHit) {
