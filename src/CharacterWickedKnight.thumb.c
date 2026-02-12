@@ -55,24 +55,24 @@ const u8 wickedknight_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
 
 const s32 wickedknight_walkOffsetX[EDirectionsCount][wickedknight_WALK_MVMNT_CTRL_MAX] = {
     {0,0,0,0,0},
-	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
-	{1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
-	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+	{1*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+	{1*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
-	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
-	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG}
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG}
 };
 
 const s32 wickedknight_walkOffsetY[EDirectionsCount][wickedknight_WALK_MVMNT_CTRL_MAX] = {
-    {1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
-	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+    {1*MOVE_STR,1*MOVE_STR,2*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
-	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
-	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-2*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-2*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG}
+	{1*MOVE_DIAG,1*MOVE_DIAG,2*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG}
 };
 
 const OffsetPoints wickedknight_scanSurroundingOffset[8][2] = {
@@ -84,17 +84,6 @@ const OffsetPoints wickedknight_scanSurroundingOffset[8][2] = {
 	{{-24,-64},{24,0}},
 	{{-64,-24},{0,24}},
 	{{-24,0},{24,64}}
-};
-
-const OffsetPoints wickedknight_strike_offsetValues[8][2] = {
-    {{0, 16}, {0, 32}},
-	{{0, 16}, {0, 32}},
-	{{16, -6}, {32, -6}},
-	{{0, -16}, {0, -16}},
-	{{0, -16}, {0, -16}},
-	{{0, -16}, {0, -16}},
-	{{-16, 6}, {-32, 6}},
-	{{0, 16}, {0, 32}},
 };
 
 const BoundingBox wickedknight_strikeCollisionBox[8] = {

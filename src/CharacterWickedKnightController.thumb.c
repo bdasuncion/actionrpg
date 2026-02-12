@@ -66,18 +66,18 @@ const EDirections FAR_TARGET_WICKEDKNIGHT_8x8[INSCREEN_ARRAYWIDTH][INSCREEN_ARRA
 #define MOVACT_INRANGE_ARRAYWIDTH 12
 #define MOVACT_INRANGE_DIST 48
 const EDirections CIRCLE_TARGET_CLOCKWISE_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
-{ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUp},
-{EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EUpleft, EUp},
-{EDown, EDownright, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EUpleft, EUpleft, EUp},
-{EDown, EDownright, EDownright, EDownright, EDownleft, EDownleft, EDownleft, EDownleft, EUpleft, EUpleft, EUpleft, EUp},
-{EDown, EDownright, EDownright, EDownright, EDownright, EDownleft, EDownleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp},
-{EDown, EDownright, EDownright, EDownright,EDownright, EDownright, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp},
-{EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp},
-{EDown, EDownright, EDownright, EDownright, EDownright, EUpright, EUpright, EUpleft, EUpleft, EUpleft, EUpleft, EUp},
-{EDown, EDownright, EDownright, EDownright, EUpright, EUpright, EUpright, EUpright, EUpleft, EUpleft, EUpleft, EUp},
-{EDown, EDownright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpleft, EUp},
-{EDown, EDownright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
-{EDown, EDownright, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+	{ELeft,     ELeft,      ELeft,      ELeft,      ELeft,      ELeft,      ELeft,     ELeft,     ELeft,     ELeft,     ELeft,    EUp},
+	{EDownleft, EDownleft,  EDownleft,  EDownleft,  EDownleft,  EDownleft,  EDownleft, EDownleft, EDownleft, EDownleft, EUpleft,  EUp},
+	{EDown,     EDownright, EDownleft,  EDownleft,  EDownleft,  EDownleft,  EDownleft, EDownleft, EDownleft, EUpleft,   EUpleft,  EUp},
+	{EDown,     EDownright, EDownright, EDownright, EDownleft,  EDownleft,  EDownleft, EDownleft, EUpleft,   EUpleft,   EUpleft,  EUp},
+	{EDown,     EDownright, EDownright, EDownright, EDownright, EDownleft,  EDownleft, EUpleft,   EUpleft,   EUpleft,   EUpleft,  EUp},
+	{EDown,     EDownright, EDownright, EDownright, EDownright, EDownright, EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,  EUp},
+	{EDown,     EDownright, EDownright, EDownright, EDownright, EDownright, EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,  EUp},
+	{EDown,     EDownright, EDownright, EDownright, EDownright, EUpright,   EUpright,  EUpleft,   EUpleft,   EUpleft,   EUpleft,  EUp},
+	{EDown,     EDownright, EDownright, EDownright, EUpright,   EUpright,   EUpright,  EUpright,  EUpleft,   EUpleft,   EUpleft,  EUp},
+	{EDown,     EDownright, EUpright,   EUpright,   EUpright,   EUpright,   EUpright,  EUpright,  EUpright,  EUpright,  EUpleft,  EUp},
+	{EDown,     EDownright, EUpright,   EUpright,   EUpright,   EUpright,   EUpright,  EUpright,  EUpright,  EUpright,  EUpright, EUpright},
+	{EDown,     EDownright, ERight,     ERight,     ERight,     ERight,     ERight,    ERight,    ERight,    ERight,    ERight,   ERight},
 };
 
 const WickedKnightAction CIRCLE_ACTION_CLOCKWISE_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
