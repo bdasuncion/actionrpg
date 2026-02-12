@@ -34,7 +34,11 @@
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,
 	const EDirections direction);
-*/	
+*/
+
+extern const unsigned int spritemask_standard_image0[];
+extern SpriteMask spriteMaskInfo;
+
 void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo);
 void mbg_initializeSpriteMasks(const MapInfo *mapInfo, CharacterCollection *characterCollection);
 
@@ -118,18 +122,28 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 	}
 }
 
-extern const unsigned int spritemask_standard_image0[];
+void mgb_createImageMask() {
+	if (spriteMaskInfo.doInitMasks) {
+		spritemask_vram_copy32_ID(spritemask_standard_image0, 
+			//spriteMaskImageSize[EMask32x32], 0);
+			64, 0);
+		spriteMaskInfo.doInitMasks = false;
+	}
+}
 
 void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo) {
 	int i, id = 16;
+	spriteMaskInfo.doInitMasks = true;
+	spriteMaskInfo.count = mapInfo->spriteMaskImageCount;
+	spriteMaskInfo.masks = mapInfo->spriteMaskImage;
 	//spritemask_vram_copy32_ID(spritemask_standard_image0, 
 	//		spriteMaskImageSize[EMask32x32], 0);
-			
-	for ( i = 0; i < mapInfo->spriteMaskImageCount; ++i) {
+	
+	/*for ( i = 0; i < mapInfo->spriteMaskImageCount; ++i) {
 		spritemask_vram_copy32_ID(mapInfo->spriteMaskImage[i].image, 
 			spriteMaskImageSize[mapInfo->spriteMaskImage[i].type], id);
 		id += spriteMaskImageSize[mapInfo->spriteMaskImage[i].type] >> 3;
-	}
+	}*/
 }
 
 void mbg_initializeSpriteMasks(const MapInfo *mapInfo, CharacterCollection *characterCollection) {

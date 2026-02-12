@@ -23,4 +23,5 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 //SpritePlanePosition* spritePrevious);
 //extern inline void checkBoundary(SpritePlanePosition* newPos,
 //	SpritePlanePosition* currPos);
+void mgb_createImageMask();
 #endif
