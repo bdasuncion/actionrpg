@@ -168,10 +168,10 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->free = (ControlTypeUnion*)charControl;
 	
 	charControl->type = EControlAiType;
-	//charControl->countAction = 0;
-	//charControl->currentAction = MAXACTIONS;
-	charControl->countAction = 1;
-	charControl->currentAction = 0;
+	charControl->countAction = 0;
+	charControl->currentAction = MAXACTIONS;
+	//charControl->countAction = 1;
+	//charControl->currentAction = 0;
 	character->nextAction = EWickedKnightWalk;
 	charControl->rightBlocked = false;
 	charControl->leftBlocked = false;
