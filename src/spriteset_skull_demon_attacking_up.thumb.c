@@ -23,8 +23,8 @@ const SpriteLayer skull_demon_attacking_up_layerSet2[] = {
     {skull_demon_head_up_image0,4,-4,SQUARE,SMALL_A,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,4,0}};
 
 const SpriteLayerSet skull_demon_attacking_up_layerSet[] = {
-    {skull_demon_attacking_up_layerSet0,15,5},
-    {skull_demon_attacking_up_layerSet1,15,5},
+    {skull_demon_attacking_up_layerSet0,10,5},
+    {skull_demon_attacking_up_layerSet1,10,5},
     {skull_demon_attacking_up_layerSet2,10,5},
 };
 

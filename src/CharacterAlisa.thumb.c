@@ -253,7 +253,7 @@ void alisa_transfer(CharacterAttr* alisa, ControlTypePool* controlPool, Characte
 	alisa->id = 0;
 	//use enum of character type
 	alisa->type = ALISA;
-	
+	alisa->hasNewFaceDirection = false;
 	alisa->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	alisa->spriteDisplay.imageUpdateStatus = EUpdate;
 	alisa->spriteDisplay.basePalleteId = sprite_palette_findId(ALISA, ALISA_PAL_CNT);
@@ -286,6 +286,7 @@ void alisa_transfer(CharacterAttr* alisa, ControlTypePool* controlPool, Characte
 	charControl->controlMap.buttonA = &alisa_prepareDashController;
 	charControl->controlMap.buttonL = &alisa_jumpController;
 	charControl->controlMap.buttonR = NULL;
+	charControl->numberOfEnemyHits = 0;
 	alisa->free = (ControlTypeUnion*)charControl;
 	alisa->stats.maxLife = 10;
 	alisa->stats.currentLife = 10;
@@ -325,6 +326,7 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool, CharacterWay
 	CharacterPlayerControl *charControl = (CharacterPlayerControl*)mchar_findFreeControlType(controlPool);
 	charControl->type = EControlControlType;
 	charControl->currentStatus = EAlisaStatusNormal;
+	charControl->action = ((ActionControl){0, 0, alisa->direction, alisa->direction, EAlisaInitialize});
 	charControl->buttonB_PressInterval = 0;
 	charControl->buttonA_PressInterval = 0;
 	charControl->buttonL_Ready = true;
@@ -462,7 +464,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	BoundingBox position;
 	Position collisionPoints[2];
 	int attackVal = 1;
-	mprinter_printf("SLASH\n");
+	//mprinter_printf("SLASH\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
@@ -507,6 +509,16 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	}
 	
 	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->faceDirection&EDirectionsMax];
+	
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)alisa->free;
+	if (charControl->type == EControlControlType) {
+		CharacterActionEvent *action = mchar_actione_find(alisa, charActionCollection);
+		if (action != NULL && action->maxHit <= 0) {
+			charControl->numberOfEnemyHits = 1;
+		} else {
+			charControl->numberOfEnemyHits = 0;
+		}
+	}
 }
 
 void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -514,7 +526,7 @@ void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	BoundingBox position;
 	Position collisionPoints[2];
 	int attackVal = 1;
-	mprinter_printf("Strong SLASH\n");
+	//mprinter_printf("Strong SLASH\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
@@ -564,7 +576,11 @@ void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
     bool isLastFrame = false;
-	mprinter_printf("PREPARE DASH\n");
+	//mprinter_printf("PREPARE DASH\n");
+	
+	//In case attack was frame cancelled, we remove the attack here
+	mchar_actione_remove(alisa, charActionCollection);
+	
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	
@@ -589,7 +605,7 @@ void alisa_actionPrepareDash(CharacterAttr* alisa, const MapInfo *mapInfo,
 void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
     bool isLastFrame = false;
-	mprinter_printf("DASH FORWARD\n");
+	//mprinter_printf("DASH FORWARD\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
@@ -626,7 +642,7 @@ void alisa_actionDashForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
     bool isLastFrame = false;
-	mprinter_printf("DASH BACKWARD\n");
+	//mprinter_printf("DASH BACKWARD\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
@@ -662,7 +678,7 @@ void alisa_actionDashBackward(CharacterAttr* alisa, const MapInfo *mapInfo,
 void alisa_actionJumpUp(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
-	mprinter_printf("JUMP UP\n");
+	//mprinter_printf("JUMP UP\n");
 
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
@@ -694,7 +710,7 @@ void alisa_actionJumpForward(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 	
-	mprinter_printf("JUMP FORWARD\n");
+	//mprinter_printf("JUMP FORWARD\n");
 	
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
@@ -735,7 +751,7 @@ void alisa_actionFallingDown(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 
-	mprinter_printf("FALLING DOWN\n");
+	//mprinter_printf("FALLING DOWN\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
@@ -764,7 +780,7 @@ void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
 
-	mprinter_printf("FALLING FORWARD\n");
+	//mprinter_printf("FALLING FORWARD\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
@@ -798,7 +814,7 @@ void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo,
 	BoundingBox position;
 	Position collisionPoints[2];
 	int attackVal = 1, countPoints = 2;
-	mprinter_printf("STUNNED\n");
+	//mprinter_printf("STUNNED\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	

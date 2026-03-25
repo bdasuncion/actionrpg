@@ -12,4 +12,6 @@ void mchar_actione_add(CharacterAttr *source, CharacterActionCollection *charAct
 void mchar_actione_update(CharacterAttr *source, CharacterActionCollection *charActionCollection, 
     CharacterActionType type, s16 value, s16 maxHit, BoundingBox *collisionBox);
 void mchar_actione_remove(CharacterAttr *source, CharacterActionCollection *charActionCollection);
+CharacterActionEvent* mchar_actione_find(CharacterAttr *source, 
+	CharacterActionCollection *charActionCollection);
 #endif

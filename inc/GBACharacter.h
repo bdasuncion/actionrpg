@@ -3,6 +3,8 @@
 
 #define MAXACTIONS 8
 #define DOACTIONUNTILEND 0
+
+#define MAXCNTFRAMES 255
  
 #include "GBAObject.h"
 #include "GBAStructDeclarations.h"
@@ -160,7 +162,8 @@ typedef bool (*CharFuncIsHit)(struct CharacterAttr *charAtt, struct CharacterAct
 typedef struct ActionControl {
 	u8 doForNumFrames;
 	u8 currentFrame;
-	u8 direction;
+	s8 direction:4;
+	s8 faceDirection:4;
 	u8 action;
 }ALIGN4 ActionControl;
 
@@ -187,7 +190,8 @@ typedef struct CharacterPlayerControl {
     ControlType type:3;
 	u32 poolId:5;
 	u32 currentStatus:4;
-	u32 dumy:8;
+	u32 numberOfEnemyHits:4;
+	u32 dumy:4;
 	u32 buttonB_PressInterval:5;
 	u32 buttonA_PressInterval:5;
 	bool buttonL_Ready:1;
@@ -210,9 +214,12 @@ typedef struct CharacterAIControl {
 	bool downBlocked:1;
 	u32 wayPointCnt:4;
 	u32 wayPointCurrent:4;
+	s8 previousActionType;
+	u16 dummy;
 	const Position *wayPoints;
     Position target;
     ActionControl actions[MAXACTIONS];
+	SpriteDisplay previousSpriteDisplay;
 } ALIGN4 CharacterAIControl;
 
 typedef struct CharacterEventControl {
@@ -260,9 +267,10 @@ typedef struct CharacterAttr {
 	u8 action;
 	EDirections direction:4;
 	EDirections faceDirection:4;
-	u8 nextAction;
+	bool hasNewFaceDirection:1;
+	u8 nextAction:8;
 	EDirections nextDirection:4;
-	EVerticalDirections verticalDirection:4;
+	EVerticalDirections verticalDirection:3;
 	MovementControl movementCtrl;
 	Position position;//3HW
 	Position delta;//3HW

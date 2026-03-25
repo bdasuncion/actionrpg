@@ -15,6 +15,7 @@
 #include "GBAMap.h"
 
 const u32 spriteMaskImageSize[] = {32, 64, 64, 128};
+SpriteMask spriteMaskInfo = {false, 0, NULL};
 
 const u8 mask_boundingBoxMeasurements[][EBBCnvrtMeasurementCount] = {
 	{16,16,0},

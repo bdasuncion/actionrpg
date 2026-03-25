@@ -33,12 +33,12 @@ extern const EDirections directions[EDirectionsCount];
 
 #define SKULLDEMON_PAL_CNT 1
 
-#define skulldemon_WALK_MVMNT_CTRL_MAX 4
+#define skulldemon_WALK_MVMNT_CTRL_MAX 5
 
 //#define MAX_DIST_FOR_CHASE 80
 
-#define SKULLDEMON_ATTACK_ANIMATIONFRAME_START 3
-#define SKULLDEMON_ATTACK_ANIMATIONFRAME_END 4
+#define SKULLDEMON_ATTACK_ANIMATIONFRAME_START 2
+#define SKULLDEMON_ATTACK_ANIMATIONFRAME_END 2
 
 #define SKULLDEMON_NATTACK_ZPOS_OFFSET 16
 
@@ -55,24 +55,24 @@ const u8 skulldemon_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
 
 const s32 skulldemon_walkOffsetX[EDirectionsCount][skulldemon_WALK_MVMNT_CTRL_MAX] = {
     {0,0,0,0,0},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
-	{1*MOVE_STR,0,1*MOVE_STR,0,1*MOVE_STR},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+	{1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
-	{-1*MOVE_STR,0,-1*MOVE_STR,0,-1*MOVE_STR},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG}
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG}
 };
 
 const s32 skulldemon_walkOffsetY[EDirectionsCount][skulldemon_WALK_MVMNT_CTRL_MAX] = {
-    {1*MOVE_STR,0,1*MOVE_STR,0,1*MOVE_STR},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG},
+    {1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
-	{-1*MOVE_STR,0,-1*MOVE_STR,0,-1*MOVE_STR},
-	{-1*MOVE_DIAG,0,-1*MOVE_DIAG,0,-1*MOVE_DIAG},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
 	{0,0,0,0,0},
-	{1*MOVE_DIAG,0,1*MOVE_DIAG,0,1*MOVE_DIAG}
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG}
 };
 
 const OffsetPoints skulldemon_scanSurroundingOffset[8][2] = {
@@ -98,14 +98,14 @@ const OffsetPoints skulldemon_strike_offsetValues[8][2] = {
 };
 
 const BoundingBox skulldemon_strikeCollisionBox[8] = {
-	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
-	{ -8, 8, 8, 24, 8, 18, 0,0,0,0},
-	{ 8, 24, -8, 8, 8, 18, 0,0,0,0},
-	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
-	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
-	{ -8, 8, -24, -8, 8, 18, 0,0,0,0},
-	{ -24, -8, -8, 8, 8, 18, 0,0,0,0},
-	{ -8, 8, 8, 24, 8, 18, 0,0,0,0}
+	{ -4, 4, 8, 24, 8, 18},
+	{ -4, 4, 8, 24, 8, 18},
+	{ 8, 24, -4, 4, 8, 18},
+	{ -4, 4, -24, -8, 8, 18},
+	{ -4, 4, -24, -8, 8, 18},
+	{ -4, 4, -24, -8, 8, 18},
+	{ -24, -8, -4, 4, 8, 18},
+	{ -4, 4, 8, 24, 8, 18}
 };
 
 const OffsetPoints skulldemon_scanLastKnownPosition = { 16, 16 };
@@ -283,7 +283,7 @@ void skulldemon_actionChaseTarget(CharacterAttr* character, const MapInfo *mapIn
 void skulldemon_actionAttack(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	bool isLastFrame = false;
-	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
+	int nextScreenFrame, nextAnimationFrame, xDist, yDist, currentAnimationFrame;
 	Position *position = &character->position;
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	BoundingBox boundingBox;
@@ -307,8 +307,24 @@ void skulldemon_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 	character->spriteDisplay.spriteSet = skulldemonAttacking[character->direction];
 	
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
-	//currentAnimationFrame = commonGetCurrentAnimationFrame(character);
+	currentAnimationFrame = commonGetCurrentAnimationFrame(character);
+	
+	if (currentAnimationFrame == SKULLDEMON_ATTACK_ANIMATIONFRAME_START) {
+		BoundingBox collisionBox;
+		int attackVal = 1;
+		mprinter_printf("SKULL DEMON ATTACK FRAMES\n");
+		collisionBox.startX = CONVERT_2POS(character->position.x) + skulldemon_strikeCollisionBox[character->faceDirection].startX;
+		collisionBox.startY = CONVERT_2POS(character->position.y) + skulldemon_strikeCollisionBox[character->faceDirection].startY;
+		collisionBox.startZ = CONVERT_2POS(character->position.z) + skulldemon_strikeCollisionBox[character->faceDirection].startZ;
+		collisionBox.endX = CONVERT_2POS(character->position.x) + skulldemon_strikeCollisionBox[character->faceDirection].endX;
+		collisionBox.endY = CONVERT_2POS(character->position.y) + skulldemon_strikeCollisionBox[character->faceDirection].endY;
+		collisionBox.endZ = CONVERT_2POS(character->position.z) + skulldemon_strikeCollisionBox[character->faceDirection].endZ;
+		mchar_actione_add(character, charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
+	}
+	
 	if (isLastFrame) {
+		mprinter_printf("REMOVE ATTACK\n");
+		mchar_actione_remove(character, charActionCollection);
 		character->nextAction = ESkullDemonChaseTarget;
 	}
 }
@@ -317,6 +333,7 @@ void skulldemon_actionStunned(CharacterAttr* character, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	++charControl->actions[charControl->currentAction].currentFrame;
+	mchar_actione_remove(character, charActionCollection);
 	if (charControl->actions[charControl->currentAction].currentFrame >= 
 		charControl->actions[charControl->currentAction].doForNumFrames) {
 		commonInitializeAISetActions(charControl);
@@ -428,4 +445,3 @@ void skulldemon_checkMapCollision(CharacterAttr* character, const MapInfo* mapIn
 	common_mapCollision[character->direction](character, mapInfo, 
 	    common_mapCollisionReactions[character->direction]);
 }
-

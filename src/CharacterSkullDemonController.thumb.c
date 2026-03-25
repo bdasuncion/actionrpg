@@ -41,6 +41,75 @@ void skulldemon_setCharacter(CharacterAttr* character) {
     character->controller = &skulldemon_walkAroundController; 
 }
 
+#define SKULLDEMON_MOVACT_INRANGE_ARRAYWIDTH 13
+#define SKULLDEMON_MOVACT_INRANGE_DIST 52
+
+const EDirections SKULLDEMON_ATTACKRANGE_TARGET_8x8[SKULLDEMON_MOVACT_INRANGE_ARRAYWIDTH][SKULLDEMON_MOVACT_INRANGE_ARRAYWIDTH] = {
+	{EUpleft,   EUpleft,   EUpleft,   EUp,       EUp,       EUp,        EUp,      EUp,        EUp,        EUp,        EUpright,   EUpright,   EUpright},
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,       EUp,        EUp,      EUp,        EUp,        EUpright,   EUpright,   EUpright,   EUpright},
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,        EUp,      EUp,        EUpright,   EUpright,   EUpright,   EUpright,   EUpright},
+	{ELeft,     EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,        EUp,      EUp,        EUpright,   EUpright,   EUpright,   EUpright,   ERight},
+	{ELeft,     ELeft,     EUpleft,   EUpleft,   EUpleft,   ELeft,      EUp,      ERight,     EUpright,   EUpright, EUpright,   ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUp,       EUpright,   EUp,      EUpleft,    EUp,        ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     ELeft,     ELeft,      EUnknown, ERight,     ERight,     ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EDown,     EDownright, EDown,    EDownleft,  EDown,      ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     EDown,     EDownleft, ERight,    ELeft,      EDown,    ERight,     EDown,      EDownright, EDownright, ERight,     ERight},
+	{ELeft,     EDownleft, EDownleft, EDownleft, EDownleft, EDown,      EDown,    EDown,      EDownright, EDownright, EDownright, EDownright, ERight},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown,      EDown,    EDown,      EDownright, EDownright, EDownright, EDownright, EDownright},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EDown,     EDown,      EDown,    EDown,      EDown,      EDownright, EDownright, EDownright, EDownright},
+	{EDownleft, EDownleft, EDownleft, EDown,     EDown,     EDown,      EDown,    EDown,      EDown,      EDown,      EDownright, EDownright, EDownright},
+};
+
+const SkullDemonAction SKULLDEMON_INRANGE_ACTION_8x8[SKULLDEMON_MOVACT_INRANGE_ARRAYWIDTH][SKULLDEMON_MOVACT_INRANGE_ARRAYWIDTH] = {
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonAttack      , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonAttack      , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonAttack      , ESkullDemonAttack      , ESkullDemonAttack      , ESkullDemonAttack      , ESkullDemonAttack      , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonAttack      , ESkullDemonChaseTarget ,ESkullDemonChaseTarget  , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonAttack      , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget},
+	{ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget , ESkullDemonChaseTarget}
+};
+
+
+
+
+
+#define SKULLDEMON_INSCREEN_DIST 84
+#define SKULLDEMON_INSCREEN_ARRAYWIDTH 21
+
+const EDirections FAR_TARGET_SKULLDEMON_8x8[SKULLDEMON_INSCREEN_ARRAYWIDTH][SKULLDEMON_INSCREEN_ARRAYWIDTH] = {
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,        EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright},
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,        EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright},
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,  EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright},
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,  EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUp,      EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright},
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   EUpright,   EUpright,   EUpright,   EUpright},
+	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   EUpright,   EUpright,   EUpright,   EUpright},
+	{ELeft,     ELeft,     EUpleft,   EUpleft,   EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   EUpright,   EUpright,   ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     EDownleft, EDownleft, EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   EDownright, EDownright, ERight,     ERight},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   EDownright, EDownright, EDownright, EDownright},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EUnknown,  EUnknown,  EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown,   EUnknown,   EUnknown,   EDownright, EDownright, EDownright, EDownright},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft,EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft,EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,      EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
+	{EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,    EDown,      EDownright, EDownright, EDownright, EDownright, EDownright, EDownright}
+};
+
+
+
+
 void skulldemon_doWalk(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
 	Position *position = &character->position;
@@ -104,7 +173,7 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
-			ESkullDemonWalk, 60);
+			ESkullDemonWalk, 15);
 	}
 	
 	common_doSetActions(charControl, character);
@@ -123,7 +192,8 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
 	bool isNear;
-	EDirections goDirection;
+	EDirections goDirection, faceDirection;
+	s8 doAction;
 
 	charControl->target = *commonFindCharTypePositionByDistance(characterCollection,
 		&character->position, MAX_DIST_FOR_CHASE, STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
@@ -134,37 +204,85 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 		return;
 	}
 	
-	common_findDirectionOfTargetCharacterInScreen(&character->position, 
-		&charControl->target, &goDirection, &isNear);
-	if (!isNear && goDirection == EUnknown) {
-		charControl->currentAction = MAXACTIONS;
-		charControl->currentStatus = ESkullDemonAIStateWalkAround;
-		character->nextAction = ESkullDemonWalk;
-		return;
-	} else if (isNear) {
-		character->nextAction = ESkullDemonAttack;
-		character->nextDirection = goDirection;
+	//common_findDirectionOfTargetCharacterInScreen(&character->position, 
+	//	&charControl->target, &goDirection, &isNear);
+		
+	common_findDirectionOfTargetCharacterInScreenCustom(&character->position,
+		&charControl->target, 
+		&FAR_TARGET_SKULLDEMON_8x8[0][0], SKULLDEMON_INSCREEN_DIST, SKULLDEMON_INSCREEN_ARRAYWIDTH,
+		&SKULLDEMON_ATTACKRANGE_TARGET_8x8[0][0], (s8*)&SKULLDEMON_INRANGE_ACTION_8x8[0][0],
+			SKULLDEMON_MOVACT_INRANGE_DIST, SKULLDEMON_MOVACT_INRANGE_ARRAYWIDTH,
+		&goDirection, &doAction, &isNear);
+	
+		if (charControl->currentAction < charControl->countAction && 
+		doAction != ESkullDemonAttack) {
+		
+		common_doSetActions(charControl, character);
+				
+		common_faceTarget(&character->position, &charControl->target, 
+			&faceDirection);
+		if (character->faceDirection != faceDirection) {
+			character->hasNewFaceDirection = true;
+			character->faceDirection = faceDirection;
+		}
 		return;
 	}
+		
+	if (!isNear) {
+		if (goDirection == EUnknown) {
+			charControl->currentAction = MAXACTIONS;
+			charControl->currentStatus = ESkullDemonAIStateWalkAround;
+			character->nextAction = ESkullDemonWalk;
+			return;
+		}
+		character->nextAction = ESkullDemonChaseTarget;
+		character->nextDirection = goDirection;
+		
+		common_faceTarget(&character->position, &charControl->target, 
+			&faceDirection);
+
+		if (character->faceDirection != faceDirection) {
+			character->hasNewFaceDirection = true;
+			character->faceDirection = faceDirection;
+		}
+		
+		//return;
+	} else if (isNear) {		
+		character->nextAction = doAction;
+		character->nextDirection = goDirection;
+		
+		common_faceTarget(&character->position, &charControl->target, 
+				&faceDirection);
+
+		if (character->faceDirection != faceDirection) {
+			character->hasNewFaceDirection = true;
+			character->faceDirection = faceDirection;
+		}
+		//return;
+	}
 	
-	character->nextAction = ESkullDemonChaseTarget;
+	if (character->nextAction == ESkullDemonAttack) {
+		return;
+	}
+	//character->nextAction = ESkullDemonChaseTarget;
 	
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
-			ESkullDemonChaseTarget, 60);
+			ESkullDemonChaseTarget, 15);
 		common_doSetActions(charControl, character);
+		mprinter_printf("MOVE AROUND SET\n");
 		return;
-	} else if (charControl->currentAction >= charControl->countAction) {
-		//charControl->countAction = 0;
+	} /*else if (charControl->currentAction >= charControl->countAction) {
+		charControl->countAction = 0;
 		commonInitializeAISetActions(charControl);
 		charControl->currentAction = MAXACTIONS;
-		character->nextDirection = goDirection;
+		//character->nextDirection = goDirection;
 		return;
-	}
+	}*/
 	
-	character->nextDirection = goDirection;
-	common_doSetActions(charControl, character);
+	//character->nextDirection = goDirection;
+	//common_doSetActions(charControl, character);
 }
 
 void skulldemon_doAttack(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -191,17 +309,20 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (common_shouldDoIntializeActions(character)) {
+		mprinter_printf("INIT\n");
 		commonInitializeAISetActions(charControl);
 		character->nextAction = ESkullDemonChaseTarget;
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
+		return;
 	}
 	
 	if (character->action == ESkullDemonChaseTarget) {
+		mprinter_printf("CHASE\n");
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
 	} else if (character->action == ESkullDemonAttack) {
 		skulldemon_doAttack(character, mapInfo, characterCollection, charControl);
 	}
-	++charControl->actions[charControl->currentAction].currentFrame;
+	//++charControl->actions[charControl->currentAction].currentFrame;
 }
 
 void skulldemon_doStun(CharacterAttr* character, const MapInfo *mapInfo, 

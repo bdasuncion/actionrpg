@@ -3,7 +3,7 @@
 
 #include "GBAObject.h"
 #include "GBACharacter.h"
-#include "GBACharacterType.h"
+#include "CharacterType.h"
 #include "GBAMap.h"
 #include "GBACharacterActionEvent.h"
 #include <stdbool.h>
@@ -167,4 +167,18 @@ void common_doGoAroundObstacle(const Position *current, const Position *target,
 	CharacterAIControl *charControl, int action, int duration);
 void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* character);
 void common_removeSpriteMask(CharacterCollection *characterCollection);
+
+void common_findDirectionOfTargetCharacterInScreenCustom(Position const *current, Position const *target, 
+	const EDirections *inScreen, const int inscreenOffset, const int inScreenArrayWidth,
+	const EDirections *inClose, const s8 *incloseActions,
+	const int incloseOffset, const int incloseArrayWidth,
+	EDirections *goDirection, s8 *setAction, bool *isNear);
+void common_findDirectionOfTarget(const Position *current, 
+	const Position *target, EDirections *faceDirection);
+void common_findDirectionOfTargetUpDown(const Position *current, 
+	const Position *target, EDirections *faceDirection);
+void common_findDirectionOfTargetLeftRight(const Position *current, 
+	const Position *target, EDirections *faceDirection);
+void common_faceTarget(Position const *current, Position const *target, 
+	EDirections *faceDirection);
 #endif

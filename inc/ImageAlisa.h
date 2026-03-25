@@ -187,6 +187,9 @@ extern const unsigned short sword_vertical_set_pal[];
 extern const unsigned int sword_vertical_set_image0[];
 extern const unsigned int sword_vertical_set_image1[];
 extern const unsigned int sword_vertical_set_image2[];
+extern const unsigned int sword_vertical_set_image3[];
+extern const unsigned int sword_vertical_set_image4[];
+
 
 extern const unsigned short alisa_reverseswordslash_down_pal[];
 extern const unsigned int alisa_reverseswordslash_down_image0[];

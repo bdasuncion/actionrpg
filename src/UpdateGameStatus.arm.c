@@ -10,6 +10,7 @@
 #include "ManagerScrDisplay.h"
 #include "ManagerPrinter.h"
 #include "ManagerOAM.h"
+#include "ManagerBG.h"
 
 #include "GBATimer.h"
 #include "UtilCommonValues.h"
@@ -24,6 +25,7 @@ void updateGameStatus() {
 	moam_update();
 	mchar_draw();
 	mscr_draw();
+	mgb_createImageMask();
 
 	mprinter_print();
 	gbaint_requestVBlankAck();

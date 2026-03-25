@@ -34,7 +34,11 @@
 	const MapInfo *mapInfo,
 	const CharBoundingBox *charBoundingBox,
 	const EDirections direction);
-*/	
+*/
+
+extern const unsigned int spritemask_standard_image0[];
+extern SpriteMask spriteMaskInfo;
+
 void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo);
 void mbg_initializeSpriteMasks(const MapInfo *mapInfo, CharacterCollection *characterCollection);
 
@@ -59,7 +63,7 @@ void mbg_init(const ScreenAttr *scrAtt, const MapInfo *mapInfo, CharacterCollect
 	}
 	
 	mbg_initializeMapOnScreen(scrAtt, mapInfo, 
-	    (u16*)&SCR_ENTRY->entry[ETileMap0], (u16*)&SCR_ENTRY->entry[ETileMap1]);
+	   (u16*)&SCR_ENTRY->entry[ETileMap0], (u16*)&SCR_ENTRY->entry[ETileMap1]);
 
     mbg_initializeCharacters(mapInfo, characterCollection, controlPool, charActionCollection);
 	mbg_copySpriteMaskImageToVram(mapInfo);
@@ -118,18 +122,28 @@ void mbg_initializeCharacters(const MapInfo *mapInfo, CharacterCollection *chara
 	}
 }
 
-extern const unsigned int spritemask_standard_image0[];
+void mgb_createImageMask() {
+	if (spriteMaskInfo.doInitMasks) {
+		spritemask_vram_copy32_ID(spritemask_standard_image0, 
+			//spriteMaskImageSize[EMask32x32], 0);
+			64, 0);
+		spriteMaskInfo.doInitMasks = false;
+	}
+}
 
 void mbg_copySpriteMaskImageToVram(const MapInfo *mapInfo) {
 	int i, id = 16;
-	spritemask_vram_copy32_ID(spritemask_standard_image0, 
-			spriteMaskImageSize[EMask32x32], 0);
-			
-	for ( i = 0; i < mapInfo->spriteMaskImageCount; ++i) {
+	spriteMaskInfo.doInitMasks = true;
+	spriteMaskInfo.count = mapInfo->spriteMaskImageCount;
+	spriteMaskInfo.masks = mapInfo->spriteMaskImage;
+	//spritemask_vram_copy32_ID(spritemask_standard_image0, 
+	//		spriteMaskImageSize[EMask32x32], 0);
+	
+	/*for ( i = 0; i < mapInfo->spriteMaskImageCount; ++i) {
 		spritemask_vram_copy32_ID(mapInfo->spriteMaskImage[i].image, 
 			spriteMaskImageSize[mapInfo->spriteMaskImage[i].type], id);
 		id += spriteMaskImageSize[mapInfo->spriteMaskImage[i].type] >> 3;
-	}
+	}*/
 }
 
 void mbg_initializeSpriteMasks(const MapInfo *mapInfo, CharacterCollection *characterCollection) {
@@ -203,12 +217,24 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 	s16 limit = DIVIDE_BY_TILE_WIDTH(mapInfo->width);
 	s16 yS = y;
 	
+	bool doprint = true;
+	bool doprint2 = true;
 	for (layeridx = 0; layeridx < mapInfo->mapEntryCount; ++layeridx) {
 		u16 *mapblock = (u16*)&SCR_ENTRY->entry[mapblock_id + layeridx];
 		s16 xCheck = x;
 		xCheck = DIVIDE_BY_TILE_WIDTH(xCheck);
+		//if (doprint) {
+		//	mprinter_printf("y:%d mapHeight:%d\n", y, mapInfo->height);
+		//	doprint = false;
+		//}
+		
 		for (i = 0; i < count; ++i) {
+			//mprinter_printf("xCheck:%d y:%d ", xCheck, y);
+			//mprinter_printf("xCheck: y: ");
 			if (xCheck >= 0 && xCheck < limit && y < mapInfo->height) {
+				//if (doprint2) {
+				//	mprinter_printf("y");
+				//}
 				mapblock[((mapblock_xidx + i)&MAPBLOCK_WIDTH_MAXIDX) +
 					(mapblock_yidx*mapblock_width)] =
 				mapInfo->mapEntry[0]
@@ -219,5 +245,6 @@ void mbg_setHorizontalTiles(const MapInfo *mapInfo,
 			}
 			++xCheck;
 		}
+		doprint2 = false;
 	}
 }

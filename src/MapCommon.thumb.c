@@ -264,6 +264,7 @@ void mapCommon_transferToMap(ScreenAttr *screenAttribute, CharacterCollection *c
         mapInfo, controlPool, charActionCollection, track);
 	}
 
+	mscr_moveScr(screenAttribute, mapInfo);	
 	mbg_init(screenAttribute, mapInfo, characterCollection, controlPool, charActionCollection);
 	
 	mapInfo->mapFunction = &returnToScreen;

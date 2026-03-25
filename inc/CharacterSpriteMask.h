@@ -3,7 +3,7 @@
 
 #include "GBAObject.h"
 #include "GBACharacter.h"
-#include "GBACharacterType.h"
+#include "CharacterType.h"
 #include "GBAMap.h"
 #include <stdbool.h>
 
@@ -31,6 +31,12 @@ typedef struct SpriteMaskImage {
 	SpriteMaskType type:8;
 	const u32 *image;
 }ALIGN4 SpriteMaskImage;
+
+typedef struct SpriteMask {
+	bool doInitMasks;
+	int count;
+	SpriteMaskImage *masks;
+}ALIGN4 SpriteMask;
 
 extern const u32 spriteMaskImageSize[];
 
