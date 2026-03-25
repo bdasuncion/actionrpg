@@ -173,7 +173,7 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
-			ESkullDemonWalk, 60);
+			ESkullDemonWalk, 15);
 	}
 	
 	common_doSetActions(charControl, character);
@@ -192,7 +192,7 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
 	bool isNear;
-	EDirections goDirection;
+	EDirections goDirection, faceDirection;
 	s8 doAction;
 
 	charControl->target = *commonFindCharTypePositionByDistance(characterCollection,
@@ -213,38 +213,76 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 		&SKULLDEMON_ATTACKRANGE_TARGET_8x8[0][0], (s8*)&SKULLDEMON_INRANGE_ACTION_8x8[0][0],
 			SKULLDEMON_MOVACT_INRANGE_DIST, SKULLDEMON_MOVACT_INRANGE_ARRAYWIDTH,
 		&goDirection, &doAction, &isNear);
+	
+		if (charControl->currentAction < charControl->countAction && 
+		doAction != ESkullDemonAttack) {
 		
-	if (!isNear && goDirection == EUnknown) {
-		charControl->currentAction = MAXACTIONS;
-		charControl->currentStatus = ESkullDemonAIStateWalkAround;
-		character->nextAction = ESkullDemonWalk;
-		return;
-	} else if (isNear) {
-		//character->nextAction = ESkullDemonAttack;
-		character->nextAction = doAction;
-		character->nextDirection = goDirection;
-		character->faceDirection = goDirection;
+		common_doSetActions(charControl, character);
+				
+		common_faceTarget(&character->position, &charControl->target, 
+			&faceDirection);
+		if (character->faceDirection != faceDirection) {
+			character->hasNewFaceDirection = true;
+			character->faceDirection = faceDirection;
+		}
 		return;
 	}
+		
+	if (!isNear) {
+		if (goDirection == EUnknown) {
+			charControl->currentAction = MAXACTIONS;
+			charControl->currentStatus = ESkullDemonAIStateWalkAround;
+			character->nextAction = ESkullDemonWalk;
+			return;
+		}
+		character->nextAction = ESkullDemonChaseTarget;
+		character->nextDirection = goDirection;
+		
+		common_faceTarget(&character->position, &charControl->target, 
+			&faceDirection);
+
+		if (character->faceDirection != faceDirection) {
+			character->hasNewFaceDirection = true;
+			character->faceDirection = faceDirection;
+		}
+		
+		//return;
+	} else if (isNear) {		
+		character->nextAction = doAction;
+		character->nextDirection = goDirection;
+		
+		common_faceTarget(&character->position, &charControl->target, 
+				&faceDirection);
+
+		if (character->faceDirection != faceDirection) {
+			character->hasNewFaceDirection = true;
+			character->faceDirection = faceDirection;
+		}
+		//return;
+	}
 	
-	character->nextAction = ESkullDemonChaseTarget;
+	if (character->nextAction == ESkullDemonAttack) {
+		return;
+	}
+	//character->nextAction = ESkullDemonChaseTarget;
 	
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
-			ESkullDemonChaseTarget, 60);
+			ESkullDemonChaseTarget, 15);
 		common_doSetActions(charControl, character);
+		mprinter_printf("MOVE AROUND SET\n");
 		return;
-	} else if (charControl->currentAction >= charControl->countAction) {
-		//charControl->countAction = 0;
+	} /*else if (charControl->currentAction >= charControl->countAction) {
+		charControl->countAction = 0;
 		commonInitializeAISetActions(charControl);
 		charControl->currentAction = MAXACTIONS;
-		character->nextDirection = goDirection;
+		//character->nextDirection = goDirection;
 		return;
-	}
+	}*/
 	
-	character->nextDirection = goDirection;
-	common_doSetActions(charControl, character);
+	//character->nextDirection = goDirection;
+	//common_doSetActions(charControl, character);
 }
 
 void skulldemon_doAttack(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -271,17 +309,20 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (common_shouldDoIntializeActions(character)) {
+		mprinter_printf("INIT\n");
 		commonInitializeAISetActions(charControl);
 		character->nextAction = ESkullDemonChaseTarget;
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
+		return;
 	}
 	
 	if (character->action == ESkullDemonChaseTarget) {
+		mprinter_printf("CHASE\n");
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
 	} else if (character->action == ESkullDemonAttack) {
 		skulldemon_doAttack(character, mapInfo, characterCollection, charControl);
 	}
-	++charControl->actions[charControl->currentAction].currentFrame;
+	//++charControl->actions[charControl->currentAction].currentFrame;
 }
 
 void skulldemon_doStun(CharacterAttr* character, const MapInfo *mapInfo, 
