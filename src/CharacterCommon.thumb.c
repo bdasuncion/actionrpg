@@ -221,7 +221,7 @@ void common_findDirectionOfTargetUpDown(const Position *current, const Position 
 		*faceDirection = EUp;
 	}
 }
-
+/*
 const EDirections FACE_TARGET[12][12] = {
  {EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp},
  {ELeft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, ERight},
@@ -236,6 +236,31 @@ const EDirections FACE_TARGET[12][12] = {
  {ELeft, EDown, EDown, EDown, EDown, EDown,  EDown, EDown, EDown, EDown, EDown, ERight},
  {EDown, EDown, EDown, EDown, EDown, EDown,  EDown, EDown, EDown, EDown, EDown, EDown},
 };
+*/
+const u32 FACE_DISTANCEOFFSET = (20*8) >> 1;
+const EDirections FACE_TARGET[20][20] = {
+ {EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp},
+ {ELeft, EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   ERight},
+ {ELeft, ELeft, EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   ERight, ERight},
+ {ELeft, ELeft, ELeft, EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUp,   EUp,   EUp,   EUp,   EUp,   EUp,   ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUp,   EUp,   EUp,   EUp,   ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EUp,   EUp,   ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EDown, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EDown, EDown, EDown,  ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EDown, EDown, EDown, EDown,  EDown,  ERight, ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, ELeft, EDown, EDown, EDown, EDown, EDown,  EDown,  EDown,  ERight, ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, ELeft, EDown, EDown, EDown, EDown, EDown, EDown,  EDown,  EDown,  EDown,  ERight, ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, ELeft, EDown, EDown, EDown, EDown, EDown, EDown, EDown,  EDown,  EDown,  EDown,  EDown,  ERight, ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, ELeft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown,  EDown,  EDown,  EDown,  EDown,  EDown,  ERight, ERight, ERight, ERight},
+ {ELeft, ELeft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown,  EDown,  EDown,  EDown,  EDown,  EDown,  EDown,  ERight, ERight, ERight},
+ {ELeft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown,  EDown,  EDown,  EDown,  EDown,  EDown,  EDown,  EDown,  ERight, ERight},
+};
+
 
 void common_faceTarget(Position const *current, Position const *target, EDirections *faceDirection) {
 	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
@@ -245,6 +270,10 @@ void common_faceTarget(Position const *current, Position const *target, EDirecti
 	int distanceY = targetPos.y - currentPos.y;	
 	int absDistX = abs(distanceX);
 	int absDistY = abs(distanceY);
+	
+	if (absDistX >= FACE_DISTANCEOFFSET || absDistY >= FACE_DISTANCEOFFSET) {
+		return;
+	}
 	
 	if (absDistX < 8 && absDistY < 8) {
 		if (absDistX < absDistY) {
@@ -262,12 +291,12 @@ void common_faceTarget(Position const *current, Position const *target, EDirecti
 		}
 		return;
 	}
-	int offsetDistanceX = distanceX + 48;
-	int offsetDistanceY = distanceY + 48;
+	
+	int offsetDistanceX = distanceX + FACE_DISTANCEOFFSET;
+	int offsetDistanceY = distanceY + FACE_DISTANCEOFFSET;
 	
 	offsetDistanceX = DIVIDE_BY_8(offsetDistanceX);
 	offsetDistanceY = DIVIDE_BY_8(offsetDistanceY);
-	
 	//*faceDirection = FACE_TARGET[(offsetDistanceY*12) + offsetDistanceX];
 	*faceDirection = FACE_TARGET[offsetDistanceY][offsetDistanceX]&7;
 }
@@ -310,7 +339,6 @@ void findInScreen(Position *current, Position *targetPos, int height, EDirection
 			return;
 		}
 	}
-	mprinter_printf("Z TARGET %d\n", targetPos->z);
 	
 	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
 	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
@@ -878,10 +906,10 @@ bool commonIsInside(const BoundingBox *charBoundingBox, const BoundingBox *other
 }
 
 void convertWaypointToBoundingBox(const Position *wayPoint, BoundingBox *boundingBox) {
-	boundingBox->startX = wayPoint->x + 8;
-	boundingBox->endX =  wayPoint->x - 8;
-	boundingBox->startY =  wayPoint->y + 8;
-	boundingBox->endY =  wayPoint->y - 8;
+	boundingBox->startX = wayPoint->x - 8;
+	boundingBox->endX =  wayPoint->x + 8;
+	boundingBox->startY =  wayPoint->y - 8;
+	boundingBox->endY =  wayPoint->y + 8;
 	boundingBox->startZ =  wayPoint->z;
 	boundingBox->endZ =   wayPoint->z + 32;
 }
@@ -1706,9 +1734,10 @@ bool common_shouldDoNextAction(CharacterAttr* character) {
 }
 
 bool common_shouldDoIntializeActions(CharacterAttr* character) {
-   CharacterAIControl *charControl = (CharacterAIControl*)character->free;
-   return charControl->currentAction >= MAXACTIONS | (((charControl->currentAction + 1) >= charControl->countAction) &
-	common_shouldDoNextAction(character));
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	//return charControl->currentAction >= MAXACTIONS | (((charControl->currentAction + 1) >= charControl->countAction) &
+	//common_shouldDoNextAction(character));
+	return charControl->currentAction >= MAXACTIONS;
 }
 
 const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *characterCollection, 
