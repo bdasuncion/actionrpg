@@ -482,13 +482,15 @@ void common_findDirectionOfTargetCharacterInScreenCustom(Position const *current
 	int distanceX = targetPos.x - currentPos.x;
 	int distanceY = targetPos.y - currentPos.y;
 	
-	int offsetDistanceX = distanceX + FAR_DIST_OFFSET;
-	int offsetDistanceY = distanceY + FAR_DIST_OFFSET;
+	int offsetDistanceX = distanceX + inScreenOffset;
+	int offsetDistanceY = distanceY + inScreenOffset;
 	
-	offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
-	offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
+	//offsetDistanceX = DIVIDE_BY_32(offsetDistanceX);
+	//offsetDistanceY = DIVIDE_BY_32(offsetDistanceY);
 
-	if (offsetDistanceX >= FARTARGET_SIZE || offsetDistanceY >= FARTARGET_SIZE || offsetDistanceX < 0 || offsetDistanceY < 0) {
+	//if (offsetDistanceX >= FARTARGET_SIZE || offsetDistanceY >= FARTARGET_SIZE || offsetDistanceX < 0 || offsetDistanceY < 0) {
+	int totalDistanceThreshold = inScreenOffset*2;
+	if (offsetDistanceX >= totalDistanceThreshold || offsetDistanceY >= totalDistanceThreshold || offsetDistanceX < 0 || offsetDistanceY < 0) {
 		*goDirection = EUnknown;
 		*isNear = false;
 		return;
