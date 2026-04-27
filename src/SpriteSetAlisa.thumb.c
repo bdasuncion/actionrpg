@@ -81,3 +81,11 @@ extern const SpriteSet alisa_reverseswordslash_up;
 
 const SpriteSet * const alisaReverseSwordSlashSet[] = { &alisa_reverseswordslash_down, &alisa_reverseswordslash_down, &alisa_reverseswordslash_right, 
     &alisa_reverseswordslash_up, &alisa_reverseswordslash_up, &alisa_reverseswordslash_up, &alisa_reverseswordslash_left, &alisa_reverseswordslash_down };
+	
+extern const SpriteSet alisa_spinningslash_down;
+extern const SpriteSet alisa_spinningslash_left;
+extern const SpriteSet alisa_spinningslash_right;
+extern const SpriteSet alisa_spinningslash_up;
+
+const SpriteSet * const alisaSpinningSwordSlashSet[] = { &alisa_spinningslash_down, &alisa_spinningslash_down, &alisa_spinningslash_right, 
+    &alisa_spinningslash_up, &alisa_spinningslash_up, &alisa_spinningslash_up, &alisa_spinningslash_left, &alisa_spinningslash_down };

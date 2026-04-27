@@ -12,6 +12,7 @@ typedef enum AlisaAction
 	EAlisaRun,
 	EAlisaNormalSwordSlash,
 	EAlisaStrongSwordSlash,
+	EAlisaSpinningSwordSlash,
 	EAlisaPrepareDash,
 	EAlisaDashForward,
 	EAlisaDashBackward,

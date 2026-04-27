@@ -266,8 +266,59 @@ void alisa_normalSlashController(CharacterAttr* character, const MapInfo *mapInf
 	}
 }
 
+#define ALISA_LASTANIMATIONFRAME_SPSLASH 12
+#define ALISA_LASTANIMATIONFRAME_DISPLAY_SPSLASH 15
+
+void alisa_spinningSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+	int nextScreenFrame, nextAnimationFrame, hold;
+	bool isLastFrame = false;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+	character->distanceFromGround = 1024;
+
+	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+
+	int currentAnimationFrame = commonGetCurrentAnimationFrame(character);
+	if (currentAnimationFrame < 5 && currentAnimationFrame > 8) {
+		mprinter_printf("SPIN CHECK IS FALLING\n");
+		if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
+			return;
+		}
+	}
+	
+	//mprinter_printf("SPIN SLASH CONTROLLER\n");
+	character->nextAction = EAlisaSpinningSwordSlash;
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
+	if (currentAnimationFrame >= ALISA_LASTANIMATIONFRAME_SPSLASH - 2) {
+		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
+			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
+		}
+	}
+	
+	if (currentAnimationFrame >= ALISA_LASTANIMATIONFRAME_SPSLASH) {
+		//mprinter_printf("LAST FRAME %d\n", nextScreenFrame);		
+		if ((nextScreenFrame >= ALISA_LASTANIMATIONFRAME_SPSLASH - 5) && 
+			charControl->action.action  == EAlisaPrepareDash) {
+			charControl->action.action = EAlisaInitialize;
+			character->controller = &alisa_prepareDashController;
+			character->controller(character, mapInfo, characterCollection);
+			return;
+		}
+	}
+	
+	if (isLastFrame) {
+		character->controller = &alisa_controller;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+}
+
 #define ALISA_LASTANIMATIONFRAME_SSLASH 3
-#define ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH 20
+//#define ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH 20
+#define ALISA_LASTANIMATIONFRAME_DISPLAY_STSLASH 20
 
 void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
@@ -286,9 +337,24 @@ void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInf
 	character->nextAction = EAlisaStrongSwordSlash;
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
-	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_SSLASH - 2) {
+	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_SSLASH - 1) {
+		//mprinter_printf("XXXXXXXXXXXXXXX BUTTON DETECTION %d\n", charControl->numberOfEnemyHits);
 		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
+		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController)) {
+			//mprinter_printf("XXXXXXXXXXXXXXX SPIN SLASH????\n");
+			//if (charControl->numberOfEnemyHits > 0) {
+			//mprinter_printf("XXXXXXXXXXXXXXX SPIN SLASH\n");
+			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaSpinningSwordSlash});
+		}
+		
+		if (nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_STSLASH - 5 && 
+			charControl->action.action  == EAlisaSpinningSwordSlash) {
+			charControl->action.action = EAlisaInitialize;
+			charControl->numberOfEnemyHits = 0;
+			character->controller = &alisa_spinningSlashController;
+			character->controller(character, mapInfo, characterCollection);
+			return;
 		}
 	}
 	

@@ -18,3 +18,4 @@ extern const SpriteSet * const alisaDashBackwardWithSwordSet[];
 extern const SpriteSet * const alisaJumpWithSwordSet[];
 extern const SpriteSet * const alisaFallingDownSet[];
 extern const SpriteSet * const alisaReverseSwordSlashSet[];
+extern const SpriteSet * const alisaSpinningSwordSlashSet[];
