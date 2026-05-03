@@ -341,29 +341,24 @@ void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInf
 		//mprinter_printf("XXXXXXXXXXXXXXX BUTTON DETECTION %d\n", charControl->numberOfEnemyHits);
 		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
-		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController)) {
-			//mprinter_printf("XXXXXXXXXXXXXXX SPIN SLASH????\n");
-			//if (charControl->numberOfEnemyHits > 0) {
-			//mprinter_printf("XXXXXXXXXXXXXXX SPIN SLASH\n");
+		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController)  && charControl->numberOfEnemyHits > 0) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaSpinningSwordSlash});
-		}
-		
-		if (nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_STSLASH - 5 && 
-			charControl->action.action  == EAlisaSpinningSwordSlash) {
-			charControl->action.action = EAlisaInitialize;
-			charControl->numberOfEnemyHits = 0;
-			character->controller = &alisa_spinningSlashController;
-			character->controller(character, mapInfo, characterCollection);
-			return;
 		}
 	}
 	
 	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_SSLASH) {
 		//mprinter_printf("LAST FRAME %d\n", nextScreenFrame);		
-		if ((nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH - 10) && 
+		if ((nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_STSLASH - 10) && 
 			charControl->action.action  == EAlisaPrepareDash) {
 			charControl->action.action = EAlisaInitialize;
 			character->controller = &alisa_prepareDashController;
+			character->controller(character, mapInfo, characterCollection);
+			return;
+		} else if (nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_STSLASH - 5 && 
+			charControl->action.action  == EAlisaSpinningSwordSlash) {
+			charControl->action.action = EAlisaInitialize;
+			charControl->numberOfEnemyHits = 0;
+			character->controller = &alisa_spinningSlashController;
 			character->controller(character, mapInfo, characterCollection);
 			return;
 		}

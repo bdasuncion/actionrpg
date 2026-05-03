@@ -462,6 +462,17 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo,
 	//alisa->spriteDisplay.spriteSet = &maincharacter_walk;
 }
 
+void countEnemyHit(CharacterPlayerControl *charControl, const CharacterActionEvent *action) {
+	if (charControl->type == EControlControlType) {
+		//CharacterActionEvent *action = mchar_actione_find(alisa, charActionCollection);
+		if (action != NULL && action->maxHit <= 0) {
+			charControl->numberOfEnemyHits = 1;
+		} else {
+			charControl->numberOfEnemyHits = 0;
+		}
+	}
+}
+
 void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	BoundingBox position;
@@ -513,15 +524,7 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	
 	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->faceDirection&EDirectionsMax];
 	
-	CharacterPlayerControl *charControl = (CharacterPlayerControl*)alisa->free;
-	if (charControl->type == EControlControlType) {
-		CharacterActionEvent *action = mchar_actione_find(alisa, charActionCollection);
-		if (action != NULL && action->maxHit <= 0) {
-			charControl->numberOfEnemyHits = 1;
-		} else {
-			charControl->numberOfEnemyHits = 0;
-		}
-	}
+	countEnemyHit((CharacterPlayerControl*)alisa->free, mchar_actione_find(alisa, charActionCollection));
 }
 
 void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo, 
@@ -572,8 +575,10 @@ void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	if (commonGetCurrentAnimationFrame(alisa) == ALISA_SLASH_STARTSOUND_FRAME && commonGetCurrentDisplayFrame(alisa) == 0) {
 		msound_setChannel(&soundeffect_slash, false);
 	}
-	
+		
 	alisa->spriteDisplay.spriteSet = alisaReverseSwordSlashSet[alisa->faceDirection&EDirectionsMax];
+	
+	countEnemyHit((CharacterPlayerControl*)alisa->free, mchar_actione_find(alisa, charActionCollection));
 }
 
 #define ALISA_SPINNINGSLASH_ANIMATIONFRAME_START_COLLISION 10
