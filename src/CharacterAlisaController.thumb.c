@@ -238,12 +238,14 @@ void alisa_normalSlashController(CharacterAttr* character, const MapInfo *mapInf
 		//mprinter_printf("LAST FRAME %d\n", nextScreenFrame);
 		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
-		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController) && charControl->numberOfEnemyHits > 0) {
+		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController)  &&
+			charControl->numberOfEnemyHits > 0) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaStrongSwordSlash});
 		}
 		
 		if (nextScreenFrame >= ALISA_LASTANIMATIONFRAME_DISPLAY_NSLASH - 5 && 
-			charControl->action.action  == EAlisaStrongSwordSlash) {
+			charControl->action.action  == EAlisaStrongSwordSlash /*&&
+			charControl->numberOfEnemyHits > 0*/) {
 			charControl->action.action = EAlisaInitialize;
 			charControl->numberOfEnemyHits = 0;
 			character->controller = &alisa_strongSlashController;
@@ -338,10 +340,10 @@ void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInf
 	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	if (commonGetCurrentAnimationFrame(character) >= ALISA_LASTANIMATIONFRAME_SSLASH - 1) {
-		//mprinter_printf("XXXXXXXXXXXXXXX BUTTON DETECTION %d\n", charControl->numberOfEnemyHits);
 		if (controlButtonCheckSpecificAction(character, &alisa_prepareDashController)) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaPrepareDash});
-		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController)  && charControl->numberOfEnemyHits > 0) {
+		} else if (controlButtonCheckSpecificAction(character, &alisa_slashController) &&
+			charControl->numberOfEnemyHits > 0) {
 			charControl->action = ((ActionControl){0, 0, character->direction, character->direction, EAlisaSpinningSwordSlash});
 		}
 	}

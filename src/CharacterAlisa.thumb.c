@@ -17,6 +17,9 @@
 #include "GBAMap.h"
 #include "ManagerCharacters.h"
 #include "ManagerPrinter.h"
+
+#include "DebugLogMgba.h"
+
 #define ALISA_RUN_MVMNT_CTRL_MAX 5
 #define ALISA_DASH_MVMNT_CTRL_MAX 4
 
@@ -481,7 +484,8 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	//mprinter_printf("SLASH\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
-	
+
+	//mgba_logs("[ALISA] ACTION SLASH");
 	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
 	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
 		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
@@ -501,16 +505,13 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	if (currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION && 
 		currentAnimationFrame <= ALISA_NORMALSLASH_ANIMATIONFRAME_END_COLLISION) {
 		BoundingBox collisionBox;
-		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startX + 
-			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startY + 
-			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startZ;
-		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endX +
-			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endY +
-			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endZ;
+		
+		commonCharacter_createAttackBoundingBox(&alisa->position, 
+			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax],
+			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax], 
+			&alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax], 
+			currentAnimationFrame&1, &collisionBox);
+			
 		if (displayCountFrame < ALISA_NORMALSLASH_FRAME_END_COLLISION){
 			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 1, &collisionBox);
 		} else {
@@ -555,16 +556,13 @@ void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	if (currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION && 
 		currentAnimationFrame <= ALISA_NORMALSLASH_ANIMATIONFRAME_END_COLLISION) {
 		BoundingBox collisionBox;
-		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startX + 
-			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startY + 
-			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startZ;
-		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endX +
-			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endY +
-			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endZ;
+		
+		commonCharacter_createAttackBoundingBox(&alisa->position, 
+			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax],
+			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax], 
+			&alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax], 
+			currentAnimationFrame&1, &collisionBox);
+			
 		if (displayCountFrame < ALISA_NORMALSLASH_FRAME_END_COLLISION){
 			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 1, &collisionBox);
 		} else {
@@ -622,16 +620,12 @@ void alisa_actionSpinningSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		currentAnimationFrame <= ALISA_SPINNINGSLASH_ANIMATIONFRAME_END_COLLISION &&
 		displayCountFrame < ALISA_SPINNINGSLASH_DISPLAYFRAME_COLLISION) {
 		BoundingBox collisionBox;
-		collisionBox.startX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startX + 
-			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.startY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startY + 
-			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.startZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].startZ;
-		collisionBox.endX = CONVERT_2POS(alisa->position.x) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endX +
-			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.endY = CONVERT_2POS(alisa->position.y) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endY +
-			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax][currentAnimationFrame];
-		collisionBox.endZ = CONVERT_2POS(alisa->position.z) + alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax].endZ;
+		
+		commonCharacter_createAttackBoundingBox(&alisa->position, 
+			alisa_normalSlashOffsetX[alisa->faceDirection&EDirectionsMax],
+			alisa_normalSlashOffsetY[alisa->faceDirection&EDirectionsMax], 
+			&alisa_slashCollisionBox[alisa->faceDirection&EDirectionsMax], 
+			currentAnimationFrame&1, &collisionBox);
 		//if (displayCountFrame < ALISA_SPINNINGSLASH_ANIMATIONFRAME_END_COLLISION &&
 		//	displayCountFrame < ALISA_SPINNINGSLASH_DISPLAYFRAME_COLLISION){
 		mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 1, &collisionBox);
