@@ -117,6 +117,8 @@ void wickedknight_actionAttack(CharacterAttr* character,const MapInfo *mapInfo,
 void wickedknight_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 bool wickedknight_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent);
+void wickedknight_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 	
 const CharFuncAction wickedknight_actions[] = {
 	&wickedknight_actionWalk,
@@ -314,13 +316,12 @@ void wickedknight_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 	if (currentAnimationFrame == WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_START) {
 		BoundingBox collisionBox;
 		int attackVal = 1;
-		//mprinter_printf("ATTACK FRAMES\n");
-		collisionBox.startX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->faceDirection].startX;
-		collisionBox.startY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->faceDirection].startY;
-		collisionBox.startZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->faceDirection].startZ;
-		collisionBox.endX = CONVERT_2POS(character->position.x) + wickedknight_strikeCollisionBox[character->faceDirection].endX;
-		collisionBox.endY = CONVERT_2POS(character->position.y) + wickedknight_strikeCollisionBox[character->faceDirection].endY;
-		collisionBox.endZ = CONVERT_2POS(character->position.z) + wickedknight_strikeCollisionBox[character->faceDirection].endZ;
+		//mprinter_printf("ATTACK FRAMES\n");		
+		commonCharacter_createAttackBoundingBox(&character->position, 
+			NULL, NULL, 
+			&wickedknight_strikeCollisionBox[character->faceDirection&EDirectionsMax], 
+			currentAnimationFrame&1, &collisionBox);
+			
 		mchar_actione_add(character, charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
 	} else if (currentAnimationFrame >= WICKEDKNIGHT_ATTACK_ANIMATIONFRAME_END) {
 		mchar_actione_remove(character, charActionCollection);
@@ -411,13 +412,32 @@ void wickedknight_checkCollision(CharacterAttr* character, bool isOtherCharBelow
 	common_collisionReactions[character->direction]
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
-
+	
 bool wickedknight_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	//return false;
 	if (character->stats.currentStatus == EStatusNoActionCollision) {
 		return false;
 	}
+	
+	character->hasNewFaceDirection = true;
+	charControl->countAction = 1;
+	charControl->currentAction = 0;
+	charControl->actions[charControl->currentAction] = 
+		((ActionControl){25, 0, character->direction, character->faceDirection, 
+		EWickedKnightStunned});
+	
+	if (character->nextAction == EWickedKnightAttack) {
+		charControl->previousActionType = character->nextAction;
+		charControl->previousSpriteDisplay = character->spriteDisplay;
+	} else {
+		charControl->previousActionType = EWickedKnightChaseTarget;
+	}
+	//charControl->previousActionType = character->nextAction;
+	//charControl->previousSpriteDisplay = character->spriteDisplay;
+		
+	character->controller = &wickedknight_stunnedController;
+		
 	character->stats.currentLife -= 1;
 	//character->stats.currentStatus = EStatusNoActionCollision;
 	charControl->currentStatus = EWickedKnightAIStateStunned;

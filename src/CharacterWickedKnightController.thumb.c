@@ -33,28 +33,6 @@ const EDirections wickedknight_walkDirections[] = {
 #define INSCREEN_ARRAYWIDTH 30
 
 const EDirections FAR_TARGET_WICKEDKNIGHT_8x8[INSCREEN_ARRAYWIDTH][INSCREEN_ARRAYWIDTH] = {
- /*{EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUpright, EUpright, EUpright, EUpright},
- {ELeft, ELeft, EUpleft, EUpleft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUpright, EUpright, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, EDownleft, EDownleft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EDownright, EDownright, ERight, ERight},
- {EDownleft, EDownleft, EDownleft, EDownleft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EDownright, EDownright, EDownright, EDownright},
- {EDownleft, EDownleft, EDownleft, EDownleft, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EUnknown, EDownright, EDownright, EDownright, EDownright},
- {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
- {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
- {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright},
- {EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDown, EDownright, EDownright, EDownright, EDownright, EDownright, EDownright}
-*/
-
 { EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,        EUp,        EUp,        EUp,        EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright },
 { EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,        EUp,        EUp,        EUp,        EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright },
 { EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUp,        EUp,        EUp,        EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright,   EUpright },
@@ -136,19 +114,6 @@ const WickedKnightAction CIRCLE_ACTION_CLOCKWISE_8x8[MOVACT_INRANGE_ARRAYWIDTH][
 };
 
 const EDirections ATTACKRANGE_TARGET_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
- /*{EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, EUp, EUp, EUp, EUp, EUpright, EUpright, EUpright, EUpright},
- {EUpleft, EUpleft, EUpleft, EUpleft, ELeft, EUp, EUp, ERight, EUpright, EUpright, EUpright, EUpright},
- {ELeft, EUpleft, EUpleft, EUpleft, EDownleft, EUp, EUp, EDownright, EUpright, EUpright, EUpright, ERight},
- {ELeft, ELeft, EUp, EUpright, ERight, EUp, EUp, ELeft, EUpleft, EUp, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, ELeft, ERight, EDown, ERight, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, ELeft, ELeft, ELeft, EUp, ELeft, ERight, ERight, ERight, ERight, ERight},
- {ELeft, ELeft, EDown, EDownright, ERight, EDown, EDown, ELeft, EDownleft, EDown, ERight, ERight},
- {ELeft, EDownleft,  EDownleft, EDownleft, EUpleft, EDown, EDown, EUpright, EDownright,  EDownright, EDownright,  ERight},
- {EDownleft, EDownleft,  EDownleft, EDownleft, ELeft, EDown, EDown, ERight, EDownright,  EDownright, EDownright,  EDownright},
- {EDownleft, EDownleft, EDownleft, EDownleft, EDown, EDown,  EDown, EDown, EDownright, EDownright, EDownright, EDownright},
- {EDownleft, EDownleft, EDownleft, EDown, EDown, EDown,  EDown, EDown, EDown, EDownright, EDownright, EDownright},
- */
  {EUpleft,   EUpleft,   EUpleft,   EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUpright,   EUpright,   EUpright},
  {EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,       EUp,       EUp,       EUp,       EUpright,  EUpright,   EUpright,   EUpright},
  {EUpleft,   EUpleft,   EUpleft,   EUpleft,   ELeft,     EUp,       EUp,       ERight,    EUpright,  EUpright,   EUpright,   EUpright},
@@ -179,19 +144,6 @@ const WickedKnightAction ACTION_MOVEONLY_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_I
 };
 
 const EDirections BACKOFF_TARGET_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_ARRAYWIDTH] = {
- /*{EDownright, EDownright, EDownright, EDown, EDown, EDown, EDown, EDown, EDown, EDownleft, EDownleft, EDownleft},
- {EDownright, EDownright, EDownright, EDownright, EDown, EDown, EDown, EDown, EDownleft, EDownleft, EDownleft, EDownleft},
- {EDownright, EDownright, EDownright, EDownright, EDownright, EDown, EDown, EDownleft, EDownleft, EDownleft, EDownleft, EDownleft},
- {ERight , EDownright, EDownright, EDownright, EDownright, EDown, EDown, EDownleft, EDownleft, EDownleft, EDownleft, ELeft},
- {ERight , ERight , EDownright, EDownright, EDownright, EDown, EDown, EDownleft, EDownleft, EDownleft, ELeft, ELeft},
- {ERight , ERight , ERight , ERight , ERight , ERight, EDown, ELeft, ELeft, ELeft, ELeft, ELeft},
- {ERight , ERight , ERight , ERight , ERight , EUp, ELeft , ELeft, ELeft, ELeft, ELeft, ELeft},
- {ERight , ERight , EUpright, EUpright, EUpright, EUp, EUp, EUpleft, EUpleft, EUpleft, ELeft, ELeft},
- {ERight , EUpright,  EUpright, EUpright, EUpright, EUp, EUp, EUpleft, EUpleft,  EUpleft, EUpleft,  ELeft},
- {EUpright, EUpright,  EUpright, EUpright, EUpright, EUp, EUp, EUpleft, EUpleft,  EUpleft, EUpleft,  EUpleft},
- {EUpright, EUpright, EUpright, EUpright, EUp, EUp,  EUp, EUp, EUpleft, EUpleft, EUpleft, EUpleft},
- {EUpright, EUpright, EUpright, EUp, EUp, EUp,  EUp, EUp, EUp, EUpleft, EUpleft, EUpleft},
-*/
  {EDownright, EDownright, EDownright, EDown,     EDown,     EDown,     EDown,     EDown,     EDown,     EDownleft,  EDownleft,  EDownleft},
  {EDownright, EDownright, EDownright, EDownright,EDown,     EDown,     EDown,     EDown,     EDownleft, EDownleft,  EDownleft,  EDownleft},
  {EDownright, EDownright, EDownright, EDownright,EDownright,EDown,     EDown,     EDownleft, EDownleft, EDownleft,  EDownleft,  EDownleft},
@@ -204,7 +156,6 @@ const EDirections BACKOFF_TARGET_8x8[MOVACT_INRANGE_ARRAYWIDTH][MOVACT_INRANGE_A
  {EUpright,  EUpright,   EUpright,   EUpright,  EUpright,  EUp,       EUp,       EUpleft,   EUpleft,   EUpleft,    EUpleft,    EUpleft},
  {EUpright,  EUpright,   EUpright,   EUpright,  EUp,       EUp,       EUp,       EUp,       EUpleft,   EUpleft,    EUpleft,    EUpleft},
  {EUpright,  EUpright,   EUpright,   EUp,       EUp,       EUp,       EUp,       EUp,       EUp,       EUpleft,    EUpleft,    EUpleft}
-
 };
 
 
@@ -260,13 +211,6 @@ void wickedknight_walkAroundController(CharacterAttr* character, const MapInfo *
 		return;
 	}
 	
-	if (charControl->currentStatus == EWickedKnightAIStateStunned) {
-		charControl->currentAction = MAXACTIONS;
-		character->controller = &wickedknight_stunnedController;
-		character->controller(character, mapInfo, characterCollection);
-		return;
-	}
-		
 	if (common_shouldDoIntializeActions(character)) {
 		commonInitializeAISetActions(charControl);
 		character->getBounds = &wickedknight_getBoundingBoxMoving;
@@ -498,18 +442,8 @@ void wickedknight_attackController(CharacterAttr* character, const MapInfo *mapI
 		return;
 	}
 	
-	if (charControl->currentStatus == EWickedKnightAIStateStunned) {
-		//mprinter_printf("GO TO STUNNED CON\n");
-		charControl->currentAction = MAXACTIONS;
-		charControl->previousActionType = character->nextAction;
-		charControl->previousSpriteDisplay = character->spriteDisplay;
-		character->controller = &wickedknight_stunnedController;
-		character->controller(character, mapInfo, characterCollection);
-		return;
-	}
-	
 	if (common_shouldDoIntializeActions(character)) {
-		//mprinter_printf("ATTACK INIT %d %d\n", charControl->currentAction, charControl->countAction);		
+		mprinter_printf("ATTACK INIT %d %d\n", charControl->currentAction, charControl->countAction);		
 		commonInitializeAISetActions(charControl);
 		//charControl->actions[0].currentFrame = 0;
 		//charControl->actions[0].doForNumFrames = 20;
@@ -554,7 +488,7 @@ void wickedknight_huntController(CharacterAttr* character, const MapInfo *mapInf
 		return;
 	}
 	
-	if (charControl->currentStatus == EWickedKnightAIStateStunned) {
+	/*if (charControl->currentStatus == EWickedKnightAIStateStunned) {
 		charControl->currentAction = MAXACTIONS;
 		if (character->nextAction == EWickedKnightAttack) {
 			charControl->previousActionType = character->nextAction;
@@ -565,7 +499,7 @@ void wickedknight_huntController(CharacterAttr* character, const MapInfo *mapInf
 		character->controller = &wickedknight_stunnedController;
 		character->controller(character, mapInfo, characterCollection);
 		return;
-	}
+	}*/
 	
 	if (common_shouldDoIntializeActions(character)) {
 		commonInitializeAISetActions(charControl);
@@ -622,12 +556,12 @@ void wickedknight_stunnedController(CharacterAttr* character, const MapInfo *map
 		return;
 	}
 		
-	if (common_shouldDoIntializeActions(character)) {
+	/*if (common_shouldDoIntializeActions(character)) {
 		character->hasNewFaceDirection = true;
 		charControl->countAction = 1;
 		charControl->currentAction = 0;
 		charControl->actions[charControl->currentAction] = ((ActionControl){25, 0, character->direction, character->faceDirection, EWickedKnightStunned});
-	}
+	}*/
 	common_doSetActions(charControl, character);
 	/*if (character->nextAction == EWickedKnightStunned) {
 		wickedknight_doStun(character, mapInfo, characterCollection, charControl);
@@ -717,13 +651,6 @@ void wickedknight_backoffController(CharacterAttr* character, const MapInfo *map
 	if (charControl->currentStatus == EWickedKnightAIStateWalkAround) {
 		charControl->currentAction = MAXACTIONS;
 		character->controller = &wickedknight_walkAroundController;
-		character->controller(character, mapInfo, characterCollection);
-		return;
-	}
-	
-	if (charControl->currentStatus == EWickedKnightAIStateStunned) {
-		charControl->currentAction = MAXACTIONS;
-		character->controller = &wickedknight_stunnedController;
 		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
