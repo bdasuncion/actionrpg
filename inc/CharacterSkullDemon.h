@@ -7,6 +7,7 @@ typedef enum SkullDemonAction {
 	ESkullDemonChaseTarget,
 	ESkullDemonAttack,
 	ESkullDemonStunned,
+	ESkullDemonHurt,
 	ESkullDemonActionCount
 } SkullDemonAction;
 typedef enum SkullDemonAIState {

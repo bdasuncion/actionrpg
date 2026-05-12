@@ -25,7 +25,7 @@ const SpriteLayer skull_demon_attacking_up_layerSet2[] = {
 const SpriteLayerSet skull_demon_attacking_up_layerSet[] = {
     {skull_demon_attacking_up_layerSet0,10,5},
     {skull_demon_attacking_up_layerSet1,10,5},
-    {skull_demon_attacking_up_layerSet2,10,5},
+    {skull_demon_attacking_up_layerSet2,20,5},
 };
 
 const SpriteSet skull_demon_attacking_up = {skull_demon_attacking_up_layerSet,3};

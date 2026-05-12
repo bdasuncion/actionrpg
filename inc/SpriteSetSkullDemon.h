@@ -2,3 +2,4 @@
 
 extern const SpriteSet *const skulldemonWalking[];
 extern const SpriteSet *const skulldemonAttacking[];
+extern const SpriteSet *const skulldemonHurt[];

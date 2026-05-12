@@ -17,6 +17,8 @@
 #include "ManagerCharacters.h"
 #include "ManagerPrinter.h"
 
+#include "DebugLogMgba.h"
+
 #define MAX_DIST_FOR_CHASE 120
 
 const EDirections skulldemon_walkDirections[] = {
@@ -31,6 +33,9 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection);
 	
 void skulldemon_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+	
+void skulldemon_hurtController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection);
 	
 void skulldemon_getBoundingBoxMoving(const CharacterAttr* character, 
@@ -141,14 +146,7 @@ void skulldemon_walkAroundController(CharacterAttr* character, const MapInfo *ma
 		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
-	
-	if (charControl->currentStatus == ESkullDemonAIStateStunned) {
-		charControl->currentAction = MAXACTIONS;
-		character->controller = &skulldemon_stunnedController;
-		character->controller(character, mapInfo, characterCollection);
-		return;
-	}
-		
+			
 	if (common_shouldDoIntializeActions(character)) {
 		character->getBounds = &skulldemon_getBoundingBoxMoving;
 	}
@@ -216,7 +214,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	
 		if (charControl->currentAction < charControl->countAction && 
 		doAction != ESkullDemonAttack) {
-		
+		mprinter_printf("CONTINUE ACTION\n");
 		common_doSetActions(charControl, character);
 				
 		common_faceTarget(&character->position, &charControl->target, 
@@ -235,6 +233,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 			character->nextAction = ESkullDemonWalk;
 			return;
 		}
+		mprinter_printf("CHASE ACTION\n");
 		character->nextAction = ESkullDemonChaseTarget;
 		character->nextDirection = goDirection;
 		
@@ -250,7 +249,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	} else if (isNear) {		
 		character->nextAction = doAction;
 		character->nextDirection = goDirection;
-		
+		mprinter_printf("ACTION %d\n", character->nextAction);
 		common_faceTarget(&character->position, &charControl->target, 
 				&faceDirection);
 
@@ -262,6 +261,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (character->nextAction == ESkullDemonAttack) {
+		mprinter_printf("ATTACK\n");
 		return;
 	}
 	//character->nextAction = ESkullDemonChaseTarget;
@@ -301,15 +301,8 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 		return;
 	}
 	
-	if (charControl->currentStatus == ESkullDemonAIStateStunned) {
-		charControl->currentAction = MAXACTIONS;
-		character->controller = &skulldemon_stunnedController;
-		character->controller(character, mapInfo, characterCollection);
-		return;
-	}
-	
 	if (common_shouldDoIntializeActions(character)) {
-		mprinter_printf("INIT\n");
+		mprinter_printf("INIT HUNT\n");
 		commonInitializeAISetActions(charControl);
 		character->nextAction = ESkullDemonChaseTarget;
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
@@ -320,6 +313,7 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 		mprinter_printf("CHASE\n");
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
 	} else if (character->action == ESkullDemonAttack) {
+		mprinter_printf("ATTACk\n");
 		skulldemon_doAttack(character, mapInfo, characterCollection, charControl);
 	}
 	//++charControl->actions[charControl->currentAction].currentFrame;
@@ -348,6 +342,40 @@ void skulldemon_stunnedController(CharacterAttr* character, const MapInfo *mapIn
 		character->nextAction = ESkullDemonStunned;
 	}
 	
+	/*if (character->nextAction == ESkullDemonStunned) {
+		skulldemon_doStun(character, mapInfo, characterCollection, charControl);
+	} else {
+		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &skulldemon_huntController;
+		character->controller(character, mapInfo, characterCollection);
+	}*/
+}
+
+void skulldemon_hurtController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int distanceX, distanceY, i;
+	
+	//mgba_logs("ACTION HURT CONTOLLER");
+	//mprinter_printf("ACTION HURT CONTOLLER\n");
+	if (charControl->currentStatus == ESkullDemonAIStateHuntTarget) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &skulldemon_huntController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
+	if (common_shouldDoIntializeActions(character)) {		
+		//commonInitializeAISetActions(charControl);
+		//mgba_logs("INITIALIZE HURT\n");
+		//mprinter_printf("INITIALIZE HURT\n");
+	}
+	
+	//mgba_logs("ACTION HURT CONTOLLER DO ACTION");
+	//mprinter_printf("BEFORE DO HURT: %d %d\n", character->nextAction);
+	common_doSetActions(charControl, character);
+	//mprinter_printf("DO HURT: %d %d\n", character->nextAction, ESkullDemonHurt);
 	/*if (character->nextAction == ESkullDemonStunned) {
 		skulldemon_doStun(character, mapInfo, characterCollection, charControl);
 	} else {

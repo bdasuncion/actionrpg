@@ -181,4 +181,9 @@ void common_findDirectionOfTargetLeftRight(const Position *current,
 	const Position *target, EDirections *faceDirection);
 void common_faceTarget(Position const *current, Position const *target, 
 	EDirections *faceDirection);
+	
+void commonCharacter_createAttackBoundingBox(const Position *position, const s32 *offsetXAtDir,
+	const s32 *offsetYAtDir, const BoundingBox *attackBoundsAtDirection, 
+	const int currentAnimationFrame, BoundingBox *attackBoundingBox);
+	
 #endif

@@ -19,6 +19,8 @@
 #include "ManagerCharacters.h"
 #include "ManagerPrinter.h"
 
+#include "DebugLogMgba.h"
+
 extern const EDirections directions[EDirectionsCount];
 
 #define SKULLDEMON_LENGTH 14
@@ -118,13 +120,20 @@ void skulldemon_actionAttack(CharacterAttr* character,const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void skulldemon_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void skulldemon_actionHurt(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 bool skulldemon_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent);
+void skulldemon_hurtController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void skulldemon_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 	
 const CharFuncAction skulldemon_actions[] = {
 	&skulldemon_actionWalk,
 	&skulldemon_actionChaseTarget,
 	&skulldemon_actionAttack,
-	&skulldemon_actionStunned
+	&skulldemon_actionStunned,
+	&skulldemon_actionHurt,
 };
 
 
@@ -196,6 +205,7 @@ void skulldemon_doAction(CharacterAttr* character,
 	int boundBoxCount = 0;
 	CharBoundingBox boundingBox;
 	
+	//mprinter_printf("ACTION: ACTUAL:%d EXPECTED:%d", character->nextAction, ESkullDemonHurt);
 	if (character->nextAction < ESkullDemonActionCount) {
 		skulldemon_actions[character->nextAction](character, mapInfo, 
 		    characterCollection, charActionCollection);
@@ -312,13 +322,12 @@ void skulldemon_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 	if (currentAnimationFrame == SKULLDEMON_ATTACK_ANIMATIONFRAME_START) {
 		BoundingBox collisionBox;
 		int attackVal = 1;
-		mprinter_printf("SKULL DEMON ATTACK FRAMES\n");
-		collisionBox.startX = CONVERT_2POS(character->position.x) + skulldemon_strikeCollisionBox[character->faceDirection].startX;
-		collisionBox.startY = CONVERT_2POS(character->position.y) + skulldemon_strikeCollisionBox[character->faceDirection].startY;
-		collisionBox.startZ = CONVERT_2POS(character->position.z) + skulldemon_strikeCollisionBox[character->faceDirection].startZ;
-		collisionBox.endX = CONVERT_2POS(character->position.x) + skulldemon_strikeCollisionBox[character->faceDirection].endX;
-		collisionBox.endY = CONVERT_2POS(character->position.y) + skulldemon_strikeCollisionBox[character->faceDirection].endY;
-		collisionBox.endZ = CONVERT_2POS(character->position.z) + skulldemon_strikeCollisionBox[character->faceDirection].endZ;
+
+		commonCharacter_createAttackBoundingBox(&character->position, 
+			NULL, NULL, 
+			&skulldemon_strikeCollisionBox[character->faceDirection&EDirectionsMax], 
+			currentAnimationFrame&1, &collisionBox);
+		
 		mchar_actione_add(character, charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
 	}
 	
@@ -340,6 +349,41 @@ void skulldemon_actionStunned(CharacterAttr* character, const MapInfo *mapInfo,
 		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
 		charControl->currentAction = MAXACTIONS;
 	}
+}
+
+void skulldemon_actionHurt(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	
+	//mgba_logs("ACTION HURT");
+	mprinter_printf("ACTION HURT\n");
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
+		mprinter_printf("ACTION HURT INIT ANIM\n");
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+		character->delta.x = 0;
+		character->delta.y = 0;
+		character->delta.z = 0;
+	}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	++charControl->actions[charControl->currentAction].currentFrame;
+	mprinter_printf("MAX:%d CURR:%d\n", charControl->actions[charControl->currentAction].doForNumFrames,
+		charControl->actions[charControl->currentAction].currentFrame);
+	mchar_actione_remove(character, charActionCollection);
+	if (charControl->actions[charControl->currentAction].currentFrame >= 
+		charControl->actions[charControl->currentAction].doForNumFrames) {
+		mprinter_printf("HURT DONE\n");
+		commonInitializeAISetActions(charControl);
+		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
+		charControl->currentAction = MAXACTIONS;
+	}
+	
+	character->spriteDisplay.spriteSet = skulldemonHurt[character->direction];
 }
 
 void skulldemon_getBoundingBoxMoving(const CharacterAttr* character, 
@@ -408,20 +452,41 @@ void skulldemon_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	common_collisionReactions[character->direction]
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
-
+	
 bool skulldemon_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	//return false;
 	if (character->stats.currentStatus == EStatusNoActionCollision) {
 		return false;
 	}
+	EDirections sourceDirection;
+	common_faceTarget(&character->position, &actionEvent->source->position, 
+		&sourceDirection);
+	EDirections charDirection = character->faceDirection;
+	
+	charControl->countAction = 1;
+	charControl->currentAction = 0;
+	
+	int stunTime;
+	if (sourceDirection != charDirection) {
+		stunTime = 90;
+		character->controller = &skulldemon_hurtController;
+		charControl->actions[charControl->currentAction] = ((ActionControl){stunTime, 0, character->direction, character->faceDirection, ESkullDemonHurt});
+		character->nextAction = ESkullDemonHurt;
+	} else {
+		stunTime = 15;
+		character->controller = &skulldemon_stunnedController;
+		charControl->actions[charControl->currentAction] = ((ActionControl){stunTime, 0, character->direction, character->faceDirection, ESkullDemonStunned});
+		character->nextAction = ESkullDemonStunned;
+	}
+	
 	character->stats.currentLife -= 1;
 	//character->stats.currentStatus = EStatusNoActionCollision;
 	charControl->currentStatus = ESkullDemonAIStateStunned;
 	//add hit animation
-	if (character->stats.currentLife <= 0) {
-		commonRemoveCharacter(character);
-	}
+	//if (character->stats.currentLife <= 0) {
+	//	commonRemoveCharacter(character);
+	//}
 	return true;
 }
 

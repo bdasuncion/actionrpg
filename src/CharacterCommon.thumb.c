@@ -1924,3 +1924,25 @@ void common_removeSpriteMask(CharacterCollection *characterCollection) {
 	}
 	
 }
+
+void commonCharacter_createAttackBoundingBox(const Position *position, const s32 *offsetXAtDir,
+	const s32 *offsetYAtDir, const BoundingBox *attackBoundsAtDirection, 
+	const int currentAnimationFrame, BoundingBox *attackBoundingBox) {
+	
+	attackBoundingBox->startX = CONVERT_2POS(position->x) + attackBoundsAtDirection->startX;
+	attackBoundingBox->startY = CONVERT_2POS(position->y) + attackBoundsAtDirection->startY;
+	attackBoundingBox->startZ = CONVERT_2POS(position->z) + attackBoundsAtDirection->startZ;
+	attackBoundingBox->endX = CONVERT_2POS(position->x) + attackBoundsAtDirection->endX;
+	attackBoundingBox->endY = CONVERT_2POS(position->y) + attackBoundsAtDirection->endY;
+	attackBoundingBox->endZ = CONVERT_2POS(position->z) + attackBoundsAtDirection->endZ;
+	
+	if (offsetXAtDir) {
+		attackBoundingBox->startX += offsetXAtDir[currentAnimationFrame];
+		attackBoundingBox->endX += offsetXAtDir[currentAnimationFrame];
+	}
+	
+	if (offsetYAtDir) {
+		attackBoundingBox->startY += offsetYAtDir[currentAnimationFrame];
+		attackBoundingBox->endY += offsetYAtDir[currentAnimationFrame];
+	}
+}

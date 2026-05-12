@@ -17,3 +17,12 @@ extern const SpriteSet skull_demon_attacking_down;
 
 const SpriteSet *const skulldemonAttacking[] = {&skull_demon_attacking_down, &skull_demon_attacking_down, &skull_demon_attacking_right, &skull_demon_attacking_up,
     &skull_demon_attacking_up, &skull_demon_attacking_up, &skull_demon_attacking_left, &skull_demon_attacking_down};
+	
+
+extern const SpriteSet skull_demon_hurt_up;
+extern const SpriteSet skull_demon_hurt_right;
+extern const SpriteSet skull_demon_hurt_left;
+extern const SpriteSet skull_demon_hurt_down;
+
+const SpriteSet *const skulldemonHurt[] = {&skull_demon_hurt_down, &skull_demon_hurt_down, &skull_demon_hurt_right, &skull_demon_hurt_up,
+    &skull_demon_hurt_up, &skull_demon_hurt_up, &skull_demon_hurt_left, &skull_demon_hurt_down};
