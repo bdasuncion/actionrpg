@@ -480,7 +480,8 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	BoundingBox position;
 	Position collisionPoints[2];
-	int attackVal = 1;
+	int attackVal = 8, nextAnimationFrame, nextScreenFrame;
+	bool isLastFrame = false;
 	//mprinter_printf("SLASH\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
@@ -500,6 +501,8 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
+	commonGetCharacterNextFrame(alisa, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
 	int currentAnimationFrame = commonGetCurrentAnimationFrame(alisa);
 	int displayCountFrame = commonGetCurrentDisplayFrame(alisa);
 	if (currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION && 
@@ -515,7 +518,8 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		if (displayCountFrame < ALISA_NORMALSLASH_FRAME_END_COLLISION){
 			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 1, &collisionBox);
 		} else {
-			mchar_actione_remove(alisa, charActionCollection);
+			//mchar_actione_remove(alisa, charActionCollection);
+			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 0, &collisionBox);
 		}
 	}
 	
@@ -526,13 +530,18 @@ void alisa_actionSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.spriteSet = alisaSlashSet[alisa->faceDirection&EDirectionsMax];
 	
 	countEnemyHit((CharacterPlayerControl*)alisa->free, mchar_actione_find(alisa, charActionCollection));
+	
+	if (isLastFrame) {
+		mchar_actione_remove(alisa, charActionCollection);
+	}
 }
 
 void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	BoundingBox position;
 	Position collisionPoints[2];
-	int attackVal = 1;
+	int attackVal = 12, nextAnimationFrame, nextScreenFrame;
+	bool isLastFrame = false;
 	//mprinter_printf("Strong SLASH\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
@@ -551,8 +560,15 @@ void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
+	commonGetCharacterNextFrame(alisa, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
 	int currentAnimationFrame = commonGetCurrentAnimationFrame(alisa);
 	int displayCountFrame = commonGetCurrentDisplayFrame(alisa);
+	
+	if (currentAnimationFrame <= 1) {
+		mchar_actione_remove(alisa, charActionCollection);
+	}
+	
 	if (currentAnimationFrame >= ALISA_NORMALSLASH_ANIMATIONFRAME_START_COLLISION && 
 		currentAnimationFrame <= ALISA_NORMALSLASH_ANIMATIONFRAME_END_COLLISION) {
 		BoundingBox collisionBox;
@@ -566,7 +582,8 @@ void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 		if (displayCountFrame < ALISA_NORMALSLASH_FRAME_END_COLLISION){
 			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 1, &collisionBox);
 		} else {
-			mchar_actione_remove(alisa, charActionCollection);
+			//mchar_actione_remove(alisa, charActionCollection);
+			mchar_actione_add(alisa, charActionCollection, alisa_NormalAttack[alisa->faceDirection&EDirectionsMax], attackVal, 0, &collisionBox);
 		}
 	}
 	
@@ -577,6 +594,10 @@ void alisa_actionStrongSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->spriteDisplay.spriteSet = alisaReverseSwordSlashSet[alisa->faceDirection&EDirectionsMax];
 	
 	countEnemyHit((CharacterPlayerControl*)alisa->free, mchar_actione_find(alisa, charActionCollection));
+	
+	if (isLastFrame) {
+		mchar_actione_remove(alisa, charActionCollection);
+	}
 }
 
 #define ALISA_SPINNINGSLASH_ANIMATIONFRAME_START_COLLISION 10
@@ -587,7 +608,8 @@ void alisa_actionSpinningSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	BoundingBox position;
 	Position collisionPoints[2];
-	int attackVal = 1;
+	int attackVal = 24, nextAnimationFrame, nextScreenFrame;
+	bool isLastFrame = false;
 	//mprinter_printf("SPIN SLASH\n");
 	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
@@ -615,6 +637,8 @@ void alisa_actionSpinningSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection&EDirectionsMax;
+	
+	commonGetCharacterNextFrame(alisa, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
 	
 	if (currentAnimationFrame >= ALISA_SPINNINGSLASH_ANIMATIONFRAME_START_COLLISION && 
 		currentAnimationFrame <= ALISA_SPINNINGSLASH_ANIMATIONFRAME_END_COLLISION &&
