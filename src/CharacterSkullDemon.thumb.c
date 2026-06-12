@@ -195,7 +195,7 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->free = (ControlTypeUnion*)charControl;
 	
 	character->stats.maxLife = 10;
-	character->stats.currentLife = 3;
+	character->stats.currentLife = 44;
 	character->stats.currentStatus = ESkullDemonAIStateWalkAround;
 }
 
@@ -480,13 +480,13 @@ bool skulldemon_isHit(CharacterAttr *character, CharacterActionEvent *actionEven
 		character->nextAction = ESkullDemonStunned;
 	}
 	
-	character->stats.currentLife -= 1;
+	character->stats.currentLife -= actionEvent->value;
 	//character->stats.currentStatus = EStatusNoActionCollision;
 	charControl->currentStatus = ESkullDemonAIStateStunned;
 	//add hit animation
-	//if (character->stats.currentLife <= 0) {
-	//	commonRemoveCharacter(character);
-	//}
+	if (character->stats.currentLife <= 0) {
+		commonRemoveCharacter(character);
+	}
 	return true;
 }
 

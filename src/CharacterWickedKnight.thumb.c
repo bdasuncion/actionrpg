@@ -186,7 +186,8 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 	charControl->wayPoints = charWaypoints->wayPoints;
 	
 	character->stats.maxLife = 10;
-	character->stats.currentLife = 3;
+	//character->stats.currentLife = 3;
+	character->stats.currentLife = 44;
 	character->stats.currentStatus = EWickedKnightAIStateWalkAround;
 }
 
@@ -438,12 +439,12 @@ bool wickedknight_isHit(CharacterAttr *character, CharacterActionEvent *actionEv
 		
 	character->controller = &wickedknight_stunnedController;
 		
-	character->stats.currentLife -= 1;
+	character->stats.currentLife -= actionEvent->value;
 	//character->stats.currentStatus = EStatusNoActionCollision;
 	charControl->currentStatus = EWickedKnightAIStateStunned;
 	//add hit animation
 	if (character->stats.currentLife <= 0) {
-		//commonRemoveCharacter(character);
+		commonRemoveCharacter(character);
 	}
 	return true;
 }
