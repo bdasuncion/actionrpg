@@ -1,0 +1,512 @@
+#include <stdlib.h>
+#include <stdbool.h>
+#include "GBATypes.h"
+#include "GBAObject.h"
+#include "GBAVideo.h"
+#include "GBADMA.h"
+#include "CharacterSkullDemon.h"
+#include "ImageGhoul.h"
+#include "GBACharacterActionEvent.h"
+#include "UtilCommonValues.h"
+#include "ManagerVram.h"
+#include "ManagerSound.h"
+#include "ManagerCharacterActionEvents.h"
+#include "CharacterSkullDemon.h"
+#include "SpriteSetGhoul.h"
+#include "CharacterCommon.h"
+#include "MapCommon.h"
+#include "GBAMap.h"
+#include "ManagerCharacters.h"
+#include "ManagerPrinter.h"
+
+#include "DebugLogMgba.h"
+
+extern const EDirections directions[EDirectionsCount];
+
+#define SKULLDEMON_LENGTH 14
+#define SKULLDEMON_WIDTH 10
+#define SKULLDEMON_HEIGHT 36
+
+#define SKULLDEMON_SCRCNVRTWIDTH 16
+#define SKULLDEMON_SCRCNVRTHEIGHT 28
+
+#define SKULLDEMON_SCREENDISPLAYOFFSET_X 10
+#define SKULLDEMON_SCREENDISPLAYOFFSET_Y 28
+
+#define GHOUL_PAL_CNT 1
+
+#define ghoul_WALK_MVMNT_CTRL_MAX 7
+
+//#define MAX_DIST_FOR_CHASE 80
+
+#define SKULLDEMON_ATTACK_ANIMATIONFRAME_START 4
+#define SKULLDEMON_ATTACK_ANIMATIONFRAME_END 5
+
+#define SKULLDEMON_NATTACK_ZPOS_OFFSET 16
+
+const u8 ghoul_scrConversionMeasurements[EScrCnvrtMeasureCount] = {
+	SKULLDEMON_SCRCNVRTWIDTH,
+	SKULLDEMON_SCRCNVRTHEIGHT
+};
+
+const u8 ghoul_boundingBoxMeasurements[EBBCnvrtMeasurementCount] = {
+	SKULLDEMON_LENGTH,
+	SKULLDEMON_WIDTH,
+	SKULLDEMON_HEIGHT,
+};
+
+const s32 ghoul_walkOffsetX[EDirectionsCount][ghoul_WALK_MVMNT_CTRL_MAX] = {
+    {0,0,0,0,0,0,0},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,0*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+	{1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,0*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,0*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+	{0,0,0,0,0,0,0},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,0*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,0*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,0*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG}
+};
+
+const s32 ghoul_walkOffsetY[EDirectionsCount][ghoul_WALK_MVMNT_CTRL_MAX] = {
+    {1*MOVE_STR,1*MOVE_STR,1*MOVE_STR,0*MOVE_STR,1*MOVE_STR,1*MOVE_STR,1*MOVE_STR},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,0*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG},
+	{0,0,0,0,0,0,0},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,0*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,0*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR,-1*MOVE_STR},
+	{-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,0*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG,-1*MOVE_DIAG},
+	{0,0,0,0,0,0,0},
+	{1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,0*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG,1*MOVE_DIAG}
+};
+
+const OffsetPoints ghoul_scanSurroundingOffset[8][2] = {
+    {{-24,0},{24,64}},
+	{{-24,0},{24,64}},
+	{{0,-24},{64,24}},
+	{{-24,-64},{24,0}},
+	{{-24,-64},{24,0}},
+	{{-24,-64},{24,0}},
+	{{-64,-24},{0,24}},
+	{{-24,0},{24,64}}
+};
+
+const OffsetPoints ghoul_strike_offsetValues[8][2] = {
+    {{0, 16}, {0, 32}},
+	{{0, 16}, {0, 32}},
+	{{16, -6}, {32, -6}},
+	{{0, -16}, {0, -16}},
+	{{0, -16}, {0, -16}},
+	{{0, -16}, {0, -16}},
+	{{-16, 6}, {-32, 6}},
+	{{0, 16}, {0, 32}},
+};
+
+const BoundingBox ghoul_strikeCollisionBox[8] = {
+	{ -4, 4, 8, 24, 8, 18},
+	{ -4, 4, 8, 24, 8, 18},
+	{ 8, 24, -4, 4, 8, 18},
+	{ -4, 4, -24, -8, 8, 18},
+	{ -4, 4, -24, -8, 8, 18},
+	{ -4, 4, -24, -8, 8, 18},
+	{ -24, -8, -4, 4, 8, 18},
+	{ -4, 4, 8, 24, 8, 18}
+};
+
+const OffsetPoints ghoul_scanLastKnownPosition = { 16, 16 };
+
+void ghoul_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void ghoul_actionChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void ghoul_actionAttack(CharacterAttr* character,const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void ghoul_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void ghoul_actionHurt(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+bool ghoul_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent);
+void ghoul_hurtController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void ghoul_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+	
+const CharFuncAction ghoul_actions[] = {
+	&ghoul_actionWalk,
+	&ghoul_actionChaseTarget,
+	&ghoul_actionAttack,
+	&ghoul_actionStunned,
+	&ghoul_actionHurt,
+};
+
+
+void ghoul_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void ghoul_doAction(CharacterAttr* character, const MapInfo *mapInfo, 
+    const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void ghoul_getBoundingBoxMoving(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
+void ghoul_getBoundingBoxStanding(const CharacterAttr* character, int *count, BoundingBox *boundingBox);
+int ghoul_setPosition(CharacterAttr* character, OBJ_ATTR *oamBuf, 
+	const Position *scr_pos, const ScreenDimension *scr_dim);
+void ghoul_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo);
+void ghoul_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
+	bool *checkNext, const CharacterAttr* otherCharacter);
+	
+void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool, 
+	CharacterWaypoints *charWaypoints) {
+//use library to get id
+	character->id = 0;
+	//use enum of character type
+	character->type = GHOUL;
+	
+	//set to 0
+	commonCharacterInit(character, ESkullDemonInitialize, ESkullDemonWalk, EDown);
+	commonCharacterSetPosition(character, 0, 0, 0, EDown);
+	character->controller = &ghoul_walkAroundController;
+	character->doAction = &ghoul_doAction;
+	character->setPosition = &ghoul_setPosition;
+	character->getBounds = &ghoul_getBoundingBoxMoving;
+	character->checkCollision = &ghoul_checkCollision;
+	character->checkMapCollision = &ghoul_checkMapCollision;
+	character->isHit = &ghoul_isHit;
+		
+	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeLarge);
+	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeMedium);
+	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
+	character->spriteDisplay.imageUpdateStatus = EUpdate;
+	character->spriteDisplay.basePalleteId = sprite_palette_findId(GHOUL, GHOUL_PAL_CNT);
+	sprite_palette_copy32_ID(ghoul_body_walk_down_pal, character->spriteDisplay.basePalleteId);
+	character->spriteDisplay.palleteUpdateStatus = EUpdate;
+	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
+	CharacterAIControl *charControl = (CharacterAIControl*)mchar_findFreeControlType(controlPool);
+	charControl->type = EControlAiType;
+	//charControl->countAction = 0;
+	//charControl->currentAction = MAXACTIONS;
+	charControl->countAction = 1;
+	charControl->currentAction = 0;
+	character->nextAction = ESkullDemonWalk;
+	charControl->rightBlocked = false;
+	charControl->leftBlocked = false;
+	charControl->upBlocked = false;
+	charControl->downBlocked = false;
+	charControl->currentStatus = ESkullDemonAIStateWalkAround;
+	
+	charControl->wayPointCnt = charWaypoints->wayPointCnt;
+	charControl->wayPointCurrent = 0;
+	charControl->wayPoints = charWaypoints->wayPoints;
+	
+	character->free = (ControlTypeUnion*)charControl;
+	
+	character->stats.maxLife = 10;
+	character->stats.currentLife = 44;
+	character->stats.currentStatus = ESkullDemonAIStateWalkAround;
+}
+
+void ghoul_doAction(CharacterAttr* character,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection,
+	CharacterActionCollection *charActionCollection) {
+	int boundBoxCount = 0;
+	CharBoundingBox boundingBox;
+	
+	//mprinter_printf("ACTION: ACTUAL:%d EXPECTED:%d", character->nextAction, ESkullDemonHurt);
+	if (character->nextAction < ESkullDemonActionCount) {
+		ghoul_actions[character->nextAction](character, mapInfo, 
+		    characterCollection, charActionCollection);
+	}
+}
+
+void ghoul_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	bool isLastFrame = false;
+	int nextScreenFrame, nextAnimationFrame;
+	Position *position = &character->position;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	BoundingBox searchArea;
+	
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	if (character->action != character->nextAction) {
+	    character->movementCtrl.maxFrames = ghoul_WALK_MVMNT_CTRL_MAX;
+		character->movementCtrl.currentFrame = 0;
+	}
+			
+	if (character->movementCtrl.currentFrame >= character->movementCtrl.maxFrames) {
+	    character->movementCtrl.currentFrame = 0;
+	}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	character->delta.x = ghoul_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
+	character->position.x += character->delta.x;
+		
+	character->delta.y = ghoul_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
+	character->position.y += character->delta.y;
+	
+	commonGravityEffect(character, common_zOffsetDown);
+	
+	++character->movementCtrl.currentFrame;
+	character->spriteDisplay.spriteSet = ghoulWalking[character->direction];
+}
+
+void ghoul_actionChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	bool isLastFrame = false;
+	int nextScreenFrame, nextAnimationFrame, xDist, yDist;
+	Position *position = &character->position;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	BoundingBox boundingBox;
+	
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	if (character->action != character->nextAction) {
+	    character->movementCtrl.maxFrames = ghoul_WALK_MVMNT_CTRL_MAX;
+		character->movementCtrl.currentFrame = 0;
+	}
+		
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	if (character->movementCtrl.currentFrame >= character->movementCtrl.maxFrames) {
+	    character->movementCtrl.currentFrame = 0;
+	}
+
+	character->delta.x = ghoul_walkOffsetX[character->direction][character->movementCtrl.currentFrame];
+	character->position.x += character->delta.x;
+	
+	character->delta.y = ghoul_walkOffsetY[character->direction][character->movementCtrl.currentFrame];
+	character->position.y += character->delta.y;
+	
+	commonGravityEffect(character, common_zOffsetDown);
+	
+	++character->movementCtrl.currentFrame;
+	character->spriteDisplay.spriteSet = ghoulWalking[character->direction];
+}
+
+void ghoul_actionAttack(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	bool isLastFrame = false;
+	int nextScreenFrame, nextAnimationFrame, xDist, yDist, currentAnimationFrame;
+	Position *position = &character->position;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	BoundingBox boundingBox;
+		
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+		character->delta.x = 0;
+		character->delta.y = 0;
+		character->delta.z = 0;
+	}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	commonGravityEffect(character, common_zOffsetDown);
+	
+	++character->movementCtrl.currentFrame;
+	character->spriteDisplay.spriteSet = ghoulAttacking[character->direction];
+	
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	currentAnimationFrame = commonGetCurrentAnimationFrame(character);
+	
+	if (currentAnimationFrame == SKULLDEMON_ATTACK_ANIMATIONFRAME_START) {
+		BoundingBox collisionBox;
+		int attackVal = 1;
+
+		commonCharacter_createAttackBoundingBox(&character->position, 
+			NULL, NULL, 
+			&ghoul_strikeCollisionBox[character->faceDirection&EDirectionsMax], 
+			currentAnimationFrame&1, &collisionBox);
+		
+		mchar_actione_add(character, charActionCollection, EAttackClawLeft, attackVal, 1, &collisionBox);
+	}
+	
+	if (isLastFrame) {
+		mprinter_printf("REMOVE ATTACK\n");
+		mchar_actione_remove(character, charActionCollection);
+		character->nextAction = ESkullDemonChaseTarget;
+	}
+}
+
+void ghoul_actionStunned(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	++charControl->actions[charControl->currentAction].currentFrame;
+	mchar_actione_remove(character, charActionCollection);
+	if (charControl->actions[charControl->currentAction].currentFrame >= 
+		charControl->actions[charControl->currentAction].doForNumFrames) {
+		commonInitializeAISetActions(charControl);
+		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
+		charControl->currentAction = MAXACTIONS;
+	}
+}
+
+void ghoul_actionHurt(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	
+	//mgba_logs("ACTION HURT");
+	mprinter_printf("ACTION HURT\n");
+	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	if (commonUpdateCharacterAnimation(character) == EUpdate) {
+		mprinter_printf("ACTION HURT INIT ANIM\n");
+		character->spriteDisplay.imageUpdateStatus = EUpdate;
+		character->spriteDisplay.palleteUpdateStatus = EUpdate;
+		character->delta.x = 0;
+		character->delta.y = 0;
+		character->delta.z = 0;
+	}
+	
+	character->action = character->nextAction;
+	character->direction = character->nextDirection;
+	
+	++charControl->actions[charControl->currentAction].currentFrame;
+	mprinter_printf("MAX:%d CURR:%d\n", charControl->actions[charControl->currentAction].doForNumFrames,
+		charControl->actions[charControl->currentAction].currentFrame);
+	mchar_actione_remove(character, charActionCollection);
+	if (charControl->actions[charControl->currentAction].currentFrame >= 
+		charControl->actions[charControl->currentAction].doForNumFrames) {
+		mprinter_printf("HURT DONE\n");
+		commonInitializeAISetActions(charControl);
+		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
+		charControl->currentAction = MAXACTIONS;
+	}
+	
+	character->spriteDisplay.spriteSet = ghoulHurt[character->direction];
+}
+
+void ghoul_getBoundingBoxMoving(const CharacterAttr* character, 
+	int *count, BoundingBox *boundingBox) {
+	*count = 1;
+	u16 x = CONVERT_TO_BOUNDINGBOX_X(character->position.x, ghoul_boundingBoxMeasurements);
+	u16 y = CONVERT_TO_BOUNDINGBOX_Y(character->position.y, ghoul_boundingBoxMeasurements);
+	u16 z = commonConvertBoundingBoxZ(character->position.z);
+	boundingBox->startX = x;
+	boundingBox->startY = y;
+	boundingBox->endX = x + ghoul_boundingBoxMeasurements[EBBCnvrtLength];
+	boundingBox->endY = y + ghoul_boundingBoxMeasurements[EBBCnvrtWidth];
+	boundingBox->startZ = z;
+	boundingBox->endZ = z + SKULLDEMON_HEIGHT;
+}
+
+int ghoul_setPosition(CharacterAttr* character,
+	OBJ_ATTR *oamBuf, 
+	const Position *scr_pos,
+	const ScreenDimension *scr_dim) 
+{
+
+	int charStartX, charStartY, charEndX, charEndY, numberOfShadow = 0;
+	
+	character->spriteDisplay.baseY = CONVERT_TO_SCRYPOS(character->position.y, 
+		scr_pos->y, ghoul_scrConversionMeasurements);
+	character->spriteDisplay.baseX = CONVERT_TO_SCRXPOS(character->position.x, 
+		scr_pos->x, ghoul_scrConversionMeasurements);
+	character->spriteDisplay.baseY -= CONVERT_TO_SCRZPOS(character->position.z);
+	
+	charStartX = CONVERT_2POS(character->position.x) - SKULLDEMON_SCREENDISPLAYOFFSET_X;
+	charStartY = CONVERT_2POS(character->position.y) - CONVERT_2POS(character->position.z);
+	charEndX = CONVERT_2POS(character->position.x) + SKULLDEMON_SCREENDISPLAYOFFSET_X;
+	charEndY = charStartY - SKULLDEMON_SCREENDISPLAYOFFSET_Y;
+	
+	if (commonIsInScreen(charStartX, charEndX, charStartY, charEndY, scr_pos, scr_dim)) {
+		character->spriteDisplay.imageUpdateStatus = ((!character->spriteDisplay.isInScreen)*EUpdate) + 
+		    (character->spriteDisplay.isInScreen*character->spriteDisplay.imageUpdateStatus);
+		character->spriteDisplay.isInScreen = true;
+		commonSetToOamBuffer(&character->spriteDisplay, oamBuf);
+		
+		numberOfShadow = commonSetShadow(character->spriteDisplay.baseX, 
+			character->spriteDisplay.baseY + character->distanceFromGround + SKULLDEMON_SCRCNVRTHEIGHT,
+			&oamBuf[character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers]);
+			
+		return character->spriteDisplay.spriteSet->set[character->spriteDisplay.currentAnimationFrame].numberOflayers + numberOfShadow;
+	}
+	
+	character->spriteDisplay.isInScreen = false;
+	return 0;
+}
+
+void ghoul_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
+	bool *checkNext, const CharacterAttr* otherCharacter) {
+	
+	int count;
+	BoundingBox charBoundingBox, otherCharBoundingBox;
+	*checkNext = common_checkNext(isOtherCharBelow, &character->position, &otherCharacter->position);
+	if (!*checkNext) {
+		return;
+	}
+	
+	character->getBounds(character, &count, &charBoundingBox);
+	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
+	
+	common_collisionReactions[character->direction]
+	    (character, &charBoundingBox, &otherCharBoundingBox);
+}
+	
+bool ghoul_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	//return false;
+	if (character->stats.currentStatus == EStatusNoActionCollision) {
+		return false;
+	}
+	EDirections sourceDirection;
+	common_faceTarget(&character->position, &actionEvent->source->position, 
+		&sourceDirection);
+	EDirections charDirection = character->faceDirection;
+	
+	charControl->countAction = 1;
+	charControl->currentAction = 0;
+	
+	int stunTime;
+	if (sourceDirection != charDirection) {
+		stunTime = 90;
+		character->controller = &ghoul_hurtController;
+		charControl->actions[charControl->currentAction] = ((ActionControl){stunTime, 0, character->direction, character->faceDirection, ESkullDemonHurt});
+		character->nextAction = ESkullDemonHurt;
+	} else {
+		stunTime = 15;
+		character->controller = &ghoul_stunnedController;
+		charControl->actions[charControl->currentAction] = ((ActionControl){stunTime, 0, character->direction, character->faceDirection, ESkullDemonStunned});
+		character->nextAction = ESkullDemonStunned;
+	}
+	
+	character->stats.currentLife -= actionEvent->value;
+	//character->stats.currentStatus = EStatusNoActionCollision;
+	charControl->currentStatus = ESkullDemonAIStateStunned;
+	//add hit animation
+	if (character->stats.currentLife <= 0) {
+		commonRemoveCharacter(character);
+	}
+	return true;
+}
+
+void ghoul_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo) {
+	int count;
+	BoundingBox mapBoundingBox, characterBoundingBox;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int fallingDown;
+
+	character->getBounds(character, &count, &characterBoundingBox);
+	commonGetBoundsFromMap(CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), mapInfo, &mapBoundingBox);
+	fallingDown = common_fallingDown(character, &characterBoundingBox, &mapBoundingBox);
+	
+	character->distanceFromGround = fallingDown;
+	
+	if (fallingDown > 0) {
+		commonFallingDownCollision(character, mapInfo);
+	}
+	
+    commonCharacterMapEdgeCheck(character, mapInfo);
+	common_mapCollision[character->direction](character, mapInfo, 
+	    common_mapCollisionReactions[character->direction]);
+}
