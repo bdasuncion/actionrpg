@@ -12,8 +12,10 @@ void zombie_setCharacter(CharacterAttr* character);
 void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 void skulldemon_setCharacter(CharacterAttr* character);
 void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
+void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints);
 
-const FuncCharacterInit character_InitFunctionsCollection[] = { &alisa_init, &werewolf_init, &zombie_init, &skulldemon_init, &wickedknight_init};
+const FuncCharacterInit character_InitFunctionsCollection[] = { &alisa_init, &werewolf_init, &zombie_init, 
+	&skulldemon_init, &wickedknight_init, &ghoul_init};
 //const FuncCharacterInit character_InitFunctionsCollection[] = { &alisa_init, &werewolf_init, &zombie_init, &skulldemon_init};
 //const FuncCharacterInit character_InitFunctionsCollection[] = { &alisa_init, &werewolf_init, &zombie_init, &wickedknight_init};
 //const FuncCharacterSet characterSet[] = { &alisa_setCharacter, &werewolf_setCharacter, &zombie_setCharacter, &skulldemon_setCharacter};
