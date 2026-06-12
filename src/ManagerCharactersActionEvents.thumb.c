@@ -83,6 +83,7 @@ void mchar_actione_resolveonetarget(CharacterActionEvent *actionEvent, Character
 			Position pos;
 			actionEvent->maxHit = 0;
 			if (characterTarget->isHit(characterTarget, actionEvent)) {
+				characterTarget->getBounds(characterTarget, &count, &charBoundingBox);
 				charAttackEffect_getPosition(&actionEvent->collisionBox, &charBoundingBox, &pos);
 				charAttackEffect_Add(&pos, actionEvent->type, attackEffects);
 			}
