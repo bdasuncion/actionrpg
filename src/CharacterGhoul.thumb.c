@@ -4,7 +4,7 @@
 #include "GBAObject.h"
 #include "GBAVideo.h"
 #include "GBADMA.h"
-#include "CharacterSkullDemon.h"
+#include "CharacterGhoul.h"
 #include "ImageGhoul.h"
 #include "GBACharacterActionEvent.h"
 #include "UtilCommonValues.h"
@@ -197,6 +197,8 @@ void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->stats.maxLife = 10;
 	character->stats.currentLife = 44;
 	character->stats.currentStatus = ESkullDemonAIStateWalkAround;
+	
+	character->extraMov = NULL;
 }
 
 void ghoul_doAction(CharacterAttr* character,
@@ -355,12 +357,9 @@ void ghoul_actionHurt(CharacterAttr* character, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	
-	//mgba_logs("ACTION HURT");
-	mprinter_printf("ACTION HURT\n");
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateCharacterAnimation(character) == EUpdate) {
-		mprinter_printf("ACTION HURT INIT ANIM\n");
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 		character->delta.x = 0;
@@ -372,12 +371,9 @@ void ghoul_actionHurt(CharacterAttr* character, const MapInfo *mapInfo,
 	character->direction = character->nextDirection;
 	
 	++charControl->actions[charControl->currentAction].currentFrame;
-	mprinter_printf("MAX:%d CURR:%d\n", charControl->actions[charControl->currentAction].doForNumFrames,
-		charControl->actions[charControl->currentAction].currentFrame);
 	mchar_actione_remove(character, charActionCollection);
 	if (charControl->actions[charControl->currentAction].currentFrame >= 
 		charControl->actions[charControl->currentAction].doForNumFrames) {
-		mprinter_printf("HURT DONE\n");
 		commonInitializeAISetActions(charControl);
 		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
 		charControl->currentAction = MAXACTIONS;
@@ -459,26 +455,26 @@ bool ghoul_isHit(CharacterAttr *character, CharacterActionEvent *actionEvent) {
 	if (character->stats.currentStatus == EStatusNoActionCollision) {
 		return false;
 	}
-	EDirections sourceDirection;
-	common_faceTarget(&character->position, &actionEvent->source->position, 
-		&sourceDirection);
+	//EDirections sourceDirection;
+	//common_faceTarget(&character->position, &actionEvent->source->position, 
+	//	&sourceDirection);
 	EDirections charDirection = character->faceDirection;
 	
 	charControl->countAction = 1;
 	charControl->currentAction = 0;
 	
 	int stunTime;
-	if (sourceDirection != charDirection) {
-		stunTime = 90;
-		character->controller = &ghoul_hurtController;
-		charControl->actions[charControl->currentAction] = ((ActionControl){stunTime, 0, character->direction, character->faceDirection, ESkullDemonHurt});
-		character->nextAction = ESkullDemonHurt;
-	} else {
+	//if (sourceDirection != charDirection) {
+	stunTime = 40;
+	character->controller = &ghoul_stunnedController;
+	charControl->actions[charControl->currentAction] = ((ActionControl){stunTime, 0, character->direction, character->faceDirection, EGhoulHurt});
+	character->nextAction = EGhoulHurt;
+	/*} else {
 		stunTime = 15;
 		character->controller = &ghoul_stunnedController;
 		charControl->actions[charControl->currentAction] = ((ActionControl){stunTime, 0, character->direction, character->faceDirection, ESkullDemonStunned});
 		character->nextAction = ESkullDemonStunned;
-	}
+	}*/
 	
 	character->stats.currentLife -= actionEvent->value;
 	//character->stats.currentStatus = EStatusNoActionCollision;
