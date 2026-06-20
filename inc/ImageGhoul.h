@@ -4,6 +4,7 @@
 
 extern const unsigned short ghoul_body_walk_down_pal[];
 extern const unsigned int ghoul_arm_down_image0[];
+extern const unsigned int ghoul_arm_down_image1[];
 
 
 extern const unsigned int ghoul_body_walk_down_image0[];
@@ -13,6 +14,8 @@ extern const unsigned int ghoul_head_down_image0[];
 extern const unsigned int ghoul_head_down_image1[];
 
 extern const unsigned int ghoul_arm_side_image0[];
+extern const unsigned int ghoul_arm_side_image1[];
+
 extern const unsigned int ghoul_body_walk_side_image0[];
 extern const unsigned int ghoul_body_walk_side_image1[];
 extern const unsigned int ghoul_body_walk_side_image2[];
@@ -55,6 +58,8 @@ extern const unsigned int ghoul_body_attack_down_image1[];
 extern const unsigned int ghoul_body_attack_up_image0[];
 extern const unsigned int ghoul_body_attack_up_image1[];
 
-
+extern const unsigned int ghoul_body_stun_down_image0[];
+extern const unsigned int ghoul_body_stun_side_image0[];
+extern const unsigned int ghoul_body_stun_up_image0[];
 
 #endif
