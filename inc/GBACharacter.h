@@ -249,6 +249,13 @@ typedef struct CharacterStats {
 	StatusType currentStatus;
 } ALIGN4 CharacterStats;
 
+typedef struct MoveDelta {
+	s16 x;
+	s16 y;
+	s16 z;
+	s16 dummy;
+} ALIGN4 MoveDelta;
+
 typedef struct CharacterAttr {
 	CharFuncController controller;
 	CharFuncAction doAction;
@@ -273,7 +280,10 @@ typedef struct CharacterAttr {
 	EVerticalDirections verticalDirection:3;
 	MovementControl movementCtrl;
 	Position position;//3HW
-	Position delta;//3HW
+	//Position delta;//3HW
+	MoveDelta delta;
+	MoveDelta finalDelta;
+	MoveDelta *extraMov;
 	CollisionControl collisionCtrl;
 	ControlTypeUnion *free;//Can be any object, for use in the controller
 } ALIGN4 CharacterAttr;
