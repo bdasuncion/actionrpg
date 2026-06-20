@@ -197,6 +197,8 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->stats.maxLife = 10;
 	character->stats.currentLife = 44;
 	character->stats.currentStatus = ESkullDemonAIStateWalkAround;
+	
+	character->extraMov = NULL;
 }
 
 void skulldemon_doAction(CharacterAttr* character,

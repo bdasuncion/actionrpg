@@ -181,7 +181,19 @@ void mchar_resolveMapCollision(CharacterCollection *charCollection, const MapInf
 	for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
 		    charCollection->characters[checkCollisionIdx]->
 			    checkMapCollision(charCollection->characters[checkCollisionIdx], mapInfo);
+	}
+}
+
+void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection) {
+	int checkCollisionIdx;
+	for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
+		CharacterAttr *character = charCollection->characters[checkCollisionIdx];
+		if (character->extraMov != NULL) {
+			mprinter_printf("MOVE DELTA %d %d\n", character->extraMov->x, character->extraMov->y);
+			character->position.x += character->extraMov->x;
+			character->position.y += character->extraMov->y;
 		}
+	}
 }
 
 void mchar_resolveCharacterCollision(CharacterCollection *charCollection) {
@@ -242,6 +254,8 @@ void mchar_resolveAction(CharacterCollection *charCollection, const MapInfo *map
 		mchar_arrangeCharacters(charCollection);
 		
 		mchar_resolveCharacterCollision(charCollection);
+		
+		mchar_resolveCharacterMoveDelta(charCollection);
 			
 		for (i = 0; i < charActionCollection->count; ++i) {
 			CharacterActionEvent *actionEvent = &charActionCollection->currentActions[i];

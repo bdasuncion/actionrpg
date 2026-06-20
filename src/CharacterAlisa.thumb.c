@@ -1022,7 +1022,7 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	if (!*checkNext) {
 		return;
 	}
-	
+	alisa->extraMov = NULL;
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 	
@@ -1032,7 +1032,15 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 			alisa->nextAction = EAlisaFallingDown;
 		} else if ((alisa->nextAction == EAlisaFallingDown || 
 			alisa->nextAction == EAlisaFallingDownForward) && fallingDistance == 0) {
-			alisa->nextAction = EAlisaStand;
+			
+			if (alisa->action != EAlisaStand && 
+				alisa->action != EAlisaFallingDown &&
+				alisa->action != EAlisaFallingDownForward) {
+				alisa->nextAction = alisa->action;
+			} else {
+				alisa->nextAction = EAlisaStand;
+			}
+			alisa->extraMov = &otherCharacter->finalDelta;
 		}
 		
 		if (fallingDistance >= 0 && fallingDistance < alisa->distanceFromGround ) {

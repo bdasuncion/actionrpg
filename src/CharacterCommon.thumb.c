@@ -950,6 +950,9 @@ void common_movingRightOffset(CharacterAttr* character,
 	
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
+
+	character->finalDelta.y = 0;
+	character->finalDelta.x = character->delta.x - CONVERT_2MOVE(xoffset);
 	
 	character->position.x -= CONVERT_2MOVE(xoffset);
 	
@@ -968,7 +971,9 @@ void common_movingLeftOffset(CharacterAttr* character,
 	character->collisionCtrl.hasCollision = didCollide;
 	xoffset = (deltaX*greaterThanXOffset) + (xoffset*(!greaterThanXOffset));
 	xoffset *= didCollide;
-	
+
+	character->finalDelta.y = 0;
+	character->finalDelta.x = character->delta.x + CONVERT_2MOVE(xoffset);
 	//mprinter_printf("qwe %d\n", CONVERT_2MOVE(xoffset));
 	character->position.x += CONVERT_2MOVE(xoffset);
 	
@@ -988,6 +993,9 @@ void common_movingUpOffset(CharacterAttr* character,
 	yoffset = (deltaY*greaterThanYOffset) + (yoffset*(!greaterThanYOffset));
 	yoffset *= didCollide;
 
+	character->finalDelta.y = character->delta.y + CONVERT_2MOVE(yoffset);
+	character->finalDelta.x = 0;
+
 	character->position.y += CONVERT_2MOVE(yoffset);
 	
 	if (character->free->type == EControlAiType) {
@@ -1005,6 +1013,9 @@ void common_movingDownOffset(CharacterAttr* character,
 	character->collisionCtrl.hasCollision = didCollide;
 	yoffset = (deltaY*greaterThanYOffset) + (yoffset*(!greaterThanYOffset));
 	yoffset *= didCollide;
+	
+	character->finalDelta.y = character->delta.y - CONVERT_2MOVE(yoffset);
+	character->finalDelta.x = 0;
 	
 	character->position.y -= CONVERT_2MOVE(yoffset);
 	
@@ -1034,7 +1045,10 @@ void common_movingRightUpOffset(CharacterAttr* character,
 	
 	xOffset *= (!doOffsetY)*didCollide;
 	yOffset *= doOffsetY*didCollide;
-		
+	
+	character->finalDelta.y = character->delta.y + CONVERT_2MOVE(yOffset);
+	character->finalDelta.x = character->delta.x - CONVERT_2MOVE(xOffset);
+	
 	character->position.y += CONVERT_2MOVE(yOffset);
 	character->position.x -= CONVERT_2MOVE(xOffset);
 	
@@ -1069,6 +1083,9 @@ void common_movingLeftUpOffset(CharacterAttr* character,
 	xOffset *= (!doOffsetY)*didCollide;
 	yOffset *= doOffsetY*didCollide;
 	
+	character->finalDelta.y = character->delta.y + CONVERT_2MOVE(yOffset);
+	character->finalDelta.x = character->delta.x + CONVERT_2MOVE(xOffset);
+	
 	character->position.y += CONVERT_2MOVE(yOffset);
 	character->position.x += CONVERT_2MOVE(xOffset);
 	
@@ -1100,6 +1117,9 @@ void common_movingRightDownOffset(CharacterAttr* character,
 	xOffset *= (!doOffsetY)*didCollide;
 	yOffset *= doOffsetY*didCollide;
 	
+	character->finalDelta.y = character->delta.y - CONVERT_2MOVE(yOffset);
+	character->finalDelta.x = character->delta.x - CONVERT_2MOVE(xOffset);
+	
 	character->position.y -= CONVERT_2MOVE(yOffset);
 	character->position.x -= CONVERT_2MOVE(xOffset);
 	
@@ -1130,6 +1150,9 @@ void common_movingLeftDownOffset(CharacterAttr* character,
 	yOffset = (deltaY*greaterThanYOffset) + (yOffset*(!greaterThanYOffset));
 	xOffset *= (!doOffsetY)*didCollide;
 	yOffset *= doOffsetY*didCollide;
+	
+	character->finalDelta.y = character->delta.y - CONVERT_2MOVE(yOffset);
+	character->finalDelta.x = character->delta.x + CONVERT_2MOVE(xOffset);
 	
 	character->position.y -= CONVERT_2MOVE(yOffset);
 	character->position.x += CONVERT_2MOVE(xOffset);
