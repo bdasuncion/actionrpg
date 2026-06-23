@@ -214,7 +214,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	
 		if (charControl->currentAction < charControl->countAction && 
 		doAction != ESkullDemonAttack) {
-		mprinter_printf("CONTINUE ACTION\n");
+		//mprinter_printf("CONTINUE ACTION\n");
 		common_doSetActions(charControl, character);
 				
 		common_faceTarget(&character->position, &charControl->target, 
@@ -233,7 +233,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 			character->nextAction = ESkullDemonWalk;
 			return;
 		}
-		mprinter_printf("CHASE ACTION\n");
+		//mprinter_printf("CHASE ACTION\n");
 		character->nextAction = ESkullDemonChaseTarget;
 		character->nextDirection = goDirection;
 		
@@ -249,7 +249,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	} else if (isNear) {		
 		character->nextAction = doAction;
 		character->nextDirection = goDirection;
-		mprinter_printf("ACTION %d\n", character->nextAction);
+		//mprinter_printf("ACTION %d\n", character->nextAction);
 		common_faceTarget(&character->position, &charControl->target, 
 				&faceDirection);
 
@@ -261,7 +261,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (character->nextAction == ESkullDemonAttack) {
-		mprinter_printf("ATTACK\n");
+		//mprinter_printf("ATTACK\n");
 		return;
 	}
 	//character->nextAction = ESkullDemonChaseTarget;
@@ -271,7 +271,7 @@ void skulldemon_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
 			ESkullDemonChaseTarget, 15);
 		common_doSetActions(charControl, character);
-		mprinter_printf("MOVE AROUND SET\n");
+		//mprinter_printf("MOVE AROUND SET\n");
 		return;
 	} /*else if (charControl->currentAction >= charControl->countAction) {
 		charControl->countAction = 0;
@@ -302,7 +302,7 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (common_shouldDoIntializeActions(character)) {
-		mprinter_printf("INIT HUNT\n");
+		//mprinter_printf("INIT HUNT\n");
 		commonInitializeAISetActions(charControl);
 		character->nextAction = ESkullDemonChaseTarget;
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
@@ -310,10 +310,10 @@ void skulldemon_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (character->action == ESkullDemonChaseTarget) {
-		mprinter_printf("CHASE\n");
+		//mprinter_printf("CHASE\n");
 		skulldemon_doChaseTarget(character, mapInfo, characterCollection, charControl);
 	} else if (character->action == ESkullDemonAttack) {
-		mprinter_printf("ATTACk\n");
+		//mprinter_printf("ATTACk\n");
 		skulldemon_doAttack(character, mapInfo, characterCollection, charControl);
 	}
 	//++charControl->actions[charControl->currentAction].currentFrame;

@@ -1022,14 +1022,18 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 	if (!*checkNext) {
 		return;
 	}
-	alisa->extraMov = NULL;
+	
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
+	
+	//mprinter_printf("ALISA %d %d %d\n", CONVERT_2POS(alisa->position.x), CONVERT_2POS(alisa->position.y), CONVERT_2POS(alisa->position.z));
+	//mprinter_printf("OTHER %d %d %d TYPE:%d\n", CONVERT_2POS(otherCharacter->position.x), CONVERT_2POS(otherCharacter->position.y), CONVERT_2POS(otherCharacter->position.z), otherCharacter->type);
 	
 	if (alisa->distanceFromGround != 0) {
 		fallingDistance = common_fallingDownOnBoundingBox(alisa, &alisaBoundingBox, &otherCharBoundingBox);
 		if (fallingDistance != 0) {
 			alisa->nextAction = EAlisaFallingDown;
+			alisa->extraMov = NULL;
 		} else if ((alisa->nextAction == EAlisaFallingDown || 
 			alisa->nextAction == EAlisaFallingDownForward) && fallingDistance == 0) {
 			
