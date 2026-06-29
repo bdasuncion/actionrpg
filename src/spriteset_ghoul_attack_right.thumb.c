@@ -41,8 +41,8 @@ const SpriteLayer ghoul_attack_right_layerSet5[] = {
 
 const SpriteLayerSet ghoul_attack_right_layerSet[] = {
     {ghoul_attack_right_layerSet0,2,5},
-    {ghoul_attack_right_layerSet1,15,4},
-    {ghoul_attack_right_layerSet2,20,5},
+    {ghoul_attack_right_layerSet1,12,4},
+    {ghoul_attack_right_layerSet2,15,5},
     {ghoul_attack_right_layerSet3,3,5},
     {ghoul_attack_right_layerSet4,3,5},
     {ghoul_attack_right_layerSet5,3,5},

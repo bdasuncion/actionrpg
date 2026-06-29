@@ -25,10 +25,10 @@ const SpriteLayer ghoul_walk_left_layerSet3[] = {
     {ghoul_body_walk_side_image3,0,0,TALL,MEDIUM,DO_HFLIP,NO_VFLIP,NO_COMPRESSION,1,0}};
 
 const SpriteLayerSet ghoul_walk_left_layerSet[] = {
-    {ghoul_walk_left_layerSet0,15,4},
-    {ghoul_walk_left_layerSet1,15,4},
-    {ghoul_walk_left_layerSet2,15,4},
-    {ghoul_walk_left_layerSet3,15,4},
+    {ghoul_walk_left_layerSet0,12,4},
+    {ghoul_walk_left_layerSet1,12,4},
+    {ghoul_walk_left_layerSet2,12,4},
+    {ghoul_walk_left_layerSet3,12,4},
 };
 
 const SpriteSet ghoul_walk_left = {ghoul_walk_left_layerSet,4};

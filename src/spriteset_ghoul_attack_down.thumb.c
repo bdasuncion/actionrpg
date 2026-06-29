@@ -47,9 +47,9 @@ const SpriteLayer ghoul_attack_down_layerSet5[] = {
     {ghoul_body_attack_down_image1,0,0,TALL,MEDIUM,NO_HFLIP,NO_VFLIP,NO_COMPRESSION,1,0}};
 
 const SpriteLayerSet ghoul_attack_down_layerSet[] = {
-    {ghoul_attack_down_layerSet0,15,6},
-    {ghoul_attack_down_layerSet1,15,6},
-    {ghoul_attack_down_layerSet2,20,6},
+    {ghoul_attack_down_layerSet0,2,6},
+    {ghoul_attack_down_layerSet1,12,6},
+    {ghoul_attack_down_layerSet2,15,6},
     {ghoul_attack_down_layerSet3,3,6},
     {ghoul_attack_down_layerSet4,3,6},
     {ghoul_attack_down_layerSet5,3,6},
