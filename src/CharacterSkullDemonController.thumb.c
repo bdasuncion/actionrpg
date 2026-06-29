@@ -114,7 +114,7 @@ const EDirections FAR_TARGET_SKULLDEMON_8x8[SKULLDEMON_INSCREEN_ARRAYWIDTH][SKUL
 
 
 
-
+#define SKULLDEMON_HEIGHT_SEARCH 24
 void skulldemon_doWalk(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
 	Position *position = &character->position;
@@ -123,7 +123,9 @@ void skulldemon_doWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	searchArea.startY = CONVERT_2POS(position->y) + skulldemon_scanSurroundingOffset[character->direction][0].y;
 	searchArea.endX = CONVERT_2POS(position->x) + skulldemon_scanSurroundingOffset[character->direction][1].x;
 	searchArea.endY = CONVERT_2POS(position->y) + skulldemon_scanSurroundingOffset[character->direction][1].y;
-
+	searchArea.startZ = CONVERT_2POS(position->z);
+	searchArea.endZ = CONVERT_2POS(position->z) + SKULLDEMON_HEIGHT_SEARCH;
+	
 	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &searchArea, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 		

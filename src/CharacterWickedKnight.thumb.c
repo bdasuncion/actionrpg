@@ -346,6 +346,11 @@ void wickedknight_actionStunned(CharacterAttr* character, const MapInfo *mapInfo
 		charControl->currentStatus = EWickedKnightAIStateHuntTarget;
 		charControl->currentAction = MAXACTIONS;
 	}
+	
+	//Place in death animation
+	if (character->stats.currentLife <= 0) {
+		commonRemoveCharacter(character);
+	}
 }
 
 void wickedknight_getBoundingBoxMoving(const CharacterAttr* character, 

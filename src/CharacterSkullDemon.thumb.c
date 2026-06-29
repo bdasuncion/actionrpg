@@ -334,7 +334,7 @@ void skulldemon_actionAttack(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (isLastFrame) {
-		mprinter_printf("REMOVE ATTACK\n");
+		//mprinter_printf("REMOVE ATTACK\n");
 		mchar_actione_remove(character, charActionCollection);
 		character->nextAction = ESkullDemonChaseTarget;
 	}
@@ -351,6 +351,11 @@ void skulldemon_actionStunned(CharacterAttr* character, const MapInfo *mapInfo,
 		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
 		charControl->currentAction = MAXACTIONS;
 	}
+	
+	//Place in death animation
+	if (character->stats.currentLife <= 0) {
+		commonRemoveCharacter(character);
+	}
 }
 
 void skulldemon_actionHurt(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -358,11 +363,11 @@ void skulldemon_actionHurt(CharacterAttr* character, const MapInfo *mapInfo,
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
 	
 	//mgba_logs("ACTION HURT");
-	mprinter_printf("ACTION HURT\n");
+	//mprinter_printf("ACTION HURT\n");
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
 	if (commonUpdateCharacterAnimation(character) == EUpdate) {
-		mprinter_printf("ACTION HURT INIT ANIM\n");
+		//mprinter_printf("ACTION HURT INIT ANIM\n");
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
 		character->delta.x = 0;
@@ -374,15 +379,20 @@ void skulldemon_actionHurt(CharacterAttr* character, const MapInfo *mapInfo,
 	character->direction = character->nextDirection;
 	
 	++charControl->actions[charControl->currentAction].currentFrame;
-	mprinter_printf("MAX:%d CURR:%d\n", charControl->actions[charControl->currentAction].doForNumFrames,
-		charControl->actions[charControl->currentAction].currentFrame);
+	//mprinter_printf("MAX:%d CURR:%d\n", charControl->actions[charControl->currentAction].doForNumFrames,
+	//	charControl->actions[charControl->currentAction].currentFrame);
 	mchar_actione_remove(character, charActionCollection);
 	if (charControl->actions[charControl->currentAction].currentFrame >= 
 		charControl->actions[charControl->currentAction].doForNumFrames) {
-		mprinter_printf("HURT DONE\n");
+		//mprinter_printf("HURT DONE\n");
 		commonInitializeAISetActions(charControl);
 		charControl->currentStatus = ESkullDemonAIStateHuntTarget;
 		charControl->currentAction = MAXACTIONS;
+	}
+	
+	//Place in death animation
+	if (character->stats.currentLife <= 0) {
+		commonRemoveCharacter(character);
 	}
 	
 	character->spriteDisplay.spriteSet = skulldemonHurt[character->direction];

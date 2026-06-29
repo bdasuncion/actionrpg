@@ -179,6 +179,7 @@ void wickedknight_setCharacter(CharacterAttr* character) {
     character->controller = &wickedknight_walkAroundController; 
 }
 
+#define WICKEDKNIGHT_HEIGHT_SEARCH 24
 void wickedknight_doWalk(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
 	Position *position = &character->position;
@@ -187,7 +188,9 @@ void wickedknight_doWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	searchArea.startY = CONVERT_2POS(position->y) + wickedknight_scanSurroundingOffset[character->direction][0].y;
 	searchArea.endX = CONVERT_2POS(position->x) + wickedknight_scanSurroundingOffset[character->direction][1].x;
 	searchArea.endY = CONVERT_2POS(position->y) + wickedknight_scanSurroundingOffset[character->direction][1].y;
-
+	searchArea.startZ = CONVERT_2POS(position->z);
+	searchArea.endZ = CONVERT_2POS(position->z) + WICKEDKNIGHT_HEIGHT_SEARCH;
+	
 	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &searchArea, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 		

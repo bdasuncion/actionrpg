@@ -114,7 +114,7 @@ const EDirections FAR_TARGET_GHOUL_8x8[GHOUL_INSCREEN_ARRAYWIDTH][GHOUL_INSCREEN
 
 
 
-
+#define GHOUL_HEIGHT_SEARCH 24
 void ghoul_doWalk(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterAIControl *charControl) {
 	Position *position = &character->position;
@@ -123,7 +123,8 @@ void ghoul_doWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	searchArea.startY = CONVERT_2POS(position->y) + ghoul_scanSurroundingOffset[character->direction][0].y;
 	searchArea.endX = CONVERT_2POS(position->x) + ghoul_scanSurroundingOffset[character->direction][1].x;
 	searchArea.endY = CONVERT_2POS(position->y) + ghoul_scanSurroundingOffset[character->direction][1].y;
-
+	searchArea.startZ = CONVERT_2POS(position->z);
+	searchArea.endZ = CONVERT_2POS(position->z) + GHOUL_HEIGHT_SEARCH;
 	charControl->target = *commonFindCharTypeInBoundingBox(characterCollection, &searchArea, 
 		STARTPLAYABLECHARTYPE, ENDPLAYABLECHARACTERTYPE);
 		
@@ -146,7 +147,7 @@ void ghoul_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo
 		character->controller(character, mapInfo, characterCollection);
 		return;
 	}
-			
+	
 	if (common_shouldDoIntializeActions(character)) {
 		character->getBounds = &ghoul_getBoundingBoxMoving;
 	}
@@ -214,7 +215,6 @@ void ghoul_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	
 		if (charControl->currentAction < charControl->countAction && 
 		doAction != EGhoulAttack) {
-		mprinter_printf("CONTINUE ACTION\n");
 		common_doSetActions(charControl, character);
 				
 		common_faceTarget(&character->position, &charControl->target, 
@@ -233,7 +233,6 @@ void ghoul_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 			character->nextAction = EGhoulWalk;
 			return;
 		}
-		mprinter_printf("CHASE ACTION\n");
 		character->nextAction = EGhoulChaseTarget;
 		character->nextDirection = goDirection;
 		
@@ -249,7 +248,6 @@ void ghoul_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	} else if (isNear) {		
 		character->nextAction = doAction;
 		character->nextDirection = goDirection;
-		mprinter_printf("ACTION %d\n", character->nextAction);
 		common_faceTarget(&character->position, &charControl->target, 
 				&faceDirection);
 
@@ -261,7 +259,6 @@ void ghoul_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (character->nextAction == EGhoulAttack) {
-		mprinter_printf("ATTACK\n");
 		return;
 	}
 	//character->nextAction = EGhoulChaseTarget;
@@ -271,7 +268,6 @@ void ghoul_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
 			EGhoulChaseTarget, 15);
 		common_doSetActions(charControl, character);
-		mprinter_printf("MOVE AROUND SET\n");
 		return;
 	} /*else if (charControl->currentAction >= charControl->countAction) {
 		charControl->countAction = 0;
@@ -302,7 +298,6 @@ void ghoul_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (common_shouldDoIntializeActions(character)) {
-		mprinter_printf("INIT HUNT\n");
 		commonInitializeAISetActions(charControl);
 		character->nextAction = EGhoulChaseTarget;
 		ghoul_doChaseTarget(character, mapInfo, characterCollection, charControl);
@@ -310,10 +305,8 @@ void ghoul_huntController(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (character->action == EGhoulChaseTarget) {
-		mprinter_printf("CHASE\n");
 		ghoul_doChaseTarget(character, mapInfo, characterCollection, charControl);
 	} else if (character->action == EGhoulAttack) {
-		mprinter_printf("ATTACk\n");
 		ghoul_doAttack(character, mapInfo, characterCollection, charControl);
 	}
 	//++charControl->actions[charControl->currentAction].currentFrame;
