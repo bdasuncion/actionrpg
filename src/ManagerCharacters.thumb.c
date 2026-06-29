@@ -189,7 +189,6 @@ void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection) {
 	for (checkCollisionIdx = 0; checkCollisionIdx < charCollection->currentSize; ++checkCollisionIdx) {
 		CharacterAttr *character = charCollection->characters[checkCollisionIdx];
 		if (character->extraMov != NULL) {
-			mprinter_printf("MOVE DELTA %d %d\n", character->extraMov->x, character->extraMov->y);
 			character->position.x += character->extraMov->x;
 			character->position.y += character->extraMov->y;
 		}
