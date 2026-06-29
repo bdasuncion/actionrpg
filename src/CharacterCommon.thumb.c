@@ -932,7 +932,8 @@ bool commonCollissionPointInBounds(const Position *collisionPoint, const Boundin
 bool commonPositionInBounds(const Position *position, const BoundingBox *boundingBox) {
 
     return inBounds(CONVERT_2POS(position->x), boundingBox->startX, boundingBox->endX) &
-		inBounds(CONVERT_2POS(position->y), boundingBox->startY, boundingBox->endY);
+		inBounds(CONVERT_2POS(position->y), boundingBox->startY, boundingBox->endY) &
+		inBounds(CONVERT_2POS(position->z), boundingBox->startZ, boundingBox->endZ);
 }	
 
 void common_noMovement(CharacterAttr* character, 
@@ -1781,7 +1782,9 @@ const Position* commonFindCharTypeInBoundingBox(const CharacterCollection *chara
 
 const Position* commonFindCharTypePositionByDistance(const CharacterCollection *characterCollection, 
     const Position *refPos, int dist, CHARACTERTYPE fromType, CHARACTERTYPE toType) {
-	int i, distX, distY;
+	int i, distX, distY, distZ;
+	int zMaxDist = 24;
+	bool isPositive;
 	for (i = 0; i < characterCollection->currentSize; ++i) {
 		if (characterCollection->characters[i]->type >= fromType && 
 			characterCollection->characters[i]->type <= toType) {
@@ -1790,6 +1793,7 @@ const Position* commonFindCharTypePositionByDistance(const CharacterCollection *
 			distY = CONVERT_2POS(refPos->y) - CONVERT_2POS(characterCollection->characters[i]->position.y);
 			distY *= distY;
 			dist *= dist;
+			
 			if (dist >= distX + distY) {
 				return &characterCollection->characters[i]->position;
 			}
