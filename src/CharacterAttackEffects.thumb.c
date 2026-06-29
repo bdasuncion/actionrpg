@@ -2,6 +2,7 @@
 #include "GBACharacter.h"
 #include "ManagerVram.h"
 #include <stdlib.h>
+#include "ManagerPrinter.h"
 
 extern const SpriteSet slash_horizontalright;
 extern const SpriteSet slash_horizontalleft;
@@ -32,9 +33,12 @@ void charAttackEffect_Init(AttackEffectCollection* attackEffects) {
 }
 
 void charAttackEffect_getPosition(BoundingBox *attack, BoundingBox *collisiontTarget, Position *position) {
-	position->z = CONVERT_2MOVE((attack->startZ + attack->endZ + collisiontTarget->startZ + collisiontTarget->endZ) >> 2);
-	position->x = CONVERT_2MOVE((attack->startX + attack->endX + collisiontTarget->startX + collisiontTarget->endX) >> 2);
-	position->y = CONVERT_2MOVE((attack->startY + attack->endY + collisiontTarget->startY + collisiontTarget->endY) >> 2);
+	int z = (attack->startZ + attack->endZ + collisiontTarget->startZ + collisiontTarget->endZ) >> 2;
+	int x = (attack->startX + attack->endX + collisiontTarget->startX + collisiontTarget->endX) >> 2;
+	int y = (attack->startY + attack->endY + collisiontTarget->startY + collisiontTarget->endY) >> 2;
+	position->z = CONVERT_2MOVE(z);
+	position->x = CONVERT_2MOVE(x);
+	position->y = CONVERT_2MOVE(y);
 }
 
 void charAttackEffect_Add(Position *position, CharacterActionType type, AttackEffectCollection* attackEffectCollection) {
