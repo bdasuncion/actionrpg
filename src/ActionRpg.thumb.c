@@ -38,6 +38,7 @@ extern const EventTransfer startAt;
 extern const EventTransfer startAt_dungeonSample;
 extern const EventTransfer startAt_graveyard;
 extern const EventTransfer startAt_graveyard_a;
+extern const EventTransfer startAt_cryptentrance;
 
 inline void waitForVBlank() {
 	asm("swi 0x05");
@@ -144,7 +145,8 @@ int main() {
 	//mapInfo.transferTo =  &startAt;
 	//mapInfo.transferTo =  &startAt_dungeonSample;
 	//mapInfo.transferTo =  &startAt_graveyard;
-	mapInfo.transferTo =  &startAt_graveyard_a;
+	//mapInfo.transferTo =  &startAt_graveyard_a;
+	mapInfo.transferTo =  &startAt_cryptentrance;
 	mapCommon_transferToMap(&screenAttribute,  &characterCollection, &mapInfo, &controlPool,
 		&charActionCollection, &track);
 	
