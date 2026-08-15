@@ -215,7 +215,9 @@ typedef struct CharacterAIControl {
 	u32 wayPointCnt:4;
 	u32 wayPointCurrent:4;
 	s8 previousActionType;
-	u16 dummy;
+	//u16 dummy;
+	u16 countUnblocked:5;
+	u16 dummy:11;
 	const Position *wayPoints;
     Position target;
     ActionControl actions[MAXACTIONS];

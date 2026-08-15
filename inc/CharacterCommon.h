@@ -5,8 +5,10 @@
 #include "GBACharacter.h"
 #include "CharacterType.h"
 #include "GBAMap.h"
+#include "GBATypes.h"
 #include "GBACharacterActionEvent.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 extern const CharacterAttr openSlot;
 extern const s32 common_zOffsetDown;
@@ -165,9 +167,10 @@ void common_findPosition(const Position *current, const Position *target,
 	const EDirections blocked, EDirections *direction);
 void common_doGoAroundObstacle(const Position *current, const Position *target, 
 	CharacterAIControl *charControl, int action, int duration);
+void common_doGoAroundObstacleNoTarget(const Position *current, 
+	CharacterAIControl *charControl, int action, int duration);
 void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* character);
 void common_removeSpriteMask(CharacterCollection *characterCollection);
-
 void common_findDirectionOfTargetCharacterInScreenCustom(Position const *current, Position const *target, 
 	const EDirections *inScreen, const int inscreenOffset, const int inScreenArrayWidth,
 	const EDirections *inClose, const s8 *incloseActions,
@@ -185,5 +188,8 @@ void common_faceTarget(Position const *current, Position const *target,
 void commonCharacter_createAttackBoundingBox(const Position *position, const s32 *offsetXAtDir,
 	const s32 *offsetYAtDir, const BoundingBox *attackBoundsAtDirection, 
 	const int currentAnimationFrame, BoundingBox *attackBoundingBox);
-	
+
+static inline EDirections getRandomDirection() {
+	return GET_REMAINDER_8(rand());
+}
 #endif

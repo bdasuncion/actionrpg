@@ -1926,6 +1926,40 @@ void common_doGoAroundObstacle(const Position *current, const Position *target,
 	}
 }
 
+void common_doGoAroundObstacleNoTarget(const Position *current, 
+	CharacterAIControl *charControl, int action, int duration) {
+	EDirections goTarget;
+	if (charControl->leftBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		bool goUp = rand()&1;
+		goTarget = EUp&goUp + EDown&(!goUp);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
+		charControl->leftBlocked = false;
+	} else if (charControl->rightBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		bool goUp = rand()&1;
+		goTarget = EUp&goUp + EDown&(!goUp);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
+		charControl->rightBlocked = false;
+	} else if (charControl->upBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		bool goLeft = rand()&1;
+		goTarget = ELeft&goLeft + ERight&(!goLeft);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
+		charControl->upBlocked = false;
+	} else if (charControl->downBlocked) {
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		bool goLeft = rand()&1;
+		goTarget = ELeft&goLeft + ERight&(!goLeft);
+		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
+		charControl->downBlocked = false;
+	}
+}
+
 void common_doSetActions(CharacterAIControl *charControl, CharacterAttr* character)  {
 	if (charControl->currentAction < charControl->countAction) {
 		character->nextAction = charControl->actions[charControl->currentAction].action;
