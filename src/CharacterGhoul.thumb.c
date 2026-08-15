@@ -188,10 +188,16 @@ void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool,
 	charControl->downBlocked = false;
 	charControl->currentStatus = EGhoulAIStateWalkAround;
 	
-	charControl->wayPointCnt = charWaypoints->wayPointCnt;
-	charControl->wayPointCurrent = 0;
-	charControl->wayPoints = charWaypoints->wayPoints;
-	
+	if (charWaypoints != NULL) {
+		charControl->wayPointCnt = charWaypoints->wayPointCnt;
+		charControl->wayPointCurrent = 0;
+		charControl->wayPoints = charWaypoints->wayPoints;
+	} else {
+		charControl->wayPointCnt = 0;
+		charControl->wayPointCurrent = 0;
+		charControl->wayPoints = NULL;
+	}
+		
 	character->free = (ControlTypeUnion*)charControl;
 	
 	character->stats.maxLife = 10;

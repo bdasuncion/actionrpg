@@ -135,23 +135,9 @@ void ghoul_doWalk(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 }
 
-void ghoul_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
-	const CharacterCollection *characterCollection) {
+void ghoul_findDirectionByWaypoint(CharacterAttr* character) {
+
 	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
-	int i;
-	//EDirections goDirection;
-   
-	if (charControl->currentStatus == EGhoulAIStateHuntTarget) {
-		charControl->currentAction = MAXACTIONS;
-		character->controller = &ghoul_huntController;
-		character->controller(character, mapInfo, characterCollection);
-		return;
-	}
-	
-	if (common_shouldDoIntializeActions(character)) {
-		character->getBounds = &ghoul_getBoundingBoxMoving;
-	}
-	
 	int count;
 	BoundingBox boundingBox;
 	character->getBounds(character, &count, &boundingBox);
@@ -169,10 +155,51 @@ void ghoul_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo
 	character->nextAction = EGhoulWalk;
 	character->nextDirection = direction;
 	
+}
+
+void ghoul_findDirectionRandom(CharacterAttr* character) {
+
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	if (charControl->currentAction > charControl->countAction) {
+		EDirections direction = getRandomDirection();
+		charControl->currentAction = 0;
+		charControl->countAction = 1;
+		charControl->actions[0] = ((ActionControl){30, 0, direction, direction, EGhoulWalk});
+	}
+}
+
+void ghoul_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	int i;
+	//EDirections goDirection;
+   
+	if (charControl->currentStatus == EGhoulAIStateHuntTarget) {
+		charControl->currentAction = MAXACTIONS;
+		character->controller = &ghoul_huntController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
+	if (common_shouldDoIntializeActions(character)) {
+		character->getBounds = &ghoul_getBoundingBoxMoving;
+	}
+	
+	if (charControl->wayPointCnt > 0) {
+		ghoul_findDirectionByWaypoint(character);
+	} else {
+		ghoul_findDirectionRandom(character);
+	}
+	
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
-		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
-			EGhoulWalk, 15);
+		if (charControl->wayPointCnt > 0) {
+			common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
+				EGhoulWalk, 15);
+		} else {
+			common_doGoAroundObstacleNoTarget(&character->position, charControl, 
+				EGhoulWalk, 15);
+		}
 	}
 	
 	common_doSetActions(charControl, character);
