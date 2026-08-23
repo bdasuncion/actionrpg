@@ -157,10 +157,8 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->checkCollision = &wickedknight_checkCollision;
 	character->checkMapCollision = &wickedknight_checkMapCollision;
 	character->isHit = &wickedknight_isHit;
-		
-	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeLarge);
-	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeMedium);
-	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
+
+	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(WICKEDKNIGHT, WICKEDKNIGHT_PAL_CNT);
 	sprite_palette_copy32_ID(wickedknight_body_walk_side_pal, character->spriteDisplay.basePalleteId);

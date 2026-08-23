@@ -619,7 +619,7 @@ void alisa_actionSpinningSlash(CharacterAttr* alisa, const MapInfo *mapInfo,
 	int displayCountFrame = commonGetCurrentDisplayFrame(alisa);
 	
 	if (currentAnimationFrame >= 5 && currentAnimationFrame <= 8 && displayCountFrame < 3) {
-		mprinter_printf("NO GRAVITY\n");
+		//mprinter_printf("NO GRAVITY\n");
 		alisa->delta.z = alisa_jumpOffset[alisa->movementCtrl.currentFrame&1];
 		alisa->position.z += alisa->delta.z;		
 	} else {

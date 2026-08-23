@@ -127,6 +127,11 @@ void ghoul_hurtController(CharacterAttr* character, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection);
 void ghoul_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection);
+void ghoul_actionRevive(CharacterAttr* character,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection,
+	CharacterActionCollection *charActionCollection);
+void ghoul_reviveController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 	
 const CharFuncAction ghoul_actions[] = {
 	&ghoul_actionWalk,
@@ -134,6 +139,7 @@ const CharFuncAction ghoul_actions[] = {
 	&ghoul_actionAttack,
 	&ghoul_actionStunned,
 	&ghoul_actionHurt,
+	&ghoul_actionRevive
 };
 
 
@@ -167,9 +173,7 @@ void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->checkMapCollision = &ghoul_checkMapCollision;
 	character->isHit = &ghoul_isHit;
 		
-	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeLarge);
-	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeMedium);
-	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
+	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(GHOUL, GHOUL_PAL_CNT);
 	sprite_palette_copy32_ID(ghoul_body_walk_down_pal, character->spriteDisplay.basePalleteId);
@@ -187,6 +191,7 @@ void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool,
 	charControl->upBlocked = false;
 	charControl->downBlocked = false;
 	charControl->currentStatus = EGhoulAIStateWalkAround;
+	charControl->revive = false;
 	
 	if (charWaypoints != NULL) {
 		charControl->wayPointCnt = charWaypoints->wayPointCnt;
@@ -207,6 +212,14 @@ void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->extraMov = NULL;
 }
 
+void ghoul_revive_init(CharacterAttr* character, ControlTypePool* controlPool, 
+	CharacterWaypoints *charWaypoints) {
+	ghoul_init(character, controlPool, charWaypoints);
+	character->type = GHOUL_REVIVE;
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	charControl->revive = true;
+}
+
 void ghoul_doAction(CharacterAttr* character,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection,
 	CharacterActionCollection *charActionCollection) {
@@ -218,6 +231,56 @@ void ghoul_doAction(CharacterAttr* character,
 		ghoul_actions[character->nextAction](character, mapInfo, 
 		    characterCollection, charActionCollection);
 	}
+}
+
+void ghoul_actionRevive(CharacterAttr* character,
+	const MapInfo *mapInfo, const CharacterCollection *characterCollection,
+	CharacterActionCollection *charActionCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;
+	const Position *position;
+	
+	mprinter_printf("DO REVIVE\n");
+	commonCharacterInit(character, EGhoulInitialize, EGhoulWalk, EDown);
+	
+	if (charControl->wayPointCnt > 0) {
+		mprinter_printf("FROM WAYPOINT\n");
+		position = &charControl->wayPoints[0];
+	}
+	
+	commonCharacterSetPosition(character, position->x, position->y, position->z, EDown);
+	character->controller = &ghoul_walkAroundController;
+	character->doAction = &ghoul_doAction;
+	character->setPosition = &ghoul_setPosition;
+	character->getBounds = &ghoul_getBoundingBoxMoving;
+	character->checkCollision = &ghoul_checkCollision;
+	character->checkMapCollision = &ghoul_checkMapCollision;
+	character->isHit = &ghoul_isHit;
+	
+	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
+	mprinter_printf("IMAGE ID %d\n", character->spriteDisplay.baseImageId);
+	character->spriteDisplay.imageUpdateStatus = EUpdate;
+	character->spriteDisplay.basePalleteId = sprite_palette_findId(GHOUL, GHOUL_PAL_CNT);
+	sprite_palette_copy32_ID(ghoul_body_walk_down_pal, character->spriteDisplay.basePalleteId);
+	character->spriteDisplay.palleteUpdateStatus = EUpdate;
+	//CharacterAIControl *charControl = mchar_getControlType(controlPool);
+	//CharacterAIControl *charControl = (CharacterAIControl*)mchar_findFreeControlType(controlPool);
+	charControl->type = EControlAiType;
+	//charControl->countAction = 0;
+	//charControl->currentAction = MAXACTIONS;
+	charControl->countAction = 1;
+	charControl->currentAction = 0;
+	character->nextAction = EGhoulWalk;
+	charControl->rightBlocked = false;
+	charControl->leftBlocked = false;
+	charControl->upBlocked = false;
+	charControl->downBlocked = false;
+	charControl->currentStatus = EGhoulAIStateWalkAround;
+	
+	character->stats.maxLife = 10;
+	character->stats.currentLife = 44;
+	character->stats.currentStatus = EGhoulAIStateWalkAround;
+	
+	character->extraMov = NULL;
 }
 
 void ghoul_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -386,7 +449,14 @@ void ghoul_actionHurt(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	if (character->stats.currentLife <= 0) {
-		commonRemoveCharacter(character);
+		CHARACTERTYPE type = character->type;
+		commonSetCharacterDefault(character);
+		if (type == GHOUL_REVIVE) {
+			mprinter_printf("GO TO REVIVE\n");
+			character->controller = &ghoul_reviveController;
+			character->doAction = &ghoul_doAction;
+			character->type = GHOUL_REVIVE;
+		}
 	}
 	
 	character->spriteDisplay.spriteSet = ghoulHurt[character->direction];

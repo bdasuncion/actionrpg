@@ -166,10 +166,8 @@ void skulldemon_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->checkCollision = &skulldemon_checkCollision;
 	character->checkMapCollision = &skulldemon_checkMapCollision;
 	character->isHit = &skulldemon_isHit;
-		
-	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeLarge);
-	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeMedium);
-	//character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
+
+	character->spriteDisplay.baseImageId = sprite_vram_findIdByType(ECharSizeSmall);
 	character->spriteDisplay.imageUpdateStatus = EUpdate;
 	character->spriteDisplay.basePalleteId = sprite_palette_findId(SKULLDEMON, SKULLDEMON_PAL_CNT);
 	sprite_palette_copy32_ID(skull_demon_walking_side_pal, character->spriteDisplay.basePalleteId);

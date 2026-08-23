@@ -8,6 +8,7 @@ typedef enum GhoulAction {
 	EGhoulAttack,
 	EGhoulStunned,
 	EGhoulHurt,
+	EGhoulRevive,
 	EGhoulActionCount
 } GhoulAction;
 

@@ -55,9 +55,9 @@ const EDirections GHOUL_ATTACKRANGE_TARGET_8x8[GHOUL_MOVACT_INRANGE_ARRAYWIDTH][
 	{EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,        EUp,      EUp,        EUpright,   EUpright,   EUpright,   EUpright,   EUpright},
 	{ELeft,     EUpleft,   EUpleft,   EUpleft,   EUpleft,   EUp,        EUp,      EUp,        EUpright,   EUpright,   EUpright,   EUpright,   ERight},
 	{ELeft,     ELeft,     EUpleft,   EUpleft,   EUpleft,   ELeft,      EUp,      ERight,     EUpright,   EUpright, EUpright,   ERight,     ERight},
-	{ELeft,     ELeft,     ELeft,     ELeft,     EUp,       EUpright,   EUp,      EUpleft,    EUp,        ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EUp,       ERight,     EUp,      ELeft,      EUp,        ERight,     ERight,     ERight,     ERight},
 	{ELeft,     ELeft,     ELeft,     ELeft,     ELeft,     ELeft,      EUnknown, ERight,     ERight,     ERight,     ERight,     ERight,     ERight},
-	{ELeft,     ELeft,     ELeft,     ELeft,     EDown,     EDownright, EDown,    EDownleft,  EDown,      ERight,     ERight,     ERight,     ERight},
+	{ELeft,     ELeft,     ELeft,     ELeft,     EDown,     ERight,     EDown,    ELeft,      EDown,      ERight,     ERight,     ERight,     ERight},
 	{ELeft,     ELeft,     EDown,     EDownleft, ERight,    ELeft,      EDown,    ERight,     EDown,      EDownright, EDownright, ERight,     ERight},
 	{ELeft,     EDownleft, EDownleft, EDownleft, EDownleft, EDown,      EDown,    EDown,      EDownright, EDownright, EDownright, EDownright, ERight},
 	{EDownleft, EDownleft, EDownleft, EDownleft, EDownleft, EDown,      EDown,    EDown,      EDownright, EDownright, EDownright, EDownright, EDownright},
@@ -188,15 +188,21 @@ void ghoul_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo
 	if (charControl->wayPointCnt > 0) {
 		ghoul_findDirectionByWaypoint(character);
 	} else {
-		ghoul_findDirectionRandom(character);
+		//if (charControl->countAction < 1) {
+			ghoul_findDirectionRandom(character);
+		//}
 	}
 	
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
 		if (charControl->wayPointCnt > 0) {
-			common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
+			//mprinter_printf("WITH TARGET\n");
+			//common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
+			//	EGhoulWalk, 15);
+			common_doGoAroundObstacleNoTarget(&character->position, charControl, 
 				EGhoulWalk, 15);
 		} else {
+			//mprinter_printf("NO TARGET\n");
 			common_doGoAroundObstacleNoTarget(&character->position, charControl, 
 				EGhoulWalk, 15);
 		}
@@ -213,6 +219,32 @@ void ghoul_walkAroundController(CharacterAttr* character, const MapInfo *mapInfo
 	}
 		
 	ghoul_doWalk(character, mapInfo, characterCollection, charControl);
+}
+
+void ghoul_reviveController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+	CharacterAIControl *charControl = (CharacterAIControl*)character->free;	
+	const Position *position;
+	int i;
+	if (charControl->wayPointCnt > 0) {
+		position = &charControl->wayPoints[0];
+	}
+	
+	bool isInBound = false;
+	for (i = 0; i < characterCollection->currentSize; ++i) {
+		CharacterAttr *character = characterCollection->characters[i];
+		BoundingBox boundingBox;
+		int count;
+		character->getBounds(character, &count, &boundingBox);
+		isInBound |= commonCollissionPointInBounds(position, &boundingBox);
+	}
+	
+	mprinter_printf("REVIVE HERE\n");
+	if (!isInBound) {
+		mprinter_printf("REVIVE HERE\n");
+		character->action = EGhoulRevive;
+		character->nextAction = EGhoulRevive;
+	}
 }
 
 void ghoul_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo, 
@@ -292,8 +324,8 @@ void ghoul_doChaseTarget(CharacterAttr* character, const MapInfo *mapInfo,
 	
 	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
-		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
-			EGhoulChaseTarget, 15);
+		common_doGoAroundObstacleNoTarget(&character->position, charControl, 
+			EGhoulChaseTarget, 10);
 		common_doSetActions(charControl, character);
 		return;
 	} /*else if (charControl->currentAction >= charControl->countAction) {

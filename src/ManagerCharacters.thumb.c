@@ -191,6 +191,8 @@ void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection) {
 		if (character->extraMov != NULL) {
 			character->position.x += character->extraMov->x;
 			character->position.y += character->extraMov->y;
+			character->delta.x = character->extraMov->x;
+			character->delta.y = character->extraMov->y;
 		}
 	}
 }
@@ -221,10 +223,12 @@ void mchar_resolveCharacterCollision(CharacterCollection *charCollection) {
 
 void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) {
 	if (charCollection->characters[charCollection->currentSize - 1]->type == NONE) {
+		mprinter_printf("REMOVE DEAD CHARACTER\n");
 		--charCollection->currentSize;
 	}
 	
 	if (charCollection->charactersForDisplay[charCollection->displaySize - 1]->type == NONE) {
+		mprinter_printf("REMOVE DEAD CHARACTER\n");
 		--charCollection->displaySize;
 	}
 }

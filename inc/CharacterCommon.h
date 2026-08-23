@@ -12,6 +12,7 @@
 
 extern const CharacterAttr openSlot;
 extern const s32 common_zOffsetDown;
+void commonSetCharacterDefault(CharacterAttr *character);
 void commonRemoveCharacter(CharacterAttr *character);
 void commonSetToOamBuffer(const SpriteDisplay *spriteDisplay, OBJ_ATTR *oamBuf);
 void commonDrawDisplay(SpriteDisplay *spriteDisplay);

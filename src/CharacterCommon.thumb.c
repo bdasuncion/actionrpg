@@ -508,7 +508,7 @@ void common_findDirectionOfPosition(const Position *current, const Position *tar
 	findDirection(&currentConverted, targetPos, goDirection);
 }
 
-void commonRemoveCharacter(CharacterAttr *character) {
+void commonSetCharacterDefault(CharacterAttr *character) {
     character->type = NONE;
     commonCharacterSetPosition(character, 0, -1, 0, EDown);
 
@@ -519,11 +519,16 @@ void commonRemoveCharacter(CharacterAttr *character) {
 	character->checkCollision = &commonCollisionCheckDummy;
 	character->checkMapCollision = &commonMapCollisionDummy;
 	character->isHit = &commonIsHitDummy;
-
+	\
+	sprite_vram_freeId(character->spriteDisplay.baseImageId);
 	character->spriteDisplay.baseImageId = 0;
 	character->spriteDisplay.imageUpdateStatus = ENoUpdate;
 	character->spriteDisplay.basePalleteId = 0;
 	character->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+}
+
+void commonRemoveCharacter(CharacterAttr *character) {
+	commonSetCharacterDefault(character);
 	mchar_removeControl((CharacterBaseControl*)character->free);
 }
 void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, const CharacterCollection *charCollection);
@@ -1933,30 +1938,34 @@ void common_doGoAroundObstacleNoTarget(const Position *current,
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		bool goUp = rand()&1;
-		goTarget = EUp&goUp + EDown&(!goUp);
+		goTarget = (EUp*goUp) + (EDown*(!goUp));
 		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->leftBlocked = false;
+		//mprinter_printf(" LEFT %d", goTarget);
 	} else if (charControl->rightBlocked) {
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		bool goUp = rand()&1;
-		goTarget = EUp&goUp + EDown&(!goUp);
+		goTarget = (EUp*goUp) + (EDown*(!goUp));
 		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->rightBlocked = false;
+		//mprinter_printf(" RIGHT %d", goTarget);
 	} else if (charControl->upBlocked) {
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		bool goLeft = rand()&1;
-		goTarget = ELeft&goLeft + ERight&(!goLeft);
+		goTarget = (ELeft*goLeft) + (ERight*(!goLeft));
 		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->upBlocked = false;
+		//mprinter_printf(" UP %d", goTarget);
 	} else if (charControl->downBlocked) {
 		charControl->currentAction = 0;
 		charControl->countAction = 1;
 		bool goLeft = rand()&1;
-		goTarget = ELeft&goLeft + ERight&(!goLeft);
+		goTarget = (ELeft*goLeft) + (ERight*(!goLeft));
 		charControl->actions[0] = ((ActionControl){duration, 0, goTarget, goTarget, action});
 		charControl->downBlocked = false;
+		//mprinter_printf(" DOWN %d", goTarget);
 	}
 }
 

@@ -284,7 +284,7 @@ void alisa_spinningSlashController(CharacterAttr* character, const MapInfo *mapI
 
 	int currentAnimationFrame = commonGetCurrentAnimationFrame(character);
 	if (currentAnimationFrame < 5 && currentAnimationFrame > 8) {
-		mprinter_printf("SPIN CHECK IS FALLING\n");
+		//mprinter_printf("SPIN CHECK IS FALLING\n");
 		if (alisa_isFalling(character, charControl, mapInfo, characterCollection)) {
 			return;
 		}
