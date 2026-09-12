@@ -248,4 +248,11 @@ extern const unsigned int alisa_strongswordslash_up_image4[];
 extern const unsigned int alisa_strongswordslash_up_image5[];
 extern const unsigned int alisa_strongswordslash_up_image6[];
 
+extern const unsigned int alisa_die_image0[];
+extern const unsigned int alisa_die_image1[];
+extern const unsigned int alisa_die_image2[];
+extern const unsigned int alisa_die_image3[];
+extern const unsigned int alisa_die_final_image0[];
+
+
 #endif
