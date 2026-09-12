@@ -196,6 +196,8 @@ void alisa_actionFallingDownForward(CharacterAttr* alisa, const MapInfo *mapInfo
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
+void alisa_actionDie(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection);
 
 //void alisa_fallingDownController(CharacterAttr* character);
 
@@ -239,7 +241,8 @@ const CharFuncAction alisa_actions[] = {
 	&alisa_actionJumpForward,
 	&alisa_actionFallingDown,
 	&alisa_actionFallingDownForward,
-	&alisa_actionStunned
+	&alisa_actionStunned,
+	&alisa_actionDie
 };
 
 const BoundingBox alisa_slashCollisionBox[8] = {
@@ -294,8 +297,8 @@ void alisa_transfer(CharacterAttr* alisa, ControlTypePool* controlPool, Characte
 	charControl->controlMap.buttonR = NULL;
 	charControl->numberOfEnemyHits = 0;
 	alisa->free = (ControlTypeUnion*)charControl;
-	alisa->stats.maxLife = 10;
-	alisa->stats.currentLife = 10;
+	//alisa->stats.maxLife = 10;
+	//alisa->stats.currentLife = 10;
 }
 
 void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool, CharacterWaypoints *charWaypoints)
@@ -342,8 +345,8 @@ void alisa_init(CharacterAttr* alisa, ControlTypePool* controlPool, CharacterWay
 	charControl->controlMap.buttonL = &alisa_jumpController;
 	charControl->controlMap.buttonR = NULL;
 	alisa->free = (ControlTypeUnion*)charControl;
-	alisa->stats.maxLife = 10;
-	alisa->stats.currentLife = 10;
+	alisa->stats.maxLife = 5;
+	alisa->stats.currentLife = 5;
 }
 
 void alisa_doAction(CharacterAttr* alisa,
@@ -927,8 +930,55 @@ void alisa_actionStunned(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->delta.y = 0;
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection&EDirectionsMax;
-	
+		
 	alisa->spriteDisplay.spriteSet = alisaStunnedSet[alisa->direction];
+}
+
+void alisa_actionDie(CharacterAttr* alisa, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
+	BoundingBox position;
+	Position collisionPoints[2];
+	int attackVal = 1, countPoints = 2;
+	//mprinter_printf("STUNNED\n");
+	
+	int nextScreenFrame, nextAnimationFrame;
+	bool isLastFrame = false;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)alisa->free;
+	
+	commonGetCharacterNextFrame(alisa, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
+	alisa->spriteDisplay.imageUpdateStatus = ENoUpdate;
+	alisa->spriteDisplay.palleteUpdateStatus = ENoUpdate;
+	
+	commonGravityEffect(alisa, alisa_zOffsetDown[alisa->movementCtrl.currentFrame&1]);
+	
+	if (commonUpdateCharacterAnimation(alisa) == EUpdate) {
+		alisa->spriteDisplay.imageUpdateStatus = EUpdate;
+		alisa->spriteDisplay.palleteUpdateStatus = EUpdate;
+	}
+	
+	commonRemoveActionOnInit(alisa, charActionCollection);
+	
+	alisa->movementCtrl.maxFrames = 0;
+	alisa->movementCtrl.currentFrame = 0;
+	
+	alisa->delta.x = 0;
+	alisa->delta.y = 0;
+	alisa->action = alisa->nextAction;
+	alisa->direction = alisa->nextDirection&EDirectionsMax;
+	
+	if (isLastFrame) {
+		MapInfo *mapSet = (MapInfo *)mapInfo;
+		mapSet->transferTo = charControl->lastEntered;
+		mapSet->mapFunction = &fadeToBlackForScreenTransfer;
+		mapSet->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
+		alisa->spriteDisplay.numberOfFramesPassed = 0;
+		//return;
+		alisa->stats.maxLife = 5;
+		alisa->stats.currentLife = 5;
+	}
+	
+	alisa->spriteDisplay.spriteSet = alisaDieSet[alisa->direction];
 }
 
 void alisa_getBoundingBoxMoving(const CharacterAttr* alisa, 
@@ -1065,8 +1115,6 @@ bool alisa_isHit(CharacterAttr *alisa, CharacterActionEvent *actionEvent) {
 	}
 	alisa->stats.currentLife -= 1;
 	charControl->currentStatus = EAlisaStatusStunned;
-	if (alisa->stats.currentLife <= 0) {
-		//gameover
-	}
+	
 	return true;
 }

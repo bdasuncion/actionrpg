@@ -5,6 +5,8 @@
 #include  <stdbool.h>
 #include  <stdlib.h>
 
+#include "MapCommon.h"
+
 #include "ManagerPrinter.h"
 
 #define MAX_BUTTON_INTERVAL 30
@@ -643,6 +645,21 @@ void alisa_fallingDownController(CharacterAttr* character, const MapInfo *mapInf
 	character->nextAction = EAlisaFallingDown;
 }
 
+#define MAX_DIE_ANIMATION 60
+void alisa_dieController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection){
+	int nextScreenFrame, nextAnimationFrame;
+	bool isLastFrame = false;
+	CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+	
+	commonGetCharacterNextFrame(character, &nextScreenFrame, &nextAnimationFrame, &isLastFrame);
+	
+	mprinter_printf("DIE CONTROLLER\n");
+	character->getBounds = &alisa_getBoundingBoxStanding;
+	character->nextAction = EAlisaDie;
+	character->stats.currentStatus = EStatusNoActionCollision;
+}
+
 void alisa_stunnedController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection) {
 	int nextScreenFrame, nextAnimationFrame;
@@ -654,6 +671,13 @@ void alisa_stunnedController(CharacterAttr* character, const MapInfo *mapInfo,
 	
 	//mprinter_printf("SCREEN %d %d\n", nextScreenFrame, MAX_STUN_ANIMATION);
 	if (nextScreenFrame > MAX_STUN_ANIMATION) {
+		if (character->stats.currentLife <= 0) {
+			mprinter_printf("GO TO DIE CONTROLLER");
+			charControl->currentStatus = EAlisaStatusDie;
+			character->controller = &alisa_dieController;
+			return;
+		}
+		
 		charControl->currentStatus = EAlisaStatusNormal;
 		character->controller = &alisa_controller;
 		//alisa_controller(character);
