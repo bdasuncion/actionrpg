@@ -314,10 +314,10 @@ void wickedknight_doCircleTarget(CharacterAttr* character, const MapInfo *mapInf
 	
 	charControl->actions[charControl->currentAction].action = doAction;
 	
-	/*if (charControl->leftBlocked | charControl->rightBlocked | 
+	if (charControl->leftBlocked | charControl->rightBlocked | 
 		charControl->upBlocked | charControl->downBlocked) {
-		mprinter_printf("XXX BLOCKED %d %d %d %d\n", charControl->leftBlocked, charControl->rightBlocked,
-			charControl->upBlocked, charControl->downBlocked);
+		//mprinter_printf("XXX BLOCKED %d %d %d %d\n", charControl->leftBlocked, charControl->rightBlocked,
+		//	charControl->upBlocked, charControl->downBlocked);
 		common_doGoAroundObstacle(&character->position, &charControl->target, charControl, 
 			EWickedKnightChaseTarget, 20);
 		common_doSetActions(charControl, character);

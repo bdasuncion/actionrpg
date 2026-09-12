@@ -139,7 +139,7 @@ int wickedknight_setPosition(CharacterAttr* character, OBJ_ATTR *oamBuf,
 void wickedknight_checkMapCollision(CharacterAttr* character, const MapInfo* mapInfo);
 void wickedknight_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	bool *checkNext, const CharacterAttr* otherCharacter);
-	
+
 void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool, 
 	CharacterWaypoints *charWaypoints) {
 //use library to get id
@@ -189,6 +189,13 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->stats.currentStatus = EWickedKnightAIStateWalkAround;
 	
 	character->extraMov = NULL;
+}
+
+void boss_wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool, 
+	CharacterWaypoints *charWaypoints) {
+	wickedknight_init(character, controlPool, charWaypoints);
+	character->stats.currentLife = 220;
+	character->type = BOSS_WICKEDKNIGHT;
 }
 
 void wickedknight_doAction(CharacterAttr* character,
