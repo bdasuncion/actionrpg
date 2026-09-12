@@ -447,7 +447,7 @@ void findDirection(Position *current, Position *targetPos, EDirections *goDirect
 	findDirection(&currentConverted, &targetConverted, goDirection);
 }*/
 
-const s32 HEIGHT_FOR_TARGET_HUNT = 24;
+const s32 HEIGHT_FOR_TARGET_HUNT = 30;
 void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target, 
 	EDirections *goDirection, bool *isNear) {
 	Position currentPos = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
@@ -1726,8 +1726,10 @@ void commonDoCharacterEvent(CharacterAttr *character, const MapInfo *mapInfo, co
 	for (i = 0; i < mapInfo->eventTransferCount; ++i) {
 		transferToBoundingBox(&mapInfo->tranfers[i], &eventBox);
 		if (commonIsInside(&characterBoundingBox, &eventBox)) {
-			mapInfo->transferTo = &mapInfo->tranfers[i];
-			//mapInfo->mapFunction = &fadeToBlack;
+			CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+			charControl->lastEntered = &mapInfo->tranfers[i];
+			
+			mapInfo->transferTo = &mapInfo->tranfers[i];	
 			mapInfo->mapFunction = &fadeToBlackForScreenTransfer;
 			mapInfo->screenEffect.processScreenEffect = &mapCommon_defaultEffect;
 			break;

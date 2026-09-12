@@ -196,6 +196,7 @@ typedef struct CharacterPlayerControl {
 	u32 buttonA_PressInterval:5;
 	bool buttonL_Ready:1;
 	bool buttonR_Ready:1;
+	struct EventTransfer *lastEntered;
 	Position target;
 	ActionControl action;
 	ControlMap controlMap;

@@ -223,12 +223,10 @@ void mchar_resolveCharacterCollision(CharacterCollection *charCollection) {
 
 void mchar_resolveRemovedCharacters(CharacterCollection *charCollection) {
 	if (charCollection->characters[charCollection->currentSize - 1]->type == NONE) {
-		mprinter_printf("REMOVE DEAD CHARACTER\n");
 		--charCollection->currentSize;
 	}
 	
 	if (charCollection->charactersForDisplay[charCollection->displaySize - 1]->type == NONE) {
-		mprinter_printf("REMOVE DEAD CHARACTER\n");
 		--charCollection->displaySize;
 	}
 }

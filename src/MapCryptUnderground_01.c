@@ -192,6 +192,8 @@ void mapcryptunderground_01_function(struct ScreenAttr *screenAttribute, struct 
 	}
 }
 
+extern const MusicTrack musiccrypt;
+
 const MapInfo mapcryptunderground_01 = { 288, 400, 2, 52, 2, 2, 3, 6, 0, NULL , mapentryset_mapcryptunderground_01, vram_mapcryptunderground_01, pallette_mapcryptunderground_01,
-transfer_mapcryptunderground_01, heightMap_mapcryptunderground_01, actors_mapcryptunderground_01, spritemask_mapcryptunderground_01, spritemaskimage_mapcryptunderground_01, &mapcryptunderground_01_function, NULL, NULL, NULL, {0,0,0,0,0} };
+transfer_mapcryptunderground_01, heightMap_mapcryptunderground_01, actors_mapcryptunderground_01, spritemask_mapcryptunderground_01, spritemaskimage_mapcryptunderground_01, &mapcryptunderground_01_function, NULL, NULL, &musiccrypt, {0,0,0,0,0} };
 

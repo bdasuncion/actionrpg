@@ -151,6 +151,7 @@ const SpriteMaskImage spritemaskimage_mapcryptentrance[] = {
 const SpriteMaskInit spritemask_mapcryptentrance[] = {
 
 };
+
 const MapInfo mapcryptentrance = { 256, 352, 2, 108, 2, 1, 0, 0, 0, NULL , mapentryset_mapcryptentrance, vram_mapcryptentrance, pallette_mapcryptentrance,
 transfer_mapcryptentrance, heightMap_mapcryptentrance, actors_mapcryptentrance, spritemask_mapcryptentrance, spritemaskimage_mapcryptentrance, NULL, NULL, NULL, NULL, {0,0,0,0,0} };
 
