@@ -356,7 +356,7 @@ void alisa_doAction(CharacterAttr* alisa,
 		alisa->nextAction = EAlisaStand;
 	}
 	
-	alisa->extraMov = NULL;
+	alisa->inducedMove = NULL;
 	alisa_actions[alisa->nextAction](alisa, mapInfo, NULL, charActionCollection);
 	commonCheckForEvents(alisa, mapInfo);
 }
@@ -448,8 +448,8 @@ void alisa_actionRun(CharacterAttr* alisa, const MapInfo *mapInfo,
 	alisa->action = alisa->nextAction;
 	alisa->direction = alisa->nextDirection&EDirectionsMax;
 	
-	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= alisa->movementCtrl.maxFrames))*
-	    alisa->movementCtrl.currentFrame;
+	alisa->movementCtrl.currentFrame = (!(alisa->movementCtrl.currentFrame >= 
+		alisa->movementCtrl.maxFrames))*alisa->movementCtrl.currentFrame;
 
 	//mprinter_printf("JAPANESE %d\n", 'か');
 	//mprinter_printf("JAPANESE2 %d\n", 'め');
@@ -1079,7 +1079,8 @@ void alisa_checkVerticalCollision(CharacterAttr* alisa, BoundingBox* alisaBoundi
 			} else {
 				alisa->nextAction = EAlisaStand;
 			}
-			alisa->extraMov = &otherCharacter->finalDelta;
+			alisa->inducedMove = &otherCharacter->finalDelta;
+			alisa->inducedDirection = otherCharacter->direction;
 		}
 		
 		if (fallingDistance >= 0 && fallingDistance < alisa->distanceFromGround ) {

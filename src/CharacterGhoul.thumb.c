@@ -209,7 +209,7 @@ void ghoul_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->stats.currentLife = 44;
 	character->stats.currentStatus = EGhoulAIStateWalkAround;
 	
-	character->extraMov = NULL;
+	character->inducedMove = NULL;
 }
 
 void ghoul_revive_init(CharacterAttr* character, ControlTypePool* controlPool, 
@@ -280,7 +280,7 @@ void ghoul_actionRevive(CharacterAttr* character,
 	character->stats.currentLife = 44;
 	character->stats.currentStatus = EGhoulAIStateWalkAround;
 	
-	character->extraMov = NULL;
+	character->inducedMove = NULL;
 }
 
 void ghoul_actionWalk(CharacterAttr* character, const MapInfo *mapInfo, 

@@ -502,6 +502,12 @@ void common_findDirectionOfTargetCharacterInScreenCustom(Position const *current
 		goDirection, setAction, isNear);
 }
 
+void common_findVerticalDirectionOfPosition(const Position *current, const Position *targetPos, EVerticalDirections *goDirection) {
+	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
+	bool goingUp = currentConverted.z < targetPos->z;
+	*goDirection = goingUp*EVUp + (!goingUp)*EVDown;
+}
+
 void common_findDirectionOfPosition(const Position *current, const Position *targetPos, EDirections *goDirection) {
 	Position currentConverted = {CONVERT_2POS(current->x), CONVERT_2POS(current->y), CONVERT_2POS(current->z)};
 	
@@ -918,7 +924,8 @@ void convertWaypointToBoundingBox(const Position *wayPoint, BoundingBox *boundin
 	boundingBox->startY =  wayPoint->y - 8;
 	boundingBox->endY =  wayPoint->y + 8;
 	boundingBox->startZ =  wayPoint->z;
-	boundingBox->endZ =   wayPoint->z + 32;
+	//boundingBox->endZ =   wayPoint->z + 32;
+	boundingBox->endZ =   wayPoint->z + 4;
 }
 
 bool commonHasReachedWaypoint(const Position *waypoint, const BoundingBox *boundingBox) {

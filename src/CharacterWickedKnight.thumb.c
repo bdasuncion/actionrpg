@@ -188,7 +188,7 @@ void wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->stats.currentLife = 44;
 	character->stats.currentStatus = EWickedKnightAIStateWalkAround;
 	
-	character->extraMov = NULL;
+	character->inducedMove = NULL;
 }
 
 void boss_wickedknight_init(CharacterAttr* character, ControlTypePool* controlPool, 

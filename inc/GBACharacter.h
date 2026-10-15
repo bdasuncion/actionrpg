@@ -271,10 +271,11 @@ typedef struct CharacterAttr {
 	CharFuncIsHit isHit;
 	SpriteDisplay spriteDisplay;
 	CharacterStats stats;
-	u32 id:8;
+	//u32 id:8;
+	u32 id:7;
 	s32 type:9;
 	s32 distanceFromGround:12;
-	s32 dummy:3;
+	EDirections inducedDirection:4;
 	u8 action;
 	EDirections direction:4;
 	EDirections faceDirection:4;
@@ -287,7 +288,7 @@ typedef struct CharacterAttr {
 	//Position delta;//3HW
 	MoveDelta delta;
 	MoveDelta finalDelta;
-	MoveDelta *extraMov;
+	MoveDelta *inducedMove;
 	CollisionControl collisionCtrl;
 	ControlTypeUnion *free;//Can be any object, for use in the controller
 } ALIGN4 CharacterAttr;

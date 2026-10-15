@@ -160,6 +160,8 @@ void commonActionCollisionDummy(CharacterAttr *charAtt,  CharacterActionCollecti
 bool commonIsHitDummy(struct CharacterAttr *charAtt, struct CharacterActionEvent *actionEvent);
 extern const EDirections FAR_TARGET[5][5];
 extern const EDirections NEAR_TARGET[5][5];
+void common_findVerticalDirectionOfPosition(const Position *current, const Position *targetPos, 
+	EVerticalDirections *goDirection);
 void common_findDirectionOfPosition(const Position *current, const Position *targetPos, EDirections *goDirection);
 //void common_findDirectionOfTargetCharacter(Position *current, Position *target, EDirections *goDirection);
 void common_findDirectionOfTargetCharacterInScreen(Position const *current, Position const *target,

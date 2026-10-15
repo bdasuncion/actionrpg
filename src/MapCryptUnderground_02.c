@@ -305,7 +305,8 @@ const u16 *pallette_mapcryptunderground_02[] = {  pallette_tileset_crypt_01, pal
 const u16 *mapentryset_mapcryptunderground_02[] = { mapentry_mapcryptunderground_02[0], mapentry_mapcryptunderground_02[1], };
 
 const CharacterInit actors_mapcryptunderground_02[] = {
-	{ 264, 216, 48, GHOUL_REVIVE, &(const CharacterWaypoints){2, {{264, 216, 48}, {264, 294, 48}}} }, 
+	//{ 264, 216, 48, GHOUL_REVIVE, &(const CharacterWaypoints){2, {{264, 216, 48}, {264, 325, 48}}} },
+	{ 264, 264, 90, MOUTHDEMON, &(const CharacterWaypoints){2, {{264, 264, 140}, {264, 264, 50}}} }, 
 	{ 296, 456, 0, GHOUL }, 
 	{ 136, 456, 0, GHOUL }, 
 	{ 72, 552, 0, GHOUL },
