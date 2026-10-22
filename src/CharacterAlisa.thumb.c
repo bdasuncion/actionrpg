@@ -356,9 +356,12 @@ void alisa_doAction(CharacterAttr* alisa,
 		alisa->nextAction = EAlisaStand;
 	}
 	
-	alisa->inducedMove = NULL;
+	//alisa->inducedMove = NULL;
 	alisa_actions[alisa->nextAction](alisa, mapInfo, NULL, charActionCollection);
 	commonCheckForEvents(alisa, mapInfo);
+	if (alisa->nextAction == EAlisaJumpUp || alisa->nextAction == EAlisaJumpForward) {
+		alisa->inducedMove = NULL;
+	}
 }
 
 void alisa_setScreenPosition(const CharacterAttr* alisa, Position *scr_pos) {
@@ -1067,9 +1070,55 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 void alisa_checkVerticalCollision(CharacterAttr* alisa, BoundingBox* alisaBoundingBox, 
 	const CharacterAttr* otherCharacter, const BoundingBox* otherCharBoundingBox) {
 	if (alisa->distanceFromGround != 0) {
+		//mprinter_printf("CHECK DISTANCE %d\n", CONVERT_2POS(alisa->inducedMove->z));
+		//if (&otherCharacter->finalDelta == alisa->inducedMove) {
+		//	alisa->position.z += alisa->inducedMove->z;
+		//	alisa->delta.z += alisa->inducedMove->z;
+		//}
 		int fallingDistance = common_fallingDownOnBoundingBox(alisa, alisaBoundingBox, otherCharBoundingBox);
-		if (fallingDistance != 0) {
-			alisa->nextAction = EAlisaFallingDown;
+		if (alisa->inducedMove != NULL) {
+			mprinter_printf("INDUCED %d DELTA %d FALL %d\n", CONVERT_2POS(alisa->inducedMove->z), CONVERT_2POS(alisa->delta.z), fallingDistance);
+			mprinter_printf("FALLING %d CONVERT %d IS LESS OR EQUAL %d\n", fallingDistance, 
+				CONVERT_2POS(alisa->delta.z + alisa->inducedMove->z), fallingDistance <= CONVERT_2POS(alisa->delta.z + alisa->inducedMove->z));
+		}
+		
+		if (fallingDistance == NO_OVERLAP) {
+			if (&otherCharacter->finalDelta == alisa->inducedMove) {
+				alisa->inducedMove = NULL;
+				alisa->nextAction = EAlisaFallingDown;
+			}
+		} else if (fallingDistance > 0) {
+			//alisa->nextAction = EAlisaFallingDown;		
+			if (&otherCharacter->finalDelta == alisa->inducedMove) {
+				if (fallingDistance == CONVERT_2POS(alisa->inducedMove->z)) {
+					if (alisa->action != EAlisaStand && 
+						alisa->action != EAlisaFallingDown &&
+						alisa->action != EAlisaFallingDownForward) {
+						alisa->nextAction = alisa->action;
+					} else {
+						alisa->nextAction = EAlisaStand;
+					}
+					alisa->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+					alisa->delta.z = 0;
+					fallingDistance = 0;
+				}
+			} 
+		} else if (fallingDistance < 0) { 
+				mprinter_printf("FALLING < 0 action % next %d\n", alisa->action, alisa->nextAction);
+			if (alisa->inducedMove != NULL &&
+				fallingDistance <= CONVERT_2POS(alisa->delta.z + alisa->inducedMove->z)) {
+	
+				if (alisa->action != EAlisaStand && 
+					alisa->action != EAlisaFallingDown &&
+					alisa->action != EAlisaFallingDownForward) {
+					alisa->nextAction = alisa->action;
+				} else {
+					alisa->nextAction = EAlisaStand;
+				}
+				alisa->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+				alisa->delta.z = 0;
+				alisa->inducedMove->z = 0;
+			}
 		} else if ((alisa->nextAction == EAlisaFallingDown || 
 			alisa->nextAction == EAlisaFallingDownForward) && fallingDistance == 0) {
 			if (alisa->action != EAlisaStand && 
@@ -1079,8 +1128,10 @@ void alisa_checkVerticalCollision(CharacterAttr* alisa, BoundingBox* alisaBoundi
 			} else {
 				alisa->nextAction = EAlisaStand;
 			}
+
 			alisa->inducedMove = &otherCharacter->finalDelta;
 			alisa->inducedDirection = otherCharacter->direction;
+			alisa->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
 		}
 		
 		if (fallingDistance >= 0 && fallingDistance < alisa->distanceFromGround ) {

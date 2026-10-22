@@ -351,7 +351,7 @@ void mapcryptunderground_02_function(struct ScreenAttr *screenAttribute, struct 
 	character->getBounds(character, &count, &charBB);
 	
 	if (isOverlap(&charBB, &jumpinstructions_area)) {
-		mprinter_printf("You can use enemies as\nstepping stones to reach\nplaces youn normally can't");
+		//mprinter_printf("You can use enemies as\nstepping stones to reach\nplaces youn normally can't");
 	} else if (isOverlap(&charBB, &dodgeinstructions_area)) {
 		mprinter_printf("Observe enemy behavior.\nAttack once or twice then\ndash away if you\nfeel danger.Try attacking\nfrom different directions");
 	} else if (isOverlap(&charBB, &attackinstructions_area)) {

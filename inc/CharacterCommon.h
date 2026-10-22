@@ -10,6 +10,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define NO_OVERLAP -1024
+
 extern const CharacterAttr openSlot;
 extern const s32 common_zOffsetDown;
 void commonSetCharacterDefault(CharacterAttr *character);

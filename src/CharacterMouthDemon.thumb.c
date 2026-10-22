@@ -155,7 +155,7 @@ void mouthDemon_init(CharacterAttr* character, ControlTypePool* controlPool,
 
 void moutDemon_actionFloat(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection, CharacterActionCollection *charActionCollection) {
-	mprinter_printf("FLOAT STEADY\n");
+	//mprinter_printf("FLOAT STEADY\n");
 	if (commonUpdateCharacterAnimation(character) == EUpdate) {
 		character->spriteDisplay.imageUpdateStatus = EUpdate;
 		character->spriteDisplay.palleteUpdateStatus = EUpdate;
@@ -181,6 +181,7 @@ void moutDemon_actionFloatUp(CharacterAttr* character, const MapInfo *mapInfo,
 	}
 	
 	character->action = character->nextAction;
+	//++character->movementCtrl.currentFrame;
 	
 	character->movementCtrl.currentFrame = (!(character->movementCtrl.currentFrame >= 
 		character->movementCtrl.maxFrames))*character->movementCtrl.currentFrame;
@@ -279,6 +280,7 @@ void mouthDemon_checkCollision(CharacterAttr* character, bool isOtherCharBelow,
 	
 	int count;
 	BoundingBox charBoundingBox, otherCharBoundingBox;
+	mprinter_printf("MOUTHD\n");
 	*checkNext = common_checkNext(isOtherCharBelow, &character->position, &otherCharacter->position);
 	if (!*checkNext) {
 		return;

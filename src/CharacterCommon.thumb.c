@@ -966,6 +966,7 @@ void common_movingRightOffset(CharacterAttr* character,
 
 	character->finalDelta.y = 0;
 	character->finalDelta.x = character->delta.x - CONVERT_2MOVE(xoffset);
+	character->finalDelta.z = character->delta.z;
 	
 	character->position.x -= CONVERT_2MOVE(xoffset);
 	
@@ -989,6 +990,7 @@ void common_movingLeftOffset(CharacterAttr* character,
 	character->finalDelta.x = character->delta.x + CONVERT_2MOVE(xoffset);
 	//mprinter_printf("qwe %d\n", CONVERT_2MOVE(xoffset));
 	character->position.x += CONVERT_2MOVE(xoffset);
+	character->finalDelta.z = character->delta.z;
 	
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->leftBlocked |= (xoffset != 0);
@@ -1008,6 +1010,7 @@ void common_movingUpOffset(CharacterAttr* character,
 
 	character->finalDelta.y = character->delta.y + CONVERT_2MOVE(yoffset);
 	character->finalDelta.x = 0;
+	character->finalDelta.z = character->delta.z;
 
 	character->position.y += CONVERT_2MOVE(yoffset);
 	
@@ -1029,6 +1032,7 @@ void common_movingDownOffset(CharacterAttr* character,
 	
 	character->finalDelta.y = character->delta.y - CONVERT_2MOVE(yoffset);
 	character->finalDelta.x = 0;
+	character->finalDelta.z = character->delta.z;
 	
 	character->position.y -= CONVERT_2MOVE(yoffset);
 	
@@ -1061,6 +1065,7 @@ void common_movingRightUpOffset(CharacterAttr* character,
 	
 	character->finalDelta.y = character->delta.y + CONVERT_2MOVE(yOffset);
 	character->finalDelta.x = character->delta.x - CONVERT_2MOVE(xOffset);
+	character->finalDelta.z = character->delta.z;
 	
 	character->position.y += CONVERT_2MOVE(yOffset);
 	character->position.x -= CONVERT_2MOVE(xOffset);
@@ -1098,6 +1103,7 @@ void common_movingLeftUpOffset(CharacterAttr* character,
 	
 	character->finalDelta.y = character->delta.y + CONVERT_2MOVE(yOffset);
 	character->finalDelta.x = character->delta.x + CONVERT_2MOVE(xOffset);
+	character->finalDelta.z = character->delta.z;
 	
 	character->position.y += CONVERT_2MOVE(yOffset);
 	character->position.x += CONVERT_2MOVE(xOffset);
@@ -1132,6 +1138,7 @@ void common_movingRightDownOffset(CharacterAttr* character,
 	
 	character->finalDelta.y = character->delta.y - CONVERT_2MOVE(yOffset);
 	character->finalDelta.x = character->delta.x - CONVERT_2MOVE(xOffset);
+	character->finalDelta.z = character->delta.z;
 	
 	character->position.y -= CONVERT_2MOVE(yOffset);
 	character->position.x -= CONVERT_2MOVE(xOffset);
@@ -1166,10 +1173,11 @@ void common_movingLeftDownOffset(CharacterAttr* character,
 	
 	character->finalDelta.y = character->delta.y - CONVERT_2MOVE(yOffset);
 	character->finalDelta.x = character->delta.x + CONVERT_2MOVE(xOffset);
-	
+	character->finalDelta.z = character->delta.z;
+
 	character->position.y -= CONVERT_2MOVE(yOffset);
 	character->position.x += CONVERT_2MOVE(xOffset);
-	
+
 	if (character->free->type == EControlAiType) {
 		((CharacterAIControl*)character->free)->leftBlocked |= (xOffset != 0);
 		((CharacterAIControl*)character->free)->downBlocked |= (yOffset != 0);
@@ -1192,6 +1200,7 @@ int common_fallingDown(CharacterAttr* character,
 	
 	if (zoffset1 >= 0 && zoffset1 <= deltaZ) {
 		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+		character->delta.z = 0;
 		return 0;
 	}
 		
@@ -1204,14 +1213,19 @@ int common_fallingDownOnBoundingBox(CharacterAttr* character,
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
 	int deltaZ = CONVERT_2POS(-character->delta.z);
 	
+	mprinter_printf("Zoffset %d deltaZ %d overlap %d\n", zoffset1, deltaZ, didOverlap);
 	if (didOverlap && zoffset1 >= 0 && zoffset1 <= deltaZ) {
+	//if (didOverlap && zoffset1 >= 0) {
+		//mprinter_printf("CONVERT TO TOP OF OTHER\n");
 		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+		character->delta.z = 0;
 		return 0;
-	} else if (didOverlap && zoffset1 < 0) {
+	} else if (didOverlap) {
+		//mprinter_printf("NEGATIVE?\n");
 		return -zoffset1;
 	}
-	
-	return -1;
+	//mprinter_printf("NO OVERLAP\n");
+	return NO_OVERLAP;
 }
 
 void commonGravityEffect(CharacterAttr *character, int zOffsetDown) {

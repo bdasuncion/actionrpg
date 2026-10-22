@@ -196,7 +196,10 @@ void commonCheckInducedMovementCollision(CharacterAttr* character, bool isOtherC
 	
 	character->getBounds(character, &count, &charBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
-	mprinter_printf("INDUCED DIRECTION:%d\n", character->inducedDirection);
+	//mprinter_printf("INDUCED DIRECTION:%d\n", character->inducedDirection);
+	//if (character->inducedMove == &otherCharacter->finalDelta) {
+	//	character->position.z = CONVERT_2MOVE(otherCharBoundingBox.endZ + 1);
+	//}
 	common_collisionReactions[character->inducedDirection]
 	    (character, &charBoundingBox, &otherCharBoundingBox);
 }
@@ -209,15 +212,20 @@ void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection, const 
 		if (character->inducedMove != NULL) {
 			character->position.x += character->inducedMove->x;
 			character->position.y += character->inducedMove->y;
+			character->position.z += character->inducedMove->z;
 			character->delta.x = character->inducedMove->x;
 			character->delta.y = character->inducedMove->y;
-			mprinter_printf("Induced: %d %d %d\n", CONVERT_2POS(character->inducedMove->x), CONVERT_2POS(character->inducedMove->y), CONVERT_2POS(character->inducedMove->z));
-			//character->direction = character->extraDirection;
+			character->delta.z = character->inducedMove->z;
+			//mprinter_printf("Induced: %d %d %d\n", CONVERT_2POS(character->inducedMove->x), CONVERT_2POS(character->inducedMove->y), CONVERT_2POS(character->inducedMove->z));
+			mprinter_printf("Actual: %d %d %d\n", CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), CONVERT_2POS(character->position.z));
+		
 			common_mapCollision[character->inducedDirection](character, mapInfo, 
 				common_mapCollisionReactions[character->inducedDirection]);
 			//character->checkMapCollision(character, mapInfo);
 			for (descendingIdx = checkCollisionIdx - 1; descendingIdx >= 0; --descendingIdx) {
 				commonCheckInducedMovementCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
+				//mprinter_printf("DELTA: %d %d %d\n", CONVERT_2POS(character->delta.x), CONVERT_2POS(character->delta.y), CONVERT_2POS(character->delta.z));
+				mprinter_printf("Actual AFTER: %d %d %d\n", CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), CONVERT_2POS(character->position.z));
 				if (!checkNext) {
 					break;
 				}
