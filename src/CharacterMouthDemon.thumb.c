@@ -151,6 +151,9 @@ void mouthDemon_init(CharacterAttr* character, ControlTypePool* controlPool,
 	character->finalDelta.x = 0;
 	character->finalDelta.y = 0;
 	character->finalDelta.z = 0;
+	character->delta.x = 0;
+	character->delta.y = 0;
+	character->delta.z = 0;
 }
 
 void moutDemon_actionFloat(CharacterAttr* character, const MapInfo *mapInfo, 

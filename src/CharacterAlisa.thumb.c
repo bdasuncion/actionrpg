@@ -356,9 +356,13 @@ void alisa_doAction(CharacterAttr* alisa,
 		alisa->nextAction = EAlisaStand;
 	}
 	
-	alisa->inducedMove = NULL;
 	alisa_actions[alisa->nextAction](alisa, mapInfo, NULL, charActionCollection);
 	commonCheckForEvents(alisa, mapInfo);
+	
+	if (alisa->nextAction == EAlisaJumpUp || alisa->nextAction == EAlisaJumpForward ||
+		alisa->nextAction == EAlisaDashForward || alisa->nextAction == EAlisaDashBackward ) {
+		alisa->inducedMove = NULL;
+	}
 }
 
 void alisa_setScreenPosition(const CharacterAttr* alisa, Position *scr_pos) {
@@ -1068,7 +1072,9 @@ void alisa_checkVerticalCollision(CharacterAttr* alisa, BoundingBox* alisaBoundi
 	const CharacterAttr* otherCharacter, const BoundingBox* otherCharBoundingBox) {
 	if (alisa->distanceFromGround != 0) {
 		int fallingDistance = common_fallingDownOnBoundingBox(alisa, alisaBoundingBox, otherCharBoundingBox);
-		if (fallingDistance != 0) {
+		if (fallingDistance == NO_OVERLAP) {
+			alisa->inducedMove = NULL;
+		} else if (fallingDistance != 0) {
 			alisa->nextAction = EAlisaFallingDown;
 		} else if ((alisa->nextAction == EAlisaFallingDown || 
 			alisa->nextAction == EAlisaFallingDownForward) && fallingDistance == 0) {
@@ -1098,12 +1104,14 @@ void alisa_checkCollision(CharacterAttr* alisa, bool isOtherCharBelow,
 		return;
 	}
 	
+	//mprinter_printf("COLL CHECK %d\n", otherCharacter->type);
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
 	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
 		
 	alisa_checkVerticalCollision(alisa, &alisaBoundingBox, otherCharacter, &otherCharBoundingBox);
 	
 	alisa->getBounds(alisa, &count, &alisaBoundingBox);
+	//mprinter_printf("DIRECTION: %d\n", alisa->direction);
 	common_collisionReactions[alisa->direction]
 	    (alisa, &alisaBoundingBox, &otherCharBoundingBox);
 }

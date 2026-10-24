@@ -189,16 +189,12 @@ void commonCheckInducedMovementCollision(CharacterAttr* character, bool isOtherC
 	int count;
 	BoundingBox charBoundingBox, otherCharBoundingBox;
 		
-	*checkNext = common_checkNext(isOtherCharBelow, &character->position, &otherCharacter->position);
-	if (!*checkNext) {
-		return;
-	}
+	//*checkNext = common_checkNext(isOtherCharBelow, &character->position, &otherCharacter->position);
+	//if (!*checkNext) {
+	//	return;
+	//}
 	
-	character->getBounds(character, &count, &charBoundingBox);
-	otherCharacter->getBounds(otherCharacter, &count, &otherCharBoundingBox);
-	mprinter_printf("INDUCED DIRECTION:%d\n", character->inducedDirection);
-	common_collisionReactions[character->inducedDirection]
-	    (character, &charBoundingBox, &otherCharBoundingBox);
+	character->checkCollision(character, isOtherCharBelow, checkNext, otherCharacter);
 }
 
 void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection, const MapInfo *mapInfo) {
@@ -209,26 +205,34 @@ void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection, const 
 		if (character->inducedMove != NULL) {
 			character->position.x += character->inducedMove->x;
 			character->position.y += character->inducedMove->y;
+			character->position.z += character->inducedMove->z;
 			character->delta.x = character->inducedMove->x;
 			character->delta.y = character->inducedMove->y;
-			mprinter_printf("Induced: %d %d %d\n", CONVERT_2POS(character->inducedMove->x), CONVERT_2POS(character->inducedMove->y), CONVERT_2POS(character->inducedMove->z));
+			character->delta.z = character->inducedMove->z;
+			
+			EDirections moveDirection = character->direction;
+			character->direction = character->inducedDirection;
+			mprinter_printf("Induced: %d %d %d DIR: %d\n", CONVERT_2POS(character->inducedMove->x), CONVERT_2POS(character->inducedMove->y), CONVERT_2POS(character->inducedMove->z), character->inducedDirection);
 			//character->direction = character->extraDirection;
-			common_mapCollision[character->inducedDirection](character, mapInfo, 
-				common_mapCollisionReactions[character->inducedDirection]);
+			common_mapCollision[character->direction](character, mapInfo, 
+				common_mapCollisionReactions[character->direction]);
 			//character->checkMapCollision(character, mapInfo);
 			for (descendingIdx = checkCollisionIdx - 1; descendingIdx >= 0; --descendingIdx) {
-				commonCheckInducedMovementCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
+				//commonCheckInducedMovementCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
+				character->checkCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
 				if (!checkNext) {
 					break;
 				}
 			}
-		
+
 			for (ascendingIdx = checkCollisionIdx + 1; ascendingIdx < charCollection->currentSize; ++ascendingIdx) {
-				commonCheckInducedMovementCollision(character, false, &checkNext, charCollection->characters[ascendingIdx]);
+				//commonCheckInducedMovementCollision(character, false, &checkNext, charCollection->characters[ascendingIdx]);
+				character->checkCollision(character, false, &checkNext, charCollection->characters[ascendingIdx]);
 				if (!checkNext) {
 					break;
 				}
 			}
+			character->direction = moveDirection;
 		}
 	}
 }

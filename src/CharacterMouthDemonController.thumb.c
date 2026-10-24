@@ -38,9 +38,9 @@ void mouthDemon_floatController(CharacterAttr* character, const MapInfo *mapInfo
 	character->getBounds(character, &count, &boundingBox);
 	bool hasArrived = commonHasReachedWaypoint(&charControl->wayPoints[charControl->wayPointCurrent], &boundingBox);
 	
-	mprinter_printf("HAS ARRIVED %d COUNT ACTION %d\n", hasArrived, charControl->countAction);
-	mprinter_printf("POSITION %d %d %d\n", CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), CONVERT_2POS(character->position.z));
-	mprinter_printf("TARGET %d %d %d\n", charControl->wayPoints[charControl->wayPointCurrent].x, charControl->wayPoints[charControl->wayPointCurrent].y, charControl->wayPoints[charControl->wayPointCurrent].z);
+	//mprinter_printf("HAS ARRIVED %d COUNT ACTION %d\n", hasArrived, charControl->countAction);
+	//mprinter_printf("POSITION %d %d %d\n", CONVERT_2POS(character->position.x), CONVERT_2POS(character->position.y), CONVERT_2POS(character->position.z));
+	//mprinter_printf("TARGET %d %d %d\n", charControl->wayPoints[charControl->wayPointCurrent].x, charControl->wayPoints[charControl->wayPointCurrent].y, charControl->wayPoints[charControl->wayPointCurrent].z);
 	//if (hasArrived && charControl->countAction == 0) {
 	if (hasArrived) {
 		++charControl->wayPointCurrent;
@@ -69,6 +69,8 @@ void mouthDemon_floatController(CharacterAttr* character, const MapInfo *mapInfo
 		} else {
 			character->nextAction = EMouthDemonFloatDown;
 		}
+		
+		//character->nextAction = EMouthDemonFloat;
 		return;
 	} 
 	
@@ -86,6 +88,6 @@ void mouthDemon_floatController(CharacterAttr* character, const MapInfo *mapInfo
 		//return;
 	}
 	
-	character->nextAction = EMouthDemonFloat;
+	//character->nextAction = EMouthDemonFloat;
 	//mouthDemon_doWalk(character, mapInfo, characterCollection, charControl);
 }
