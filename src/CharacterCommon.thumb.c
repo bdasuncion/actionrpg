@@ -1212,12 +1212,7 @@ int common_fallingDownOnBoundingBox(CharacterAttr* character,
 	int zoffset1 = (otherCharBoundingBox->endZ - charBoundingBox->startZ);
 	int deltaZ = CONVERT_2POS(-character->delta.z);
 	
-	if (didOverlap && zoffset1 >= 0 && zoffset1 <= deltaZ) {
-		character->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
-		character->delta.z = 0;
-		return 0;
-	//} else if (didOverlap && zoffset1 < 0) {
-	} else if (didOverlap) {
+	if (didOverlap) {
 		return -zoffset1;
 	}
 	

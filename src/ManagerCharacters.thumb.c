@@ -212,13 +212,11 @@ void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection, const 
 			
 			EDirections moveDirection = character->direction;
 			character->direction = character->inducedDirection;
-			mprinter_printf("Induced: %d %d %d DIR: %d\n", CONVERT_2POS(character->inducedMove->x), CONVERT_2POS(character->inducedMove->y), CONVERT_2POS(character->inducedMove->z), character->inducedDirection);
-			//character->direction = character->extraDirection;
+
 			common_mapCollision[character->direction](character, mapInfo, 
 				common_mapCollisionReactions[character->direction]);
-			//character->checkMapCollision(character, mapInfo);
+
 			for (descendingIdx = checkCollisionIdx - 1; descendingIdx >= 0; --descendingIdx) {
-				//commonCheckInducedMovementCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
 				character->checkCollision(character, true, &checkNext, charCollection->characters[descendingIdx]);
 				if (!checkNext) {
 					break;
@@ -226,7 +224,6 @@ void mchar_resolveCharacterMoveDelta(CharacterCollection *charCollection, const 
 			}
 
 			for (ascendingIdx = checkCollisionIdx + 1; ascendingIdx < charCollection->currentSize; ++ascendingIdx) {
-				//commonCheckInducedMovementCollision(character, false, &checkNext, charCollection->characters[ascendingIdx]);
 				character->checkCollision(character, false, &checkNext, charCollection->characters[ascendingIdx]);
 				if (!checkNext) {
 					break;
