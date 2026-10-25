@@ -1068,25 +1068,57 @@ void alisa_checkMapCollision(CharacterAttr* alisa, const MapInfo* mapInfo) {
 	    common_mapCollisionReactions[alisa->direction]);
 }
 
+void alisa_handleLanding(CharacterAttr* alisa) {
+	if (alisa->action != EAlisaStand && 
+		alisa->action != EAlisaFallingDown &&
+		alisa->action != EAlisaFallingDownForward) {
+		alisa->nextAction = alisa->action;
+	} else {
+		alisa->nextAction = EAlisaStand;
+	}
+}
+
 void alisa_checkVerticalCollision(CharacterAttr* alisa, BoundingBox* alisaBoundingBox, 
 	const CharacterAttr* otherCharacter, const BoundingBox* otherCharBoundingBox) {
 	if (alisa->distanceFromGround != 0) {
 		int fallingDistance = common_fallingDownOnBoundingBox(alisa, alisaBoundingBox, otherCharBoundingBox);
 		if (fallingDistance == NO_OVERLAP) {
 			alisa->inducedMove = NULL;
-		} else if (fallingDistance != 0) {
-			alisa->nextAction = EAlisaFallingDown;
+		} else if (fallingDistance > 0) {
+			if (fallingDistance <= 1) {
+				alisa->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+				alisa->delta.z = 0;
+				alisa_handleLanding(alisa);
+				alisa->inducedMove = &otherCharacter->finalDelta;
+				alisa->inducedDirection = otherCharacter->direction;
+			} else {
+				alisa->nextAction = EAlisaFallingDown;
+			}
+		} else if (fallingDistance < 0) {
+			if (fallingDistance >= -1) {
+				alisa->position.z = CONVERT_2MOVE(otherCharBoundingBox->endZ + 1);
+				alisa->delta.z = 0;
+				alisa_handleLanding(alisa);
+				alisa->inducedMove = &otherCharacter->finalDelta;
+				alisa->inducedDirection = otherCharacter->direction;
+			} else {
+				alisa->nextAction = EAlisaFallingDown;
+			}
 		} else if ((alisa->nextAction == EAlisaFallingDown || 
 			alisa->nextAction == EAlisaFallingDownForward) && fallingDistance == 0) {
-			if (alisa->action != EAlisaStand && 
+			/*if (alisa->action != EAlisaStand && 
 				alisa->action != EAlisaFallingDown &&
 				alisa->action != EAlisaFallingDownForward) {
 				alisa->nextAction = alisa->action;
 			} else {
 				alisa->nextAction = EAlisaStand;
-			}
+			}*/
+			alisa_handleLanding(alisa);
 			alisa->inducedMove = &otherCharacter->finalDelta;
 			alisa->inducedDirection = otherCharacter->direction;
+		}
+		if (alisa->inducedMove != NULL) {
+			mprinter_printf("deltaz %d fallingDistance %d\n", CONVERT_2POS(alisa->inducedMove->z), fallingDistance);
 		}
 		
 		if (fallingDistance >= 0 && fallingDistance < alisa->distanceFromGround ) {
