@@ -34,6 +34,10 @@ void alisa_jumpForwardController(CharacterAttr* charAtt, const MapInfo *mapInfo,
 	const CharacterCollection *characterCollection);
 void alisa_strongSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
 	const CharacterCollection *characterCollection);
+void alisa_jumpForwardDownwardSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
+void alisa_jumpDownwardSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection);
 
 const EDirections DEFAULT_DIRECTIONMAP[EDirectionsCount] = {
 	EDown,EDown,ERight,EUp,EUp,EUp,ELeft,EDown
@@ -128,6 +132,7 @@ bool controlButtonHold(CharacterPlayerControl *control, const CharFuncController
 		if (!isBPressed()) {
 			*holdInterval = control->buttonB_PressInterval;
 			//control->buttonB_PressInterval = 0;
+			mprinter_printf("B PRESSED\n");
 			return true;
 		} else if (isBPressed()){
 			control->buttonB_PressInterval += 1*(control->buttonB_PressInterval < MAX_BUTTON_INTERVAL);
@@ -135,6 +140,7 @@ bool controlButtonHold(CharacterPlayerControl *control, const CharFuncController
 		
 		*holdInterval = control->buttonB_PressInterval;
 		if (control->buttonB_PressInterval >= intervalMax) {
+			mprinter_printf("B PRESSED MAX\n");
 			return true;
 		}
 	}
@@ -168,7 +174,8 @@ bool alisa_isFalling(CharacterAttr* character, CharacterPlayerControl *charContr
 
 bool alisa_hasLanded(CharacterAttr* character, CharacterPlayerControl *charControl,
 	const MapInfo *mapInfo, const CharacterCollection *characterCollection) {
-	if (character->nextAction != EAlisaFallingDown &&  character->nextAction != EAlisaFallingDownForward) {
+	if (character->nextAction != EAlisaFallingDown &&  character->nextAction != EAlisaFallingDownForward
+		&& character->nextAction != EAlisaJumpForwardDownwardSlash && character->nextAction != EAlisaJumpDownwardSlash) {
 		//character->faceDirection = character->direction;
 		character->controller = &alisa_controller;
 		character->controller(character, mapInfo, characterCollection);
@@ -620,10 +627,40 @@ void alisa_fallingDownForwardController(CharacterAttr* character, const MapInfo 
 		return;
 	}
 
+	if (controlButtonCheckSpecificAction(character, &alisa_slashController)) {
+		character->nextAction = EAlisaJumpForwardDownwardSlash;
+		character->controller = &alisa_jumpForwardDownwardSlashController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
 	if (direction == character->nextDirection) {
 		character->nextAction = EAlisaFallingDownForward;
 	} else {
 		character->nextAction = EAlisaFallingDown;
+	}
+}
+
+void alisa_jumpForwardDownwardSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+   int nextScreenFrame, nextAnimationFrame, hold;
+   EDirections direction = KEYPRESS_DIRECTION;
+   bool isLastFrame = false;
+   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+   character->distanceFromGround = 1024;
+
+   	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+   
+	if (alisa_hasLanded(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+
+	if (direction == character->nextDirection) {
+		character->nextAction = EAlisaJumpForwardDownwardSlash;
+	} else {
+		character->nextAction = EAlisaJumpDownwardSlash;
 	}
 }
 
@@ -642,7 +679,37 @@ void alisa_fallingDownController(CharacterAttr* character, const MapInfo *mapInf
 		return;
 	}
 
+	if (controlButtonCheckSpecificAction(character, &alisa_slashController)) {
+		character->nextAction = EAlisaJumpForwardDownwardSlash;
+		character->controller = &alisa_jumpForwardDownwardSlashController;
+		character->controller(character, mapInfo, characterCollection);
+		return;
+	}
+	
 	character->nextAction = EAlisaFallingDown;
+}
+
+void alisa_jumpDownwardSlashController(CharacterAttr* character, const MapInfo *mapInfo, 
+	const CharacterCollection *characterCollection) {
+   int nextScreenFrame, nextAnimationFrame, hold;
+   EDirections direction = KEYPRESS_DIRECTION;
+   bool isLastFrame = false;
+   CharacterPlayerControl *charControl = (CharacterPlayerControl*)character->free;
+   character->distanceFromGround = 1024;
+
+   	if (alisa_isStunned(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+   
+	if (alisa_hasLanded(character, charControl, mapInfo, characterCollection)) {
+		return;
+	}
+
+	if (direction == character->nextDirection) {
+		character->nextAction = EAlisaJumpForwardDownwardSlash;
+	} else {
+		character->nextAction = EAlisaJumpDownwardSlash;
+	}
 }
 
 #define MAX_DIE_ANIMATION 60

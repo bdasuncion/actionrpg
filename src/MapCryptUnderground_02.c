@@ -307,11 +307,11 @@ const u16 *mapentryset_mapcryptunderground_02[] = { mapentry_mapcryptunderground
 const CharacterInit actors_mapcryptunderground_02[] = {
 	//{ 264, 216, 48, GHOUL_REVIVE, &(const CharacterWaypoints){2, {{264, 216, 48}, {264, 325, 48}}} },
 	{ 264, 264, 90, MOUTHDEMON, &(const CharacterWaypoints){2, {{264, 264, 140}, {264, 264, 50}}} }, 
-	{ 296, 456, 0, GHOUL }, 
-	{ 136, 456, 0, GHOUL }, 
-	{ 72, 552, 0, GHOUL },
-	{ 344, 632, 0, SKULLDEMON, &(const CharacterWaypoints){2, {{344, 632, 0}, {270, 632, 0}}} }, 
-	{ 168, 632, 0, GHOUL }
+	//{ 296, 456, 0, GHOUL }, 
+	//{ 136, 456, 0, GHOUL }, 
+	//{ 72, 552, 0, GHOUL },
+	//{ 344, 632, 0, SKULLDEMON, &(const CharacterWaypoints){2, {{344, 632, 0}, {270, 632, 0}}} }, 
+	//{ 168, 632, 0, GHOUL }
 };
 
 extern const MapInfo mapcryptunderground_01;
@@ -351,7 +351,7 @@ void mapcryptunderground_02_function(struct ScreenAttr *screenAttribute, struct 
 	character->getBounds(character, &count, &charBB);
 	
 	if (isOverlap(&charBB, &jumpinstructions_area)) {
-		mprinter_printf("You can use enemies as\nstepping stones to reach\nplaces youn normally can't");
+		//mprinter_printf("You can use enemies as\nstepping stones to reach\nplaces youn normally can't");
 	} else if (isOverlap(&charBB, &dodgeinstructions_area)) {
 		mprinter_printf("Observe enemy behavior.\nAttack once or twice then\ndash away if you\nfeel danger.Try attacking\nfrom different directions");
 	} else if (isOverlap(&charBB, &attackinstructions_area)) {
@@ -360,5 +360,5 @@ void mapcryptunderground_02_function(struct ScreenAttr *screenAttribute, struct 
 }
 
 extern const MusicTrack musiccrypt;
-const MapInfo mapcryptunderground_02 = { 464, 768, 2, 60, 2, 2, 6, 0, 0, NULL , mapentryset_mapcryptunderground_02, vram_mapcryptunderground_02, pallette_mapcryptunderground_02,
+const MapInfo mapcryptunderground_02 = { 464, 768, 2, 60, 2, 2, 1, 0, 0, NULL , mapentryset_mapcryptunderground_02, vram_mapcryptunderground_02, pallette_mapcryptunderground_02,
 transfer_mapcryptunderground_02, heightMap_mapcryptunderground_02, actors_mapcryptunderground_02, spritemask_mapcryptunderground_02, spritemaskimage_mapcryptunderground_02, &mapcryptunderground_02_function, NULL, NULL, &musiccrypt, {0,0,0,0,0} };

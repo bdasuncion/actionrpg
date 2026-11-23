@@ -254,5 +254,20 @@ extern const unsigned int alisa_die_image2[];
 extern const unsigned int alisa_die_image3[];
 extern const unsigned int alisa_die_final_image0[];
 
+extern const unsigned int alisa_jumpdownwardslash_down_image0[];
+extern const unsigned int alisa_jumpdownwardslash_down_image1[];
+extern const unsigned int alisa_jumpdownwardslash_down_image2[];
+extern const unsigned int alisa_jumpdownwardslash_down_image3[];
+extern const unsigned int alisa_jumpdownwardslash_down_image4[];
 
+extern const unsigned int alisa_jumpdownwardslash_side_image0[];
+extern const unsigned int alisa_jumpdownwardslash_side_image1[];
+extern const unsigned int alisa_jumpdownwardslash_side_image2[];
+extern const unsigned int alisa_jumpdownwardslash_side_image3[];
+extern const unsigned int alisa_jumpdownwardslash_side_image4[];
+
+extern const unsigned int alisa_jumpdownwardslash_up_image0[];
+extern const unsigned int alisa_jumpdownwardslash_up_image1[];
+extern const unsigned int alisa_jumpdownwardslash_up_image2[];
+extern const unsigned int alisa_jumpdownwardslash_up_image3[];
 #endif

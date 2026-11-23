@@ -95,3 +95,11 @@ extern const SpriteSet alisa_die_left;
 
 const SpriteSet * const alisaDieSet[] = { &alisa_die_left, &alisa_die_right, &alisa_die_right, 
     &alisa_die_right, &alisa_die_right, &alisa_die_left, &alisa_die_left, &alisa_die_left };
+	
+extern const SpriteSet alisa_jumpdownwardslash_down;
+extern const SpriteSet alisa_jumpdownwardslash_left;
+extern const SpriteSet alisa_jumpdownwardslash_right;
+extern const SpriteSet alisa_jumpdownwardslash_up;
+
+const SpriteSet * const alisaJumpDownwardSlashSet[] = { &alisa_jumpdownwardslash_down, &alisa_jumpdownwardslash_down, &alisa_jumpdownwardslash_right, 
+    &alisa_jumpdownwardslash_up, &alisa_jumpdownwardslash_up, &alisa_jumpdownwardslash_up, &alisa_jumpdownwardslash_left, &alisa_jumpdownwardslash_down };

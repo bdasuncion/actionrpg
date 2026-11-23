@@ -18,8 +18,12 @@ typedef enum AlisaAction
 	EAlisaDashBackward,
 	EAlisaJumpUp,
 	EAlisaJumpForward,
-	EAlisaFallingDown,
+	EAlisaFallingActionsStart,
+	EAlisaFallingDown = EAlisaFallingActionsStart,
 	EAlisaFallingDownForward,
+	EAlisaJumpDownwardSlash,
+	EAlisaJumpForwardDownwardSlash,
+	EAlisaFallingActionsEnd = EAlisaJumpForwardDownwardSlash,
 	EAlisaStunned,
 	EAlisaDie,
 	EAlisaActionCount 
